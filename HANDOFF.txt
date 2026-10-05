@@ -13,9 +13,8 @@ HOME BASE
 - Repo: https://github.com/ctavolazzi/_RDA
 - Everything lives there: the format, the episodes, the rda tool, and the full video production
   pipeline (vendored from my claude-youtube-editor fork, MIT).
-- Work from main. Day one's work was squash-merged into main from PR #1 on 2026-10-05. The
-  step-by-step commits (cited in docs/history) live on in PR #1 and the branch
-  claude/rda-challenge-series-eo8iyc; read them there if you need the detail.
+- Work from main. Day one's work was merged into main from PR #1 on 2026-10-05 with every
+  commit kept, so the commit hashes cited in docs/history resolve on main.
 
 READ FIRST, IN THIS ORDER
 1. CLAUDE.md                     how we work, the formula, the hard rules, the gotchas
