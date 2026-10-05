@@ -24,7 +24,7 @@ Other people's video content and one-off files: `videos/video-1`, `video-2`, `vi
 `short-blocks-30`) and media (`media/projects/video-1`, `video-2`, `short-ai-test`, `short-blocks-30`,
 `voice-lab`), upstream `docs/` (`ai-clone-guide.md`, `shorts-factory-plan.md`), the upstream README and
 CLAUDE.md (their rules are merged into this repo's `CLAUDE.md`), and two stray root files
-(`Image 13.png`, `Recording.m4a`). About 50 MB stayed behind; about 19 MB came in.
+(`Image 13.png`, `Recording.m4a`). About 51 MB stayed behind; about 18 MB came in (measured from the tracked files).
 
 Worth knowing if needed later: `shorts-factory-plan.md` upstream describes turning long-form into
 Shorts (hook, one evidence carrier, named payoff, ask, end card), and `video-2/_shared/TermKit.tsx` has
