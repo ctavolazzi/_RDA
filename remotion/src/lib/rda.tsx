@@ -10,15 +10,15 @@ import {
 } from 'remotion';
 
 // =============================================================================
-// RDA EXPLAINER KIT
-// Shared look for the rda-explainer scenes. No compositionConfig on purpose:
-// the registry skips this file. The look matches the RDA Episode Kit page:
-// exam-booklet paper, answer-sheet bubbles, one form-green accent, and a
-// red pen used only for grading marks. Defined LOCALLY: this is a series
-// look, the repo's long-form brand.ts must not leak in.
+// RDA KIT: the series look as code, shared by every RDA video and thumbnail.
+// The written guide is docs/style-bible.md; change the two together.
+// Exam-booklet paper, answer-sheet bubbles, one form-green accent, a red pen used
+// only for grading marks. Not the repo brand contract (brand.md / brand.ts /
+// fonts.ts still hold the upstream house style until /brand-setup adopts this).
 // =============================================================================
 
-export const P = (name: string) => staticFile(`projects/rda-explainer/${name}`);
+export const P = (project: string, name: string) => staticFile(`projects/${project}/${name}`);
+const FONT = (name: string) => staticFile(`library/fonts/rda/${name}`);
 export const SFX = (id: string) => staticFile(`library/sfx/clips/${id}.mp3`);
 export const MUSIC = (id: string) => staticFile(`library/music/clips/${id}.mp3`);
 
@@ -37,9 +37,22 @@ export const C = {
   termDim: '#8ba096',
 } as const;
 
+/**
+ * Thumbnail palette: deliberately louder than the video palette (thumbnails compete at browse
+ * size). Measured WCAG contrast: signal on night 10.7, paper on night 17.7, flare on night 6.0.
+ * Never put signal on paper (1.65) or flare on paper (2.97); marks on paper use C.pen (4.95).
+ */
+export const T = {
+  night: '#0f1613',
+  signal: '#3ee08a',
+  paper: '#fbfbf5',
+  flare: '#ff5b3d',
+  sun: '#ffd23f',
+} as const;
+
 // =============================================================================
-// FONTS (local woff2 in media/projects/rda-explainer/fonts, so the render never
-// waits on the network)
+// FONTS (local woff2 in media/library/fonts/rda, so the render never waits on the
+// network)
 // =============================================================================
 export const F = {
   display: '"RDA Display", "Segoe UI", system-ui, sans-serif',
@@ -48,10 +61,10 @@ export const F = {
 } as const;
 
 const FONT_FILES: Array<[string, string, string]> = [
-  ['RDA Display', 'fonts/BricolageGrotesque-var.woff2', '200 800'],
-  ['RDA Body', 'fonts/SourceSans3-var.woff2', '200 900'],
-  ['RDA Mono', 'fonts/IBMPlexMono-400.woff2', '400'],
-  ['RDA Mono', 'fonts/IBMPlexMono-600.woff2', '600'],
+  ['RDA Display', 'BricolageGrotesque-var.woff2', '200 800'],
+  ['RDA Body', 'SourceSans3-var.woff2', '200 900'],
+  ['RDA Mono', 'IBMPlexMono-400.woff2', '400'],
+  ['RDA Mono', 'IBMPlexMono-600.woff2', '600'],
 ];
 
 if (typeof document !== 'undefined' && typeof FontFace !== 'undefined') {
@@ -60,7 +73,7 @@ if (typeof document !== 'undefined' && typeof FontFace !== 'undefined') {
   const handle = delayRender('rda-explainer fonts', { timeoutInMilliseconds: 120000 });
   Promise.all(
     FONT_FILES.map(([family, file, weight]) => {
-      const face = new FontFace(family, `url('${P(file)}') format('woff2')`, { weight });
+      const face = new FontFace(family, `url('${FONT(file)}') format('woff2')`, { weight });
       // FontFaceSet.add exists at runtime; this repo's TS lib does not declare it
       return face.load().then((loaded) => (document.fonts as unknown as { add: (f: FontFace) => void }).add(loaded));
     }),

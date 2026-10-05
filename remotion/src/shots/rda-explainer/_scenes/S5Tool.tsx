@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline, Terminal, Stamp } from '../_kit';
+import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline, Terminal, Stamp } from '../../../lib/rda';
 
 // =============================================================================
 // S5 · The tool (12s). Part A: `rda status` ticks through the checklist and

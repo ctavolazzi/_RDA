@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
 import { evolvePath } from '@remotion/paths';
-import { C, F, EASE, iio, rise, Scene } from '../_kit';
+import { C, F, EASE, iio, rise, Scene } from '../../../lib/rda';
 
 // =============================================================================
 // S1 · Cold open (6s). Three short lines state the format, then the title lands

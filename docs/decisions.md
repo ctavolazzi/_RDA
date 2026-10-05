@@ -6,6 +6,27 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D15 · The style bible is a living guide, not a lock (2026-10-05)
+
+**Decided:** `docs/style-bible.md` (v0.1) guides every video and thumbnail. It changes with feedback from
+the user and the audience; each change gets a row in its feedback log and a version bump.
+**Why:** the user wants consistency across episodes without freezing a look nobody has tested yet.
+**Revisit:** never as a whole; edit it as data comes in.
+
+### D14 · Thumbnails can be built as code (2026-10-05)
+
+**Decided:** thumbnail A for the explainer is a Remotion still (`RdaExplainerThumb.tsx`), following the
+`/thumbnail` skill's rules. Face-free thumbnails are committed under `videos/<p>/packaging/` (outside
+`thumbs/`, which is git-ignored because those images show the host's face).
+**Why:** no Gemini key and no face kit in the session; a code thumbnail is exact, reproducible, and on-palette.
+**Revisit when:** the face kit exists. A face usually lifts CTR; use `/thumbnail` for that bet.
+
+### D13 · One shared RDA kit for every video (2026-10-05)
+
+**Decided:** the look moved from the explainer's `_kit.tsx` to `remotion/src/lib/rda.tsx`, and the fonts to
+`media/library/fonts/rda/` (catalogued in `media/library/catalog.json`).
+**Why:** consistency across episodes needs one source of truth; a kit inside one video's folder invites copies.
+
 ### D12 · One repo is the home base (2026-10-05)
 
 **Decided:** `_RDA` holds everything: the formula, episodes, the `rda` tool, and the full production
@@ -45,7 +66,7 @@ talking-head episodes.
 ### D8 · RDA shots carry a local series look (2026-10-05)
 
 **Decided:** the exam-booklet look (paper, form green `#1d6b58`, red pen for grading only, Bricolage
-Grotesque, Source Sans 3, IBM Plex Mono) lives in `remotion/src/shots/rda-explainer/_kit.tsx`, not in
+Grotesque, Source Sans 3, IBM Plex Mono) lives in the shared RDA kit (`remotion/src/lib/rda.tsx`, see D13) and `docs/style-bible.md`, not in
 the brand contract.
 **Why:** the brand contract belongs to `/brand-setup`, which interviews the user. Editing it by hand
 makes the three brand files drift.

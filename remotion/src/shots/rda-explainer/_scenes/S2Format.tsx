@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { C, F, EASE, iio, rise, Scene, Eyebrow, Headline } from '../_kit';
+import { C, F, EASE, iio, rise, Scene, Eyebrow, Headline } from '../../../lib/rda';
 
 // =============================================================================
 // S2 · The format (12s). The five-phase bar, drawn to scale over 10:00, then

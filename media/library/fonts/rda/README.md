@@ -1,7 +1,7 @@
-# Fonts for rda-explainer
+# RDA series fonts
 
 Bundled locally so the render never waits on Google Fonts at render time. Loaded by
-`remotion/src/shots/rda-explainer/_kit.tsx` as `RDA Display`, `RDA Body` and `RDA Mono`.
+`remotion/src/lib/rda.tsx` (the RDA kit) as `RDA Display`, `RDA Body` and `RDA Mono`.
 Latin subset only, downloaded from Google Fonts.
 
 | File | Family | License |

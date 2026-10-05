@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, Audio, Sequence, useCurrentFrame } from 'remotion';
-import { C, MUSIC, SFX, iio, PaperChrome } from './_kit';
+import { C, MUSIC, SFX, iio, PaperChrome } from '../../lib/rda';
 import { S1Open, S1_DUR } from './_scenes/S1Open';
 import { S2Format, S2_DUR } from './_scenes/S2Format';
 import { S3Promise, S3_DUR, S3_MARKS } from './_scenes/S3Promise';

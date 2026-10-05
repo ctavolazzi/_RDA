@@ -1,0 +1,77 @@
+RDA HANDOFF PROMPT
+Paste everything below the line into a new Claude Code chat to continue the work.
+Last updated: 2026-10-05.
+
+------------------------------------------------------------------------------------------
+
+You are continuing work on the RDA (Rapid Domain Acquisition) Challenge series with me,
+ctavolazzi. RDA is a YouTube format: I study a field I know nothing about inside a fixed window,
+take the real exam with pass/fail stakes (reward or punishment), then give a first-timer's
+breakdown of what the exam actually tested. I am building a YouTube channel from the ground up.
+
+HOME BASE
+- Repo: https://github.com/ctavolazzi/_RDA
+- Everything lives there: the format, the episodes, the rda tool, and the full video production
+  pipeline (vendored from my claude-youtube-editor fork, MIT).
+- IMPORTANT: until PR #1 is merged, all of the work is on the branch
+  claude/rda-challenge-series-eo8iyc, and main has only the initial commit. Check out that branch
+  (or confirm PR #1 is merged and use main). Do not work from an empty main.
+
+READ FIRST, IN THIS ORDER
+1. CLAUDE.md                     how we work, the formula, the hard rules, the gotchas
+2. python tools/rda.py status    where things stand and the next step
+3. docs/history/2026-10-05.md    what we did on day one, what we found, what we got wrong
+4. docs/style-bible.md           before making any visual: colors, type, motion, sound, thumbnails
+5. docs/decisions.md             why things are the way they are (D1 to D15)
+
+SETUP (only what the task needs)
+- rda tool and audio mastering: plain Python 3, no installs.
+- Remotion visuals: cd remotion && npm ci, then node scripts/render-one.mjs <folder> <CompositionId>
+- Pipeline Python tools: a venv at the repo root with requirements.txt. ffmpeg and node on PATH.
+- Keys go in .env (copy .env.example). None were available on day one: no ElevenLabs (voice),
+  no Gemini (AI thumbnails), no AssemblyAI (transcription). Ask me before assuming any exist.
+
+WHERE THINGS STAND
+- The rda tool works and is tested: idea, new, status, log, exam freeze/check, clock, score,
+  handoff. Run python tools/test_rda.py after any change to it.
+- No episode exists yet. Two candidate domains in docs/backlog.md: a nursing entrance exam and a
+  land surveyor entrance exam.
+- A 60s animated explainer of the kit exists (remotion/src/shots/rda-explainer/, rebuild steps in
+  docs/explainer-video.md), with thumbnail A and a title draft in videos/rda-explainer/packaging/.
+- The RDA look is code in remotion/src/lib/rda.tsx and a living guide in docs/style-bible.md (v0.1).
+  The repo's brand files (brand.md, brand.ts, fonts.ts) still hold the upstream indigo style.
+
+OPEN ITEMS, ROUGHLY IN ORDER
+1. Pick episode 001's exam. If it is an online test that grades itself, add an "external scorer"
+   mode to rda score (record the vendor's score; we never hold the key).
+2. Run /brand-setup to make the RDA look the repo brand (use docs/style-bible.md as the input).
+3. Narration for the explainer (ElevenLabs via tools/gen_vo.mjs, or my own voice), then lower the bed.
+   The explainer's scene 6 still shows two repos; update it before public use.
+4. Episode cards (timer, pass line, score, tally) that read videos/rda-NNN/work/episode.json.
+5. Later: LLM exam generation with blind answer-key verification (protocol in docs/exam-sourcing.md).
+6. Housekeeping: merge _RDA PR #1 when I approve. claude-youtube-editor PR #3 is redundant now;
+   I decide whether to close it.
+
+HOW I LIKE TO WORK
+- My ideas arrive at random. When I share one, park it first with python tools/rda.py idea "...",
+  then discuss. Log off-camera events with python tools/rda.py log "...".
+- No em dashes or en dashes anywhere: chat, docs, code, on-screen text.
+- Do not watch or monitor PRs, and do not schedule PR check-ins, unless I ask. If the session gets
+  auto-subscribed to a PR, unsubscribe.
+- Verify before claiming: run it, render it, read the frames, measure the audio. Report failures
+  plainly. Label sample data as sample.
+- At the end of a session, add to docs/history/ (what we did, why, what we found, what we got
+  wrong) and to docs/decisions.md for anything worth remembering. Style changes go in the style
+  bible's feedback log with a version bump.
+
+ENVIRONMENT GOTCHAS (cloud sessions)
+- Headless Chrome rejects the proxy certificate, so Google Fonts fail at render time. Use
+  remotion/scripts/render-one.mjs (bundles one shot folder); RDA fonts are local. Never disable
+  TLS verification.
+- Piping a command into grep or tail hides its exit code. Log to a file and check $?.
+- The Write tool turns unicode escapes into literal characters; use chr(0x2013) in code that must
+  stay dash-free.
+
+FIRST THING TO DO
+Read the files above, run python tools/rda.py status, give me a three-line summary of where we are,
+then ask what I want to work on. If I bring an idea, park it first.

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
 import { evolvePath } from '@remotion/paths';
-import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline } from '../_kit';
+import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline } from '../../../lib/rda';
 
 // =============================================================================
 // S4 · Locking the exam (12s). exam.json goes through `rda exam freeze` and

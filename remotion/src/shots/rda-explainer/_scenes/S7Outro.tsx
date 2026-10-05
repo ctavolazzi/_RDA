@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { C, F, iio, rise, typed, Scene, Eyebrow, Headline, Terminal } from '../_kit';
+import { C, F, iio, rise, typed, Scene, Eyebrow, Headline, Terminal } from '../../../lib/rda';
 
 // =============================================================================
 // S7 · How we start (6s). The first command, the ask, the sign-off.

@@ -13,7 +13,7 @@ notice is in `LICENSES/claude-youtube-editor-MIT.txt` and must stay with the cod
 | `tools/` (all but `rda.py`, `test_rda.py`, `master_audio.py`) | the Python and Node pipeline tools, the cut-editor UI, RNNoise models |
 | `remotion/` | the Remotion project: config, scripts, `src/lib/` kit, `src/shots/{brand,example,rda-explainer}` |
 | `media/library/` | SFX and music clips with catalogs, logos, workspace stills, the faces README |
-| `media/projects/example/`, `media/projects/rda-explainer/` | media for the example shots and the RDA explainer |
+| `media/projects/example/` | media for the example shots (the RDA fonts came in too and now live in `media/library/fonts/rda/`) |
 | `.claude/skills/` | the nine pipeline skills |
 | `brand.md`, `requirements.txt`, `.env.example`, `.gitattributes`, `.gitignore` rules, `videos/README.md` | contracts and config |
 
@@ -40,6 +40,8 @@ a terminal-and-chips kit that could become the running "what the exam tested" ta
 | `remotion/package.json` | added the `render:one` script | convenience |
 | `tools/master_audio.py` | new | loudness mastering before upload |
 | `.gitignore` | upstream rules plus `.stems_tmp/` and the Python cache | one set of rules |
+| `media/library/catalog.json` | added a `fonts` entry for `fonts/rda/` | the RDA fonts are a library asset |
+| `remotion/src/lib/rda.tsx` | new (moved from the explainer's `_kit.tsx`) | the shared RDA look |
 
 ## Pulling upstream changes later
 

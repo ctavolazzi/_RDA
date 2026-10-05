@@ -1,7 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
 import { evolvePath } from '@remotion/paths';
-import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline } from '../_kit';
+import { C, F, EASE, iio, rise, typed, Scene, Eyebrow, Headline } from '../../../lib/rda';
 
 // =============================================================================
 // S6 · The handoff (6s). _RDA hands the episode to the video pipeline; the

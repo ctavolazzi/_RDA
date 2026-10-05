@@ -28,6 +28,7 @@ says where things stand.
 tools/rda.py              the episode tool (idea, new, status, log, exam freeze|check, clock, score, handoff)
 tools/test_rda.py         its checks, with planted-bad-input controls. Run after touching rda.py
 tools/master_audio.py     last step before upload: loudness to -16 LUFS / -1.5 dBTP, video copied
+remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal). Use it for every RDA shot
 tools/*.py, *.mjs         the production pipeline (vendored, see docs/vendored.md)
 remotion/                 the Remotion project. Shots in remotion/src/shots/<group>/; registry is GENERATED
   scripts/render-one.mjs  render one composition from one shot folder (bundles only that folder)
@@ -37,7 +38,9 @@ videos/rda-NNN/           production data for an episode once handed off (cuts, 
 episodes/NNN-slug/        pre-production for an episode: exam, key, card, result, log, script draft
 episodes/_template/       copied by `rda new`
 schemas/exam.schema.json  shape of a frozen exam
+docs/style-bible.md       the living style guide: colors, type, motion, sound, thumbnails. Read before making visuals
 docs/                     format, exam sourcing, production, risks, backlog, ideas, decisions, history
+HANDOFF.txt               paste-ready prompt to resume this work in a new chat
 .claude/skills/           the pipeline skills (/clean-cut, /make-tsx, /suggest-sfx, /packaging, ...)
 LICENSES/                 the MIT notice for the vendored pipeline
 ```
@@ -87,7 +90,7 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   is a dry run without `--apply` and matches an existing row before creating one. Never hand-edit the
   script in Notion.
 - **The Remotion registry is generated:** after adding or renaming a shot, `cd remotion && npm run gen`.
-  Files without a `compositionConfig` (helpers like `_kit.tsx`) are skipped on purpose.
+  Files without a `compositionConfig` (helpers like the explainer's `_scenes/`) are skipped on purpose.
 - **Media rules:** `media/library/` is for cross-video reusable assets only, each with a catalog. Anything for
   one video goes in `media/projects/<p>/`. Reuse before you generate.
 - **Committed vs ignored:** commit the reproducible pipeline (cuts.json, plans, timelines, transcripts, TSX,
@@ -97,7 +100,7 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   every cut render; audit the SFX cue sheet before mixing; measure loudness before upload.
 - **The brand contract is three files:** `brand.md`, `remotion/src/brand.ts`, `remotion/src/fonts.ts`.
   Change them together or run `/brand-setup`. They still hold the upstream house style (indigo), NOT the
-  RDA look. The RDA look lives in `remotion/src/shots/rda-explainer/_kit.tsx` until `/brand-setup` adopts it.
+  RDA look. The RDA look lives in `remotion/src/lib/rda.tsx` and `docs/style-bible.md` until `/brand-setup` adopts it.
 
 ## Gotchas we hit (2026-10-05), so you don't hit them again
 
@@ -105,7 +108,7 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   Behind the cloud proxy, headless Chrome rejects the proxy's certificate, so any bundle that includes the
   example shots fails. Use `node scripts/render-one.mjs <group> <Id>`, which bundles one shot folder. Never
   disable TLS verification to get around it. On the user's own machine this is not an issue.
-- **Fonts for RDA shots are local files** in `media/projects/rda-explainer/fonts/`, loaded with `FontFace` +
+- **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace` +
   `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
 - **No voice means the music carries the audio.** Library clips sit near -20 LUFS; a bed at 0.2 gave a
   -32 LUFS export. Always finish with `tools/master_audio.py`.

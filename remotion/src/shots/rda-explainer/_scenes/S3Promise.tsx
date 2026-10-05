@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, useCurrentFrame } from 'remotion';
-import { C, F, EASE, iio, rise, Scene, Eyebrow, Headline, Bubble } from '../_kit';
+import { C, F, EASE, iio, rise, Scene, Eyebrow, Headline, Bubble } from '../../../lib/rda';
 
 // =============================================================================
 // S3 · The promise (6s). Three rules, each marked like an answer-sheet bubble.

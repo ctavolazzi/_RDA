@@ -75,8 +75,9 @@ README.md                  this file
 CLAUDE.md                  how we work here, the formula on one page, the hard rules, the gotchas
 tools/rda.py               the episode tool; tools/test_rda.py its checks
 tools/master_audio.py      loudness mastering before upload
+HANDOFF.txt                paste-ready prompt to resume this work in a new chat
 tools/                     the rest of the production pipeline (transcribe, cut, bake, SFX, upload, ...)
-remotion/                  the Remotion project; shots in remotion/src/shots/<folder>/
+remotion/                  the Remotion project; shots in remotion/src/shots/<folder>/, the RDA look in src/lib/rda.tsx
 media/                     library (SFX, music, logos) and per-video media
 videos/                    production data per episode, created by rda handoff
 episodes/
@@ -89,6 +90,7 @@ docs/
   production.md            assets, where each file lives, the handoff, recording order
   risks.md                 risk register with a mitigation for each risk
   backlog.md               candidate domains and the rubric for picking the next one
+  style-bible.md           the living style guide: colors (measured), type, motion, sound, thumbnails
   decisions.md             what we decided, why, and what would make us revisit it
   history/                 dated session records: what we did, found, and got wrong
   explainer-video.md       how the explainer is built, rendered, and what went wrong making it

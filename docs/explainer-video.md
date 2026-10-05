@@ -20,9 +20,10 @@ QA: `node scripts/render-one.mjs rda-explainer RdaExplainer --still 90,380,950,1
 ```
 remotion/src/shots/rda-explainer/
   RdaExplainer.tsx     the composition: scene timeline, paper header strip, music bed, SFX cue sheet
-  _kit.tsx             palette, local fonts, motion helpers, Bubble, Stamp, Terminal, PaperChrome
+  RdaExplainerThumb.tsx   thumbnail A (1280x720), see videos/rda-explainer/packaging/
   _scenes/S1Open.tsx ... S7Outro.tsx   one scene per file
-media/projects/rda-explainer/fonts/    Bricolage Grotesque, Source Sans 3, IBM Plex Mono (OFL)
+remotion/src/lib/rda.tsx              the shared RDA kit: palette, local fonts, motion, Bubble, Stamp, Terminal, PaperChrome
+media/library/fonts/rda/              Bricolage Grotesque, Source Sans 3, IBM Plex Mono (OFL)
 ```
 
 | Scene | Frames | What it says |
