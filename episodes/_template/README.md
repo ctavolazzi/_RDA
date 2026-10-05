@@ -1,18 +1,19 @@
 # Episode template
 
-Copy this folder to `episodes/NNN-<slug>/` (for example `episodes/001-nursing-entrance/`) and fill it in
-top to bottom. Work in this order; each step unblocks the next.
+`python tools/rda.py new <slug>` copies this folder to `episodes/NNN-<slug>/` and fills in the
+episode number. From then on `python tools/rda.py status` says what is next. The usual order:
 
 1. **`exam/exam-card.md`**: name the exam, its source, its rules, the time limit, and the pass line.
-2. **Exam stage**: follow [docs/exam-sourcing.md](../../docs/exam-sourcing.md). Save the frozen exam as
-   `exam/exam.json` (validate it against [schemas/exam.schema.json](../../schemas/exam.schema.json)),
-   write its SHA-256 into the exam card, fill `exam/verification-log.md`, and commit. Do this before the
-   study window opens.
+2. **`exam/exam.json`**: the exam, following [docs/exam-sourcing.md](../../docs/exam-sourcing.md) and
+   [schemas/exam.schema.json](../../schemas/exam.schema.json). Then `rda exam freeze`, which validates
+   it, writes the SHA-256 into the card, and seals the key into `exam/key.json`. The sign-off in
+   `exam/verification-log.md` is yours to fill. Commit `exam/` before the study window opens.
 3. **`shotlist.md`**: plan the A-roll and b-roll, including the payoff props and location.
-4. **Run the challenge**: study window, test, score. Fill in `result.json` immediately afterward.
+4. **Run the challenge**: `rda clock start`, study, test, `rda clock stop`, `rda score`. The tool fills
+   `result.json`; you set `payoff.filmed` after the b-roll.
 5. **`debrief.md`**: outline the B4 synthesis from what the exam actually tested.
 6. **`script/script.md`**: write the beats once the result and the debrief are known.
-7. **Hand off** to the production pipeline per [docs/production.md](../../docs/production.md).
+7. **`rda handoff <path to claude-youtube-editor>`** per [docs/production.md](../../docs/production.md).
 
 ## Files
 

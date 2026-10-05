@@ -21,10 +21,33 @@ takeaway, and that can be produced again and again with the same machinery.
 
 Target length is roughly 9 to 10 minutes. Full spec: [docs/format.md](docs/format.md).
 
+## The tool
+
+One stdlib-only Python script runs an episode from idea to handoff. Run it from the repo root; it
+needs no API keys and works on Windows and macOS.
+
+```
+python tools/rda.py status                      # where things stand and the next step. Start here.
+python tools/rda.py idea "<text>"               # park an idea in docs/ideas.md, no ceremony
+python tools/rda.py new <slug>                  # scaffold episodes/NNN-<slug>/ from the template
+python tools/rda.py exam freeze                 # validate exam.json, hash it, seal the key, fill the card
+python tools/rda.py exam check                  # prove on camera the exam has not changed
+python tools/rda.py clock start <minutes>       # the visible countdown for the screen capture
+python tools/rda.py clock stop                  # record when the test finished
+python tools/rda.py score                       # enter answers, get the on-camera score block
+python tools/rda.py handoff <pipeline path>     # scaffold videos/rda-NNN/ and export work/episode.json
+python tools/rda.py log "<text>"                # dated receipt in the episode log
+python tools/test_rda.py                        # the checks, with planted-bad-input controls
+```
+
+`status` reads what is on disk, so it works whatever order things happened in.
+
 ## Repo map
 
 ```
 README.md                  this file
+CLAUDE.md                  how we work here and the formula on one page
+tools/rda.py               the tool; tools/test_rda.py its checks
 docs/
   format.md                the five-phase arc, beat by beat, plus the viewer contract
   exam-sourcing.md         real exams first, AI-generated exams with a verified answer key second
@@ -46,11 +69,15 @@ pick domain  ->  source or generate exam  ->  freeze exam  ->  study window  -> 
    upload  <-  packaging  <-  SFX  <-  visuals  <-  clean cut  <-  record talking head  <-+
 ```
 
-Pre-production lives here in `_RDA`. Once the exam is taken and footage exists, the episode moves to
-the production pipeline in [claude-youtube-editor](https://github.com/ctavolazzi/claude-youtube-editor)
-as `videos/rda-NNN/`. The handoff rule is in [docs/production.md](docs/production.md).
+Pre-production lives here in `_RDA`. Once the exam is taken and footage exists, `rda handoff` moves
+the episode to the production pipeline in
+[claude-youtube-editor](https://github.com/ctavolazzi/claude-youtube-editor) as `videos/rda-NNN/`.
+The handoff rule is in [docs/production.md](docs/production.md).
 
 ## Status
 
-Foundation only. No episode has been made yet. The first step is to pick episode 001 from
-[docs/backlog.md](docs/backlog.md) and copy `episodes/_template/` to `episodes/001-<slug>/`.
+No episode has been made yet. The first step is to pick episode 001 from
+[docs/backlog.md](docs/backlog.md) and run `python tools/rda.py new <slug>`.
+
+Not built yet: LLM exam generation with blind key verification (the protocol is in
+[docs/exam-sourcing.md](docs/exam-sourcing.md)); episode 001 uses a real exam.
