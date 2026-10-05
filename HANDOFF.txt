@@ -13,9 +13,9 @@ HOME BASE
 - Repo: https://github.com/ctavolazzi/_RDA
 - Everything lives there: the format, the episodes, the rda tool, and the full video production
   pipeline (vendored from my claude-youtube-editor fork, MIT).
-- IMPORTANT: until PR #1 is merged, all of the work is on the branch
-  claude/rda-challenge-series-eo8iyc, and main has only the initial commit. Check out that branch
-  (or confirm PR #1 is merged and use main). Do not work from an empty main.
+- Work from main. Day one's work was squash-merged into main from PR #1 on 2026-10-05. The
+  step-by-step commits (cited in docs/history) live on in PR #1 and the branch
+  claude/rda-challenge-series-eo8iyc; read them there if you need the detail.
 
 READ FIRST, IN THIS ORDER
 1. CLAUDE.md                     how we work, the formula, the hard rules, the gotchas
@@ -49,7 +49,7 @@ OPEN ITEMS, ROUGHLY IN ORDER
    The explainer's scene 6 still shows two repos; update it before public use.
 4. Episode cards (timer, pass line, score, tally) that read videos/rda-NNN/work/episode.json.
 5. Later: LLM exam generation with blind answer-key verification (protocol in docs/exam-sourcing.md).
-6. Housekeeping: merge _RDA PR #1 when I approve. claude-youtube-editor PR #3 is redundant now;
+6. Housekeeping: claude-youtube-editor PR #3 is redundant now (its contents live in _RDA);
    I decide whether to close it.
 
 HOW I LIKE TO WORK
