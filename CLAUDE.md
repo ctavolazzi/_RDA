@@ -21,6 +21,10 @@ says where things stand.
 - The user does not want PRs watched: never subscribe to PR activity or schedule PR check-ins unless
   they ask. If the harness auto-subscribes, unsubscribe.
 - No em dashes or en dashes anywhere: docs, scripts, tool output, on-screen text. User preference.
+- **Every video gets a thumbnail.** Making a video (an episode, an explainer, a short, anything) is not done
+  until its thumbnail exists, follows `docs/style-bible.md` section 8, and has been checked at 320 px wide.
+  Save it as `videos/<project>/packaging/thumb-A.jpg` (or render with `/thumbnail` into `packaging/thumbs/`).
+  `rda status` will not say "finish and ship" until it finds one. User rule, 2026-10-05.
 
 ## Layout
 
@@ -62,8 +66,11 @@ LICENSES/                 the MIT notice for the vendored pipeline
 10. **Debrief outline** (`debrief.md`) from what the exam actually tested, then **`script/script.md`**.
 11. **`rda handoff`** scaffolds `videos/rda-NNN/` in this repo with the script, `notion.json`, and
     `work/episode.json` (score, pass line, timings, topic tally for the cards).
-12. **Produce:** `/clean-cut`, `/make-tsx`, `/clean-audio`, `/suggest-sfx`, `/packaging`, then
-    `tools/master_audio.py`, then `tools/yt_upload.py`. Set YouTube's paid promotion toggle by hand if sponsored.
+12. **Produce:** `/clean-cut`, `/make-tsx`, `/clean-audio`, `/suggest-sfx`.
+13. **Thumbnail, always:** `/thumbnail` (with the face kit and a Gemini key) or a Remotion still in the RDA look,
+    saved to `videos/rda-NNN/packaging/`, checked at 320 px. Then `/packaging` for the title and description.
+14. **Ship:** `tools/master_audio.py`, then `tools/yt_upload.py` with the thumbnail in the upload plan. Set
+    YouTube's paid promotion toggle by hand if sponsored.
 
 Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Production detail: `docs/production.md`.
 

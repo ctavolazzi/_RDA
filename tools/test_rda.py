@@ -246,6 +246,33 @@ def main():
         code, out = run(base + ["status"])
         assert "[x] exam card filled" in out and "next: film the payoff" in out, out
 
+        # every video ships with a thumbnail: status will not say "finish and ship" until one exists
+        r = json.load(open(p["result"]))
+        r["payoff"]["filmed"] = True
+        rda.save_json(p["result"], r)
+        with open(p["script"], "w", encoding="utf-8") as f:
+            f.write("# script, written")
+        pk = os.path.join(home, "videos", "rda-001", "packaging")
+        saved_root, rda.ROOT = rda.ROOT, home
+        try:
+            code, out = run(base + ["status"])
+            assert "[ ] thumbnail made" in out and "next: produce it:" in out and "thumbnail" in out.split("next:")[1], out
+            # CONTROL: things that are not thumbnails do not count
+            os.makedirs(os.path.join(pk, "thumbs"))
+            for decoy in ("notes.md", "A.png"):          # wrong type, and an image without the thumb- prefix
+                open(os.path.join(pk, decoy), "w").close()
+            code, out = run(base + ["status"])
+            assert "[ ] thumbnail made" in out and "finish and ship" not in out, out
+            open(os.path.join(pk, "thumb-A.jpg"), "w").close()
+            code, out = run(base + ["status"])
+            assert "[x] thumbnail made (1 in videos/rda-001/packaging/)" in out, out
+            assert "next: finish and ship" in out, out
+            # a /thumbnail render in packaging/thumbs/ counts too
+            open(os.path.join(pk, "thumbs", "B.png"), "w").close()
+            assert "[x] thumbnail made (2 in" in run(base + ["status"])[1]
+        finally:
+            rda.ROOT = saved_root
+
         # no dashes in anything the tool prints or writes
         for path in (p["log"], p["card"], p["frozen"], ideas):
             text = open(path, encoding="utf-8").read()

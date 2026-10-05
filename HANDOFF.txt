@@ -55,6 +55,8 @@ HOW I LIKE TO WORK
 - My ideas arrive at random. When I share one, park it first with python tools/rda.py idea "...",
   then discuss. Log off-camera events with python tools/rda.py log "...".
 - No em dashes or en dashes anywhere: chat, docs, code, on-screen text.
+- Every video you make gets a thumbnail too, following docs/style-bible.md section 8, checked at
+  320 px wide, saved in videos/<project>/packaging/. A video is not done without one.
 - Do not watch or monitor PRs, and do not schedule PR check-ins, unless I ask. If the session gets
   auto-subscribed to a PR, unsubscribe.
 - Verify before claiming: run it, render it, read the frames, measure the audio. Report failures

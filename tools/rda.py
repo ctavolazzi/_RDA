@@ -465,6 +465,22 @@ def has_todo(path):
     return os.path.exists(path) and "TODO" in read(path)
 
 
+THUMB_EXT = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def find_thumbnails(project_dir):
+    """Thumbnails for a production project: packaging/thumb-*.<img> (code-built, committed) or any
+    image in packaging/thumbs/ (where /thumbnail renders). Every video ships with one."""
+    pk = os.path.join(project_dir, "packaging")
+    found = []
+    if os.path.isdir(pk):
+        found += [os.path.join(pk, f) for f in os.listdir(pk) if f.startswith("thumb-") and f.lower().endswith(THUMB_EXT)]
+    td = os.path.join(pk, "thumbs")
+    if os.path.isdir(td):
+        found += [os.path.join(td, f) for f in os.listdir(td) if f.lower().endswith(THUMB_EXT)]
+    return sorted(found)
+
+
 def status_lines(p):
     """Returns (lines, next_step). Reads disk only, so it works whatever order things happened in."""
     lines = []
@@ -498,11 +514,19 @@ def status_lines(p):
          "film the payoff b-roll, then set payoff.filmed true in result.json")
     mark(not has_todo(p["script"]), "script written (no TODO left)",
          "write script/script.md from the result and the debrief")
-    mark(bool(r.get("pipeline_project")), "handed off" + (f" to {r['pipeline_project']}" if r.get("pipeline_project") else ""),
+    proj = r.get("pipeline_project")
+    mark(bool(proj), "handed off" + (f" to {proj}" if proj else ""),
          "python tools/rda.py handoff")
+    # Rule (user, 2026-10-05): every video ships with a thumbnail. Upload is not next until one exists.
+    thumbs = find_thumbnails(os.path.join(ROOT, proj)) if proj else []
+    where = f"{proj}/packaging/" if proj else "videos/rda-NNN/packaging/"
+    mark(bool(thumbs), "thumbnail made" + (f" ({len(thumbs)} in {where})" if thumbs else ""),
+         f"produce it: /clean-cut, /make-tsx, /suggest-sfx, then the thumbnail (/thumbnail, or a Remotion still "
+         f"per docs/style-bible.md section 8) saved as {where}thumb-A.jpg")
     if nxt is None:
-        nxt = ("produce it: /clean-cut, /make-tsx, /suggest-sfx, /packaging, tools/master_audio.py, then tools/yt_upload.py. "
-               "Before publishing: set the paid promotion toggle in YouTube Studio by hand (the upload plan has no field for it).")
+        nxt = ("finish and ship: /packaging for the title and description, tools/master_audio.py, then tools/yt_upload.py "
+               "with the thumbnail in the upload plan. Before publishing: set the paid promotion toggle in YouTube Studio "
+               "by hand (the upload plan has no field for it).")
     return lines, nxt
 
 

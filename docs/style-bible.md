@@ -149,6 +149,10 @@ Use the same motif for the same meaning every time. New motifs get added here be
 
 ## 8. Thumbnails
 
+**Every video ships with a thumbnail.** No exceptions: episodes, explainers, shorts that get one. A video
+is not finished until its thumbnail is made, checked at 320 px, and saved in `videos/<project>/packaging/`.
+`rda status` enforces this for episodes.
+
 1. Dark `night` ground, one `signal` hook, props in `paper`. Nothing else competes.
 2. **One hook**, one or two words or one number, that **does not repeat the title**.
 3. Two or three levels of focus at most: hook, hero object, then (optionally) the host's face.
@@ -181,6 +185,7 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-05 | user | Every video must ship with a thumbnail | made a rule in section 8, CLAUDE.md and `rda status` | 0.1 |
 | 2026-10-05 | session | First version, distilled from the RDA Episode Kit page, the explainer and thumbnail A | created | 0.1 |
 
 ## Changelog

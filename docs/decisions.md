@@ -6,6 +6,14 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D16 · Every video ships with a thumbnail (2026-10-05)
+
+**Decided:** making a video includes making its thumbnail. `rda status` has a "thumbnail made" item and
+will not say "finish and ship" until it finds `packaging/thumb-*` or an image in `packaging/thumbs/`.
+**Why:** the user's rule. A thumbnail is half of whether a video gets watched; it should never be an
+afterthought or forgotten.
+**Revisit:** not the rule. The check's file patterns can widen if thumbnails start living elsewhere.
+
 ### D15 · The style bible is a living guide, not a lock (2026-10-05)
 
 **Decided:** `docs/style-bible.md` (v0.1) guides every video and thumbnail. It changes with feedback from
