@@ -1,0 +1,16 @@
+{
+  "title": "TODO RDA NNN: episode working title",
+  "stage": "Scripting",
+  "script": "script/script.md",
+  "hook_angle": "TODO One sentence: the exam, the clock, the stakes.",
+  "notes": "Follows the RDA format. Exam hash and source are on the exam card in the _RDA repo.",
+  "thumbnail_text": "TODO",
+  "checklist": [
+    "Exam frozen: exam.json committed and its SHA-256 written on the exam card.",
+    "Pass line and stakes stated on camera before the test, matching the exam card.",
+    "Score copied from the scorer output into result.json, not retyped.",
+    "Payoff b-roll filmed for the outcome that actually happened.",
+    "Sponsor disclosed aloud in B5 and paid promotion set on upload.",
+    "First-timer disclaimer placed in B4 if the domain is health, legal, or safety related."
+  ]
+}
