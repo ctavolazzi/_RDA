@@ -47,13 +47,12 @@ One owner per artifact, so nothing drifts between the two repos.
 
 An episode moves from `_RDA` to the pipeline when the test has been taken and the result is recorded.
 
-1. Confirm `result.json` is filled in and the exam hash still matches `exam.json`.
-2. In `claude-youtube-editor`, create `videos/rda-NNN/` and copy in the template's `script/script.md`
-   and `notion.json`.
+1. `python tools/rda.py exam check` passes and `python tools/rda.py status` shows the episode scored.
+2. `python tools/rda.py handoff <path to claude-youtube-editor>` creates `videos/rda-NNN/` there,
+   copies in `script/script.md` and `notion.json` (never overwriting), exports `work/episode.json`
+   for the cards, and writes the pipeline path back into `result.json`.
 3. From then on the script is edited in the pipeline repo only. Re-run
    `python tools/notion_sync.py videos/rda-NNN --apply --resync` after script changes.
-4. Write the project's pipeline path back into the episode's `result.json` so the two sides can find
-   each other.
 
 ## Recording order
 

@@ -6,6 +6,13 @@
   "type": "object",
   "required": ["meta", "blueprint", "items"],
   "additionalProperties": false,
+  "allOf": [
+    {
+      "$comment": "A generated exam must carry a rationale and a citation per item; they are what gets verified. A real exam's official key rarely has them, and filling them in would be inventing.",
+      "if": { "properties": { "meta": { "properties": { "origin": { "const": "ai-generated" } } } } },
+      "then": { "properties": { "items": { "items": { "required": ["rationale", "source_citation"] } } } }
+    }
+  ],
   "properties": {
     "meta": {
       "type": "object",
@@ -59,7 +66,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "topic", "difficulty", "stem", "options", "answer", "rationale", "source_citation"],
+        "required": ["id", "topic", "difficulty", "stem", "options", "answer"],
         "additionalProperties": false,
         "properties": {
           "id": { "type": "string", "minLength": 1 },
@@ -82,7 +89,7 @@
           "source_citation": {
             "type": "string",
             "minLength": 1,
-            "description": "A primary reference the rationale relies on. Items without one are rejected."
+            "description": "A primary reference the rationale relies on. Required for ai-generated exams."
           },
           "verification": {
             "type": "object",

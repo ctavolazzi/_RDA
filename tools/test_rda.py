@@ -101,7 +101,7 @@ def main():
         rda.save_json(p["exam"], bad)
         code, out = run(base + ["exam", "freeze"])
         assert code == 1, out
-        for needle in ("source_citation", "answer must be", "pass_line.of is 99", "meta.source is required"):
+        for needle in ("answer must be", "pass_line.of is 99", "meta.source is required"):
             assert needle in out, (needle, out)
         assert not os.path.exists(p["frozen"]) and not os.path.exists(p["key"])
 
@@ -110,6 +110,33 @@ def main():
         dup["items"][1]["id"] = "q1"
         assert any("duplicate" in e for e in rda.validate_exam(dup))
         assert rda.validate_exam(good_exam()) == []
+
+        # a real exam's official key has no rationales: valid without them (inventing them is not allowed)
+        bare = good_exam()
+        for it in bare["items"]:
+            del it["rationale"], it["source_citation"]
+        assert rda.validate_exam(bare) == [], rda.validate_exam(bare)
+        # CONTROL: the same bare items are refused when the exam is generated
+        bare["meta"]["origin"] = "ai-generated"
+        errs = rda.validate_exam(bare)
+        assert any("rationale" in e for e in errs) and any("source_citation" in e for e in errs), errs
+
+        # the schema agrees with the tool on both cases (only when jsonschema is installed)
+        try:
+            import jsonschema
+            schema = json.load(open(os.path.join(ROOT, "schemas", "exam.schema.json")))
+            v = jsonschema.Draft202012Validator(schema)
+            bare["meta"]["origin"] = "real"
+            assert not list(v.iter_errors(bare))
+            bare["meta"]["origin"] = "ai-generated"
+            assert any("rationale" in e.message for e in v.iter_errors(bare))
+            assert not list(v.iter_errors(good_exam()))
+        except ImportError:
+            pass
+
+        # --episode works after the verb, not only before it
+        code, out = run(base + ["status", "--episode", "001-nursing-entrance"])
+        assert code == 0 and "001-nursing-entrance" in out, out
 
         # freeze a good exam: key sealed, hash recorded in FROZEN, result.json and the card
         rda.save_json(p["exam"], good_exam())
@@ -122,6 +149,16 @@ def main():
         assert r["exam"]["sha256"] == frozen["sha256"] and r["challenge"]["pass_line"] == {"correct": 3, "of": 4}
         card = open(p["card"], encoding="utf-8").read()
         assert frozen["sha256"] in card and "| SHA-256 of `exam.json` | TODO" not in card
+
+        # the question sheet is what the host reads: every stem and option, and CONTROL: no answer leaks
+        sheet = open(p["questions"], encoding="utf-8").read()
+        for it in good_exam()["items"]:
+            assert it["stem"] in sheet and f"({it['id']})" in sheet
+        assert frozen["sha256"] in sheet
+        # good_exam's rationale is "because" and its citation is "Ref 1"; neither may appear
+        assert "because" not in sheet and "Ref 1" not in sheet, sheet
+        # the key is A, B, C, D in order; the sheet must not pair an id with its answer letter
+        assert '"answer"' not in sheet and "Answer:" not in sheet and "correct:" not in sheet.lower(), sheet
 
         # CONTROL: a second freeze is refused
         code, out = run(base + ["exam", "freeze"])

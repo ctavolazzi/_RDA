@@ -99,6 +99,7 @@ def ep_paths(ep):
         "card": os.path.join(ep, "exam", "exam-card.md"),
         "exam": os.path.join(ep, "exam", "exam.json"),
         "key": os.path.join(ep, "exam", "key.json"),
+        "questions": os.path.join(ep, "exam", "questions.md"),
         "frozen": os.path.join(ep, "exam", "FROZEN.json"),
         "answers": os.path.join(ep, "exam", "answers.json"),
         "result": os.path.join(ep, "result.json"),
@@ -184,7 +185,12 @@ def validate_exam(exam):
         if not isinstance(it, dict):
             errs.append(f"{tag} is not an object")
             continue
-        for k in ("id", "topic", "difficulty", "stem", "options", "answer", "rationale", "source_citation"):
+        # A real exam's official key rarely comes with per-item rationales, and filling them in
+        # would be inventing. Only a generated exam must carry them (they are what gets verified).
+        required = ("id", "topic", "difficulty", "stem", "options", "answer")
+        if meta.get("origin") == "ai-generated":
+            required += ("rationale", "source_citation")
+        for k in required:
             if not it.get(k):
                 errs.append(f"{tag}.{k} missing or empty")
         if it.get("id") in ids:
@@ -221,6 +227,7 @@ def cmd_exam_freeze(args):
     digest = sha256(p["exam"])
     when = now().isoformat()
     save_json(p["key"], {it["id"]: it["answer"] for it in exam["items"]})
+    write(p["questions"], question_sheet(exam, digest))
     save_json(p["frozen"], {"sha256": digest, "frozen_at": when, "items": len(exam["items"]),
                             "pass_line": exam["meta"]["pass_line"], "origin": exam["meta"]["origin"]})
     if os.path.exists(p["result"]):
@@ -236,9 +243,26 @@ def cmd_exam_freeze(args):
         write(p["card"], card)
     append_log(p, f"exam frozen, sha256 {digest[:12]}..., {len(exam['items'])} items, "
                   f"pass line {exam['meta']['pass_line']['correct']} of {exam['meta']['pass_line']['of']}")
-    print(f"frozen  {digest}")
-    print(f"key     {os.path.relpath(p['key'], ROOT)}  (do not open it)")
+    print(f"frozen     {digest}")
+    print(f"questions  {os.path.relpath(p['questions'], ROOT)}  (the test sheet, no answers)")
+    print("the host never opens exam.json or key.json: both contain the answers")
     print("next: commit exam/, then record B1 and B2 before studying")
+
+
+def question_sheet(exam, digest):
+    """The only exam file the host reads: stems and options, no answers, no rationales."""
+    m = exam["meta"]
+    pl = m["pass_line"]
+    out = [f"# {m['title']}", "",
+           f"{len(exam['items'])} questions. Pass line: {pl['correct']} of {pl['of']}. "
+           f"Time limit for study and test: {m['time_limit_minutes']} minutes.", "",
+           f"Exam SHA-256: `{digest}`", "",
+           "Write down a letter per question id, then run `python tools/rda.py score`.", ""]
+    for n, it in enumerate(exam["items"], 1):
+        out += ["---", "", f"**{n}. ({it['id']})** {it['stem']}", ""]
+        out += [f"- **{k}.** {it['options'][k]}" for k in LETTERS]
+        out.append("")
+    return "\n".join(out)
 
 
 def check_frozen(p):
@@ -506,32 +530,34 @@ def cmd_status(args):
 # ── cli ───────────────────────────────────────────────────────────────────────
 def build_parser():
     ap = argparse.ArgumentParser(prog="rda", description="run an RDA episode from idea to handoff")
-    ap.add_argument("--episode", help="episode folder name, default: the latest")
     ap.add_argument("--root", help=argparse.SUPPRESS)    # tests point this at a temp episodes dir
     ap.add_argument("--ideas", help=argparse.SUPPRESS)
+    # --episode lives on every subcommand, so it can go anywhere after the verb: rda status --episode 001-x
+    ep = argparse.ArgumentParser(add_help=False)
+    ep.add_argument("--episode", help="episode folder name, default: the latest")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    s = sub.add_parser("new", help="scaffold a new episode from the template"); s.add_argument("slug"); s.set_defaults(fn=cmd_new)
-    s = sub.add_parser("status", help="where things stand and the next step"); s.set_defaults(fn=cmd_status)
-    s = sub.add_parser("idea", help="park an idea in docs/ideas.md"); s.add_argument("text"); s.set_defaults(fn=cmd_idea)
-    s = sub.add_parser("log", help="dated note in the episode log"); s.add_argument("text"); s.set_defaults(fn=cmd_log)
+    s = sub.add_parser("new", help="scaffold a new episode from the template", parents=[ep]); s.add_argument("slug"); s.set_defaults(fn=cmd_new)
+    s = sub.add_parser("status", help="where things stand and the next step", parents=[ep]); s.set_defaults(fn=cmd_status)
+    s = sub.add_parser("idea", help="park an idea in docs/ideas.md", parents=[ep]); s.add_argument("text"); s.set_defaults(fn=cmd_idea)
+    s = sub.add_parser("log", help="dated note in the episode log", parents=[ep]); s.add_argument("text"); s.set_defaults(fn=cmd_log)
 
     ex = sub.add_parser("exam", help="freeze or check the exam").add_subparsers(dest="sub", required=True)
-    ex.add_parser("freeze", help="validate, hash, seal the key").set_defaults(fn=cmd_exam_freeze)
-    ex.add_parser("check", help="recompute the hash").set_defaults(fn=cmd_exam_check)
+    ex.add_parser("freeze", help="validate, hash, seal the key, write the question sheet", parents=[ep]).set_defaults(fn=cmd_exam_freeze)
+    ex.add_parser("check", help="recompute the hash", parents=[ep]).set_defaults(fn=cmd_exam_check)
 
     ck = sub.add_parser("clock", help="the visible study clock").add_subparsers(dest="sub", required=True)
-    s = ck.add_parser("start", help="start (or show) the countdown"); s.add_argument("minutes", nargs="?", type=int)
+    s = ck.add_parser("start", help="start (or show) the countdown", parents=[ep]); s.add_argument("minutes", nargs="?", type=int)
     s.add_argument("--once", action="store_true", help=argparse.SUPPRESS); s.add_argument("--tick", type=float, help=argparse.SUPPRESS)
     s.set_defaults(fn=cmd_clock_start)
-    ck.add_parser("stop", help="record when the test finished").set_defaults(fn=cmd_clock_stop)
+    ck.add_parser("stop", help="record when the test finished", parents=[ep]).set_defaults(fn=cmd_clock_stop)
 
-    s = sub.add_parser("score", help="score the answers against the sealed key")
+    s = sub.add_parser("score", help="score the answers against the sealed key", parents=[ep])
     s.add_argument("answers", nargs="?", help="answers JSON {id: letter}; omit to type them in")
     s.add_argument("--interactive", action="store_true", help="type answers even if answers.json exists")
     s.set_defaults(fn=cmd_score)
 
-    s = sub.add_parser("handoff", help="scaffold videos/rda-NNN/ in the pipeline repo and export episode.json")
+    s = sub.add_parser("handoff", help="scaffold videos/rda-NNN/ in the pipeline repo and export episode.json", parents=[ep])
     s.add_argument("pipeline", help="path to the claude-youtube-editor checkout"); s.set_defaults(fn=cmd_handoff)
     return ap
 

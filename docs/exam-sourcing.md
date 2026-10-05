@@ -48,7 +48,7 @@ Each item is a JSON object matching [`schemas/exam.schema.json`](../schemas/exam
 - a **source citation** pointing at a primary reference the rationale relies on
 - a topic area tag and a difficulty tag (easy, medium, hard)
 
-Items without a citation are rejected automatically. The citation is what makes a human spot-check
+For a generated exam, `rda exam freeze` rejects items without a citation. The citation is what makes a human spot-check
 possible.
 
 ### 3. Verify the key blind
@@ -75,14 +75,19 @@ real chance of failing. A pass line that is trivially cleared or impossible kill
 
 ### 6. Freeze
 
-Once verified, write the final `exam.json`, compute its SHA-256, and commit both before the study
-window opens. The hash goes in the exam card. From this point the file does not change. This is what
-backs viewer contract rule 3.
+Once verified, write the final `exam.json` and run `python tools/rda.py exam freeze`. It validates
+the file, writes its SHA-256 into the exam card and `result.json`, splits the key into `key.json`,
+and writes `questions.md`. Commit `exam/` before the study window opens. From this point the file
+does not change; `rda exam check` proves it. This is what backs viewer contract rule 3.
 
 ### 7. Keep the key sealed
 
-The host takes the test through a scorer that holds the key (a simple script or an online form), so
-the host sees only their own answers and the final score.
+The host takes the test from `exam/questions.md`, which has no answers, and never opens `exam.json`
+or `key.json`. `rda score` scores the answers against the key, so the host sees only their own
+answers and the final score. This is an honor system backed by the committed hash; say so on camera.
+
+Real exams need only the stem, options, and official answer per item. Rationales and citations are
+required for generated exams only, because they are what gets verified.
 
 ## Output of this stage
 
