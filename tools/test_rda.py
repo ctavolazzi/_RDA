@@ -222,6 +222,17 @@ def main():
         code, out = run(base + ["handoff", pipe])
         assert code == 0 and "kept" in out and json.load(open(os.path.join(proj, "notion.json"))) == {"edited": True}
 
+        # with no path, handoff targets this repo itself (the pipeline is vendored in), via rda.ROOT
+        home = os.path.join(tmp, "home")
+        os.makedirs(os.path.join(home, "videos"))
+        saved_root, rda.ROOT = rda.ROOT, home
+        try:
+            code, out = run(base + ["handoff"])
+        finally:
+            rda.ROOT = saved_root
+        assert code == 0 and os.path.exists(os.path.join(home, "videos", "rda-001", "work", "episode.json")), out
+        assert "next: drop the footage in videos/rda-001/" in out, out
+
         # log appends; status reflects everything and shows the pipeline next step
         code, out = run(base + ["log", "filmed the cookie"])
         assert code == 0 and "filmed the cookie" in open(p["log"], encoding="utf-8").read()

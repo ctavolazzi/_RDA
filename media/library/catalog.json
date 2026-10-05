@@ -1,0 +1,53 @@
+{
+  "note": "Shared asset library for the AI Video Editor. Referenced in TSX via staticFile('library/...'). Grows over time: logos, images, sfx.",
+  "logos": [
+    {
+      "id": "claude",
+      "file": "logos/claude.svg",
+      "name": "Claude sunburst",
+      "source": "simple-icons (raw.githubusercontent.com/simple-icons)",
+      "license": "CC0 (Simple Icons); trademark belongs to Anthropic",
+      "tags": ["claude", "anthropic", "sunburst", "brand", "logo"]
+    },
+    {
+      "id": "claude-code-bot",
+      "file": "logos/claude-code-bot.png",
+      "name": "Claude Code empty-state pixel bot",
+      "source": "provided by the repo author (claudecode-color.png); white keyed to transparent",
+      "used_in": ["IntroClaudeCode"],
+      "tags": ["claude-code", "bot", "mascot", "pixel", "empty-state"]
+    },
+    {
+      "id": "vscode",
+      "file": "logos/vscode.webp",
+      "name": "Visual Studio Code icon (1.35)",
+      "source": "provided by the repo author (Wikimedia VS Code 1.35 icon)",
+      "used_in": ["VSCodeShell (Intro, StoryPipelinePrompt, PromptCoffee/Rocket/Bookstore)"],
+      "tags": ["vscode", "editor", "logo", "chrome"]
+    }
+  ],
+  "images": [
+    {
+      "id": "cat-astronaut",
+      "file": "images/cat-astronaut.png",
+      "name": "Cat astronaut (AI demo image)",
+      "w": 720,
+      "h": 411,
+      "used_in": ["IntroClaudeCode"],
+      "tags": ["demo", "ai-image", "cat", "space", "hero", "shock"]
+    },
+    {
+      "id": "storybook-the-three-gardeners",
+      "dir": "images/storybook/",
+      "name": "The Three Gardeners — storybook output (part_01..10 pages + ref_mira/rosa/theo character refs)",
+      "source": "D:/repos/claude-image-generation/stories/the-three-gardeners/the-three-gardeners_images/",
+      "w": 928,
+      "h": 1152,
+      "aspect": "4:5",
+      "used_in": ["StorybookReveal"],
+      "tags": ["storybook", "watercolor", "children-book", "consistent-characters", "proof", "demo"]
+    }
+  ],
+  "sfx": [],
+  "wishlist_logos": ["cloudflare", "workers-ai", "flux", "three-js", "elevenlabs", "gemini", "seedream"]
+}

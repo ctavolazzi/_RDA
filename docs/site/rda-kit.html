@@ -1,0 +1,506 @@
+<!-- Snapshot of the RDA Episode Kit page as published on 2026-10-05 (https://claude.ai/artifact/Gc6Rs1qn8BPs8vcSr4A8xb). It predates the consolidation into one repo, so it still describes _RDA and claude-youtube-editor as separate. -->
+<title>RDA Episode Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a single exam-booklet column. Answer-sheet bubbles mark real sequences; a red-pen mark is used only for grading. */
+:root {
+  --paper: #f6f7f3;
+  --sheet: #ffffff;
+  --ink: #1c2320;
+  --muted: #5a655f;
+  --rule: #d9ded8;
+  --form: #1d6b58;          /* answer-sheet dropout ink: the accent */
+  --form-soft: #e3efe9;
+  --pen: #c03d29;           /* red pen, grading only */
+  --pass: #1d7a43;
+  --warn: #9a6400;
+  --term-bg: #18201c;
+  --term-fg: #d7e4dc;
+  --term-dim: #8ba096;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121614; --sheet: #191f1c; --ink: #e3e9e5; --muted: #9aa8a0; --rule: #2c3531;
+    --form: #62c4a7; --form-soft: #1d2d27; --pen: #f07a64; --pass: #5fcf8c; --warn: #e2b04a;
+    --term-bg: #0c100e; --term-fg: #d7e4dc; --term-dim: #7f948a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121614; --sheet: #191f1c; --ink: #e3e9e5; --muted: #9aa8a0; --rule: #2c3531;
+  --form: #62c4a7; --form-soft: #1d2d27; --pen: #f07a64; --pass: #5fcf8c; --warn: #e2b04a;
+  --term-bg: #0c100e; --term-fg: #d7e4dc; --term-dim: #7f948a; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font: 17px/1.6 var(--body);
+  padding-inline: 16px; padding-block: 0 64px;
+}
+.wrap { max-width: 880px; margin-inline: auto; display: grid; gap: 56px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; max-width: 65ch; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+:not(pre) > code { background: var(--form-soft); color: var(--ink); padding: 0.08em 0.35em; border-radius: 4px; }
+a { color: var(--form); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--form); outline-offset: 2px; }
+section { display: grid; gap: 20px; }
+.eyebrow { font: 600 0.78rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--form); }
+.lede { font-size: 1.15rem; color: var(--ink); }
+.muted { color: var(--muted); }
+
+/* header: exam booklet cover */
+header.cover {
+  border-bottom: 2px solid var(--ink); padding-block: 48px 28px;
+  display: grid; gap: 18px;
+}
+.cover-meta {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  border: 1px solid var(--rule); background: var(--sheet);
+}
+.cover-meta div { padding: 10px 14px; border-right: 1px solid var(--rule); display: grid; gap: 2px; min-width: 0; }
+.cover-meta div:last-child { border-right: 0; }
+.cover-meta dt { font: 600 0.7rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.cover-meta dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.verdict { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.stamp {
+  font: 800 1.05rem/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--pass); border: 3px solid var(--pass); padding: 8px 14px; border-radius: 6px;
+  transform: rotate(-3deg);
+}
+
+/* the format bar, drawn to scale: 0 to 10:00 */
+.arc { display: grid; gap: 8px; }
+.arc-bar { display: flex; height: 54px; border: 1.5px solid var(--ink); background: var(--sheet); }
+.arc-seg { border-right: 1.5px solid var(--ink); padding: 6px 8px; overflow: hidden; display: flex; align-items: flex-end; font: 600 0.78rem/1.1 var(--mono); }
+.arc-seg:last-child { border-right: 0; }
+.arc-seg.b4 { background: var(--form-soft); }
+.arc-seg.b5 { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--rule) 6px 7px); }
+.arc-axis { position: relative; height: 18px; font: 0.72rem/1 var(--mono); color: var(--muted); }
+.arc-axis span { position: absolute; transform: translateX(-50%); }
+.arc-axis span:first-child { transform: none; }
+.arc-axis span:last-child { transform: translateX(-100%); }
+.arc-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px 24px; margin-top: 8px; }
+.arc-legend div { display: grid; grid-template-columns: 2.6em 1fr; gap: 8px; min-width: 0; }
+.arc-legend b { font-family: var(--mono); color: var(--form); }
+
+/* answer-sheet bubbles for real sequences */
+.steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; counter-reset: step; border-top: 1px solid var(--rule); }
+.steps li { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; gap: 14px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--rule); counter-increment: step; }
+.steps li::before {
+  content: counter(step); width: 2rem; height: 2rem; border-radius: 50%;
+  border: 1.5px solid var(--form); color: var(--form);
+  display: grid; place-items: center; font: 600 0.85rem/1 var(--mono);
+}
+.steps li.tool::before { background: var(--form); color: var(--sheet); }
+.steps li.stage::before { content: none; }
+.steps .what { display: grid; gap: 2px; min-width: 0; }
+.steps .what span { color: var(--muted); font-size: 0.95rem; }
+.steps .cmd { font: 500 0.8rem/1.4 var(--mono); color: var(--form); text-align: right; white-space: nowrap; }
+.stage { font: 600 0.7rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 22px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.key { display: flex; gap: 18px; flex-wrap: wrap; font-size: 0.9rem; color: var(--muted); }
+.key span { display: inline-flex; gap: 8px; align-items: center; }
+.dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--form); display: inline-block; }
+.dot.on { background: var(--form); }
+
+/* command explorer */
+.explorer { display: grid; gap: 0; border: 1px solid var(--rule); background: var(--sheet); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px; border-bottom: 1px solid var(--rule); }
+.tabs button {
+  font: 500 0.82rem/1 var(--mono); padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--rule); background: transparent; color: var(--ink); cursor: pointer;
+}
+.tabs button:hover { border-color: var(--form); }
+.tabs button[aria-selected="true"] { background: var(--form); border-color: var(--form); color: var(--sheet); }
+.panel { display: grid; gap: 10px; padding: 16px; }
+.panel p { font-size: 0.98rem; }
+pre.term {
+  margin: 0; background: var(--term-bg); color: var(--term-fg); border-radius: 8px;
+  padding: 16px 18px; font: 0.82rem/1.55 var(--mono); overflow-x: auto; white-space: pre;
+}
+pre.term .p { color: var(--term-dim); }
+.note { font-size: 0.85rem; color: var(--muted); }
+
+/* sealed key flow */
+.flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.4fr); gap: 14px; align-items: center; }
+.file { border: 1px solid var(--rule); background: var(--sheet); padding: 12px 14px; display: grid; gap: 4px; min-width: 0; }
+.file b { font-family: var(--mono); font-size: 0.9rem; }
+.file span { font-size: 0.9rem; color: var(--muted); }
+.file.host { border: 2px solid var(--form); }
+.file.sealed { border-style: dashed; }
+.outs { display: grid; gap: 8px; }
+.arrow { font: 600 0.8rem/1.2 var(--mono); color: var(--form); text-align: center; }
+.tag { font: 600 0.68rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; justify-self: start; }
+.tag.read { background: var(--form); color: var(--sheet); }
+.tag.no { border: 1px solid var(--pen); color: var(--pen); }
+.tag.pub { border: 1px solid var(--muted); color: var(--muted); }
+
+/* graded findings */
+.findings { display: grid; gap: 14px; }
+.finding { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.finding .mark { width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid var(--pen); color: var(--pen); display: grid; place-items: center; font: 800 1rem/1 var(--display); }
+.finding .mark.ok { border-color: var(--pass); color: var(--pass); }
+.finding div { display: grid; gap: 4px; min-width: 0; }
+
+/* tables */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 560px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 600 0.72rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.pill { font: 600 0.72rem/1 var(--mono); padding: 4px 7px; border-radius: 999px; white-space: nowrap; }
+.pill.use { background: var(--form-soft); color: var(--form); }
+.pill.ref { border: 1px solid var(--rule); color: var(--muted); }
+.pill.skip { border: 1px solid var(--pen); color: var(--pen); }
+
+/* contract */
+.contract { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0 28px; }
+.contract li { padding: 10px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 8px; }
+.contract li b { font-family: var(--mono); color: var(--form); }
+
+.open { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.open div { border-top: 3px solid var(--warn); background: var(--sheet); padding: 14px 16px; display: grid; gap: 6px; }
+.open h3 { font-size: 1rem; }
+.open p { font-size: 0.95rem; color: var(--muted); }
+
+footer { border-top: 2px solid var(--ink); padding-top: 18px; display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; font-size: 0.9rem; color: var(--muted); }
+
+@media (max-width: 620px) {
+  .steps li { grid-template-columns: 2.4rem minmax(0, 1fr); }
+  .steps .cmd { grid-column: 2; text-align: left; white-space: normal; }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .arrow { transform: rotate(90deg); padding: 4px 0; }
+  .arc-seg { font-size: 0.66rem; padding: 4px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+<header class="cover">
+  <div class="eyebrow">Rapid Domain Acquisition · Series kit · Draft PR #1</div>
+  <h1>RDA Episode Kit</h1>
+  <p class="lede">You pasted a concept. It is now a repo with a written formula and a tool, <code>rda.py</code>, that walks an episode from a random idea to a handoff into your video pipeline. This page shows what was built, how it fits together, what broke in testing, and what is still open.</p>
+  <dl class="cover-meta">
+    <div><dt>Repo</dt><dd>ctavolazzi/_RDA</dd></div>
+    <div><dt>Branch</dt><dd class="mono">claude/rda-challenge-series-eo8iyc</dd></div>
+    <div><dt>Commits</dt><dd>3, all pushed</dd></div>
+    <div><dt>Tests</dt><dd>passing, with controls</dd></div>
+  </dl>
+  <div class="verdict">
+    <span class="stamp">Ready to start</span>
+    <p class="muted">One decision is yours before episode 001: which exam. See <a href="#open">Still open</a>.</p>
+  </div>
+</header>
+
+<section aria-labelledby="formula">
+  <div class="eyebrow">The format</div>
+  <h2 id="formula">Every episode runs the same five phases</h2>
+  <p>The order never changes. The result is always shown before the debrief starts. Phase B4 is the longest stretch and the biggest drop-off risk, so it is split into three timed sections with the strongest material first.</p>
+  <div class="arc" role="img" aria-label="Episode timeline from 0:00 to about 10:00. B1 hook 0:00 to 0:45, B2 stakes 0:45 to 1:15, B3 test and result 1:15 to 2:00, B4 synthesis 2:00 to 8:00, B5 sponsor and outro 8:00 to the end.">
+    <div class="arc-bar">
+      <div class="arc-seg" style="flex: 45">B1</div>
+      <div class="arc-seg" style="flex: 30">B2</div>
+      <div class="arc-seg" style="flex: 45">B3</div>
+      <div class="arc-seg b4" style="flex: 360">B4 · synthesis</div>
+      <div class="arc-seg b5" style="flex: 120">B5</div>
+    </div>
+    <div class="arc-axis" aria-hidden="true">
+      <span style="left: 0%">0:00</span>
+      <span style="left: 20%">2:00</span>
+      <span style="left: 50%">5:00</span>
+      <span style="left: 80%">8:00</span>
+      <span style="left: 100%">~10:00</span>
+    </div>
+    <div class="arc-legend">
+      <div><b>B1</b><span>Hook and constraints. Name the exam, the clock, and your honest baseline.</span></div>
+      <div><b>B2</b><span>Stakes. The pass line as an exact number, the reward, the punishment prop.</span></div>
+      <div><b>B3</b><span>Test and result. Timer montage, the score straight from the scorer, the payoff.</span></div>
+      <div><b>B4</b><span>Synthesis: counterintuitive concepts, cross-domain patterns, core knowledge. About two minutes each.</span></div>
+      <div><b>B5</b><span>Disclosed sponsor read and the next-episode seed. Hatched because its end is open.</span></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="journey">
+  <div class="eyebrow">The journey</div>
+  <h2 id="journey">From idea to published, and where the tool helps</h2>
+  <p>This is the order things usually happen in. You will not always follow it, and you don't need to: <code>rda status</code> reads what is on disk and tells either of us the next step from wherever you are.</p>
+  <div class="key"><span><i class="dot on"></i> the tool does this step</span><span><i class="dot"></i> you do it, the tool tracks it</span></div>
+  <ol class="steps">
+    <li class="stage" style="display:block;list-style:none;counter-increment:none">Plan</li>
+    <li class="tool"><div class="what"><b>Park the idea</b><span>No ceremony. It lands in docs/ideas.md with the date.</span></div><span class="cmd">rda idea "…"</span></li>
+    <li class="tool"><div class="what"><b>Start an episode</b><span>Copies the template into episodes/001-slug/ and starts its log.</span></div><span class="cmd">rda new &lt;slug&gt;</span></li>
+    <li><div class="what"><b>Fill the exam card</b><span>Exam, source, rights check, time limit, pass line, stakes, sponsor.</span></div><span class="cmd">exam-card.md</span></li>
+    <li class="stage" style="display:block;list-style:none;counter-increment:none">Start</li>
+    <li><div class="what"><b>Build exam.json</b><span>Questions plus the official key. I can build this from a PDF and its key so you never see the answers.</span></div><span class="cmd">exam.json</span></li>
+    <li class="tool"><div class="what"><b>Freeze it</b><span>Validates, hashes, seals the key, writes your question sheet. Commit before studying.</span></div><span class="cmd">rda exam freeze</span></li>
+    <li><div class="what"><b>Record B1 and B2</b><span>Before studying, so the baseline and stakes are true when you say them.</span></div><span class="cmd">camera</span></li>
+    <li class="stage" style="display:block;list-style:none;counter-increment:none">Record</li>
+    <li class="tool"><div class="what"><b>Run the clock</b><span>A live countdown for the screen capture, with real start and stop times saved.</span></div><span class="cmd">rda clock start 360</span></li>
+    <li class="tool"><div class="what"><b>Score it</b><span>Prints the on-camera score block and a per-topic tally.</span></div><span class="cmd">rda score</span></li>
+    <li><div class="what"><b>Film the payoff</b><span>Only the outcome that actually happened.</span></div><span class="cmd">b-roll</span></li>
+    <li class="stage" style="display:block;list-style:none;counter-increment:none">Produce</li>
+    <li><div class="what"><b>Debrief and script</b><span>Built from what the exam actually tested, in the format your Notion sync reads.</span></div><span class="cmd">debrief.md, script.md</span></li>
+    <li class="tool"><div class="what"><b>Hand off</b><span>Creates videos/rda-001/ in claude-youtube-editor and exports the numbers for on-screen cards.</span></div><span class="cmd">rda handoff ../claude-youtube-editor</span></li>
+    <li class="stage" style="display:block;list-style:none;counter-increment:none">Publish</li>
+    <li><div class="what"><b>Your existing pipeline</b><span>/clean-cut, /make-tsx, /suggest-sfx, /packaging, then yt_upload.py. Flip the paid-promotion toggle by hand if sponsored.</span></div><span class="cmd">pipeline repo</span></li>
+  </ol>
+</section>
+
+<section aria-labelledby="explore">
+  <div class="eyebrow">The tool in action</div>
+  <h2 id="explore">What each command prints</h2>
+  <p>Real output from the end-to-end dry run. The exam was a 10-question sample I made up for testing, not a real exam.</p>
+  <div class="explorer">
+    <div class="tabs" role="tablist" aria-label="Commands">
+      <button role="tab" id="t-status" aria-selected="true" aria-controls="p-status">status</button>
+      <button role="tab" id="t-new" aria-selected="false" aria-controls="p-new">idea + new</button>
+      <button role="tab" id="t-freeze" aria-selected="false" aria-controls="p-freeze">exam freeze</button>
+      <button role="tab" id="t-sheet" aria-selected="false" aria-controls="p-sheet">questions.md</button>
+      <button role="tab" id="t-check" aria-selected="false" aria-controls="p-check">exam check</button>
+      <button role="tab" id="t-score" aria-selected="false" aria-controls="p-score">score</button>
+      <button role="tab" id="t-handoff" aria-selected="false" aria-controls="p-handoff">handoff</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-status" aria-labelledby="t-status">
+      <p>The one to run at the start of every session. It reads the files, ticks what is done, and names one next step. It works whatever order things happened in.</p>
+<pre class="term"><span class="p">$ python tools/rda.py status</span>
+001-nursing-entrance
+  [x] exam card filled
+  [x] exam.json on disk
+  [x] exam frozen and intact (OK  5dba9fcc8dd63c66…7630)
+  [x] clock started at 2026-10-05T15:34:17+00:00
+  [x] test finished
+  [x] scored: 8 of 10, PASS
+  [ ] payoff filmed
+  [ ] script written (no TODO left)
+  [x] handed off to videos/rda-001
+
+next: film the payoff b-roll, then set payoff.filmed true in result.json
+
+log:
+ - 2026-10-05T15:34:17+00:00  test finished, 00:00:00 after the clock started
+ - 2026-10-05T15:34:17+00:00  scored 8 of 10, PASS
+ - 2026-10-05T15:34:17+00:00  handed off to videos/rda-001</pre>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-new" aria-labelledby="t-new" hidden>
+      <p>The two commands for the moment an idea lands. <code>idea</code> is a one-liner; <code>new</code> turns one into an episode folder.</p>
+<pre class="term"><span class="p">$ python tools/rda.py idea "nursing entrance practice exam, stakes: cricket"</span>
+parked in docs/ideas.md
+
+<span class="p">$ python tools/rda.py new nursing-entrance</span>
+created episodes/001-nursing-entrance
+next: fill exam/exam-card.md, then put the exam in exam/exam.json</pre>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-freeze" aria-labelledby="t-freeze" hidden>
+      <p>Locks the exam. It refuses to run twice, and refuses a broken exam with a list of exactly what is wrong.</p>
+<pre class="term"><span class="p">$ python tools/rda.py exam freeze</span>
+frozen     5dba9fcc8dd63c66366b875228283fa972ebdd7d24405ad71b700ffd29dd7630
+questions  episodes/001-nursing-entrance/exam/questions.md  (the test sheet, no answers)
+the host never opens exam.json or key.json: both contain the answers
+next: commit exam/, then record B1 and B2 before studying</pre>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-sheet" aria-labelledby="t-sheet" hidden>
+      <p>The only exam file you read. Questions and options, no answers. The hash at the top ties it to the frozen exam.</p>
+<pre class="term"># Nursing Entrance Practice (sample)
+
+10 questions. Pass line: 7 of 10. Time limit for study and test: 360 minutes.
+
+Exam SHA-256: `5dba9fcc8dd63c66366b875228283fa972ebdd7d24405ad71b700ffd29dd7630`
+
+Write down a letter per question id, then run `python tools/rda.py score`.
+
+---
+
+**1. (q1)** Sample question 1?
+
+- **A.** w
+- **B.** x
+- **C.** y
+- **D.** z</pre>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-check" aria-labelledby="t-check" hidden>
+      <p>Your on-camera proof. It recomputes the fingerprint and compares it to the committed one. If even one answer letter changed, it says so and exits with an error.</p>
+<pre class="term"><span class="p">$ python tools/rda.py exam check</span>
+OK  5dba9fcc8dd63c66366b875228283fa972ebdd7d24405ad71b700ffd29dd7630
+
+<span class="p"># after a test planted one changed answer:</span>
+CHANGED  frozen 5dba9fcc…7630  now &lt;a different hash&gt;</pre>
+      <p class="note">The second block shows the shape of the tampered output. The test suite checks for the word CHANGED and a failing exit code.</p>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-score" aria-labelledby="t-score" hidden>
+      <p>The block you show on camera, followed by the per-topic tally that feeds the debrief. I checked these numbers by hand against the sample key.</p>
+<pre class="term"><span class="p">$ python tools/rda.py score answers.json</span>
+
+  =====================================
+   Nursing Entrance Practice (sample)
+   SCORE   8 of 10
+   PASS LINE   7 of 10
+   RESULT   PASS
+  =====================================
+
+    5/5   Math
+    3/5   Reading</pre>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-handoff" aria-labelledby="t-handoff" hidden>
+      <p>The bridge to your video pipeline. It never overwrites a file you already edited there.</p>
+<pre class="term"><span class="p">$ python tools/rda.py handoff ../claude-youtube-editor</span>
+copied  videos/rda-001/script/script.md
+copied  videos/rda-001/notion.json
+wrote   videos/rda-001/work/episode.json  (score, pass line, timings, topic tally for the cards)
+
+next, in claude-youtube-editor: drop the footage in videos/rda-001/ and run /clean-cut</pre>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="sealed">
+  <div class="eyebrow">How the honesty works</div>
+  <h2 id="sealed">One exam file in, three files out</h2>
+  <p>The series promises viewers the exam was fixed before you studied and the score is real. Freezing is what backs that promise. It is an honor system, since the key lives in the same repo, but the committed fingerprint means any change after the fact is visible.</p>
+  <div class="flow">
+    <div class="file"><b>exam.json</b><span>Questions, options, and the official answers. Built before studying.</span><span class="tag no">you never open</span></div>
+    <div class="arrow" aria-hidden="true">exam freeze →</div>
+    <div class="outs">
+      <div class="file host"><b>questions.md</b><span>Questions and options only. Your test sheet.</span><span class="tag read">you read this</span></div>
+      <div class="file sealed"><b>key.json</b><span>The answers, used only by <code>rda score</code>.</span><span class="tag no">sealed</span></div>
+      <div class="file"><b>FROZEN.json</b><span>The SHA-256 fingerprint and time. Also written into the exam card.</span><span class="tag pub">commit and show</span></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="critique">
+  <div class="eyebrow">Graded</div>
+  <h2 id="critique">What the critiques changed</h2>
+  <p>You asked for three rounds of self-critique. Each one changed the work.</p>
+  <div class="findings">
+    <div class="finding"><span class="mark">1</span><div><h3>Round 1: documents, not a tool</h3><p>The first commit was all docs and templates. Nothing ran, and the honesty rules depended on things no code did. That led to building <code>rda.py</code>.</p></div></div>
+    <div class="finding"><span class="mark">2</span><div><h3>Round 2: too much, and missing the important part</h3><p>I cut a terminal test runner and pipeline plumbing for a video that does not exist yet. I added what working together needs: <code>idea</code> for random ideas, <code>status</code> for picking up anywhere, a log, and a CLAUDE.md so any future session of mine knows the formula.</p></div></div>
+    <div class="finding"><span class="mark">3</span><div><h3>Round 3: a real dry run found three bugs</h3><p>You could not take the test without seeing the answers, because there was no question-only sheet. Real exams were forced to carry an explanation per question, which would have meant inventing them. And <code>--episode</code> only worked in one position. All three are fixed.</p></div></div>
+    <div class="finding"><span class="mark ok">✓</span><div><h3>Proved, not assumed</h3><p>For each fix, I put the bug back on purpose and confirmed a test catches it. All five planted defects were caught. The tests also check that the tool refuses bad input: a tampered exam, a second freeze, a bad answer letter, a leaked answer on the question sheet.</p></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="files">
+  <div class="eyebrow">What lives where</div>
+  <h2 id="files">Two repos, one owner per file</h2>
+  <p>_RDA holds the formula and everything up to the test. Your existing editor repo takes over once there is footage. Nothing is owned by both, so nothing drifts.</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>What</th><th>Lives in</th><th>Path</th></tr></thead>
+      <tbody>
+        <tr><td>The tool and its tests</td><td>_RDA</td><td class="mono">tools/rda.py, tools/test_rda.py</td></tr>
+        <tr><td>How we work, the formula on one page</td><td>_RDA</td><td class="mono">CLAUDE.md</td></tr>
+        <tr><td>Format, exam sourcing, production, risks, backlog</td><td>_RDA</td><td class="mono">docs/</td></tr>
+        <tr><td>Exam, key, fingerprint, question sheet, result</td><td>_RDA</td><td class="mono">episodes/001-slug/</td></tr>
+        <tr><td>Script once in production, Notion row</td><td>claude-youtube-editor</td><td class="mono">videos/rda-001/</td></tr>
+        <tr><td>Score and timings for on-screen cards</td><td>claude-youtube-editor</td><td class="mono">videos/rda-001/work/episode.json</td></tr>
+        <tr><td>Raw footage and master cuts</td><td>your machine only</td><td class="mono">never committed</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="scan">
+  <div class="eyebrow">Repo scan</div>
+  <h2 id="scan">What your other repos offer</h2>
+  <p>I scanned all twelve. Production is mostly covered already. Nothing anywhere does exam generation, so that part was built fresh.</p>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Repo</th><th>Verdict</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>claude-youtube-editor</td><td><span class="pill use">core</span></td><td>The whole production pipeline. Its card components (RuleCard, B10Verify) are the starting point for timer and score cards, and its SFX library already has a clock tick and a reward chime.</td></tr>
+        <tr><td>_pyrite</td><td><span class="pill ref">idea taken</span></td><td>Its rule "watch the check fail before trusting it" shaped the tests. Its ticket system was too heavy for a solo first video.</td></tr>
+        <tr><td>commentary-studio</td><td><span class="pill use">useful later</span></td><td>A media fetcher for credited, license-aware b-roll and highlighted page screenshots for the debrief.</td></tr>
+        <tr><td>_workbench</td><td><span class="pill ref">idea taken</span></td><td>The dated "nothing estimated" work log became the episode log style.</td></tr>
+        <tr><td>awesome-chatgpt-prompts</td><td><span class="pill ref">reference</span></td><td>"Explainer with Analogies" and "Socratic Method" suit study sessions.</td></tr>
+        <tr><td>AI-DnD</td><td><span class="pill ref">reference</span></td><td>A loot table could seed a punishment randomizer. Its JSON handling is unsafe to copy.</td></tr>
+        <tr><td>RedditVideoMakerBot</td><td><span class="pill skip">avoid copying</span></td><td>GPL-3.0, so copied code would carry that license. Ideas only.</td></tr>
+        <tr><td>AI-Vtuber, fogsift-icarus, fastapi, blender-mcp, awesome-design-patterns</td><td><span class="pill skip">not now</span></td><td>A retired-API chat bot, a stub, stock FastAPI, a 3D option for later, and a link list.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="contract">
+  <div class="eyebrow">The promise to viewers</div>
+  <h2 id="contract">The viewer contract</h2>
+  <p>Nine rules every episode keeps. Breaking one costs more trust than one video earns.</p>
+  <ol class="contract">
+    <li><b>1</b><span>The clock is real and visible.</span></li>
+    <li><b>2</b><span>The pass line is stated before the test and never moved.</span></li>
+    <li><b>3</b><span>The exam is frozen before studying starts.</span></li>
+    <li><b>4</b><span>The baseline is stated honestly.</span></li>
+    <li><b>5</b><span>The score comes from the scorer, not retyped.</span></li>
+    <li><b>6</b><span>The debrief is labeled a first-timer's take, not advice.</span></li>
+    <li><b>7</b><span>AI-generated exams are labeled as such.</span></li>
+    <li><b>8</b><span>Sponsors are disclosed out loud and in YouTube settings.</span></li>
+    <li><b>9</b><span>The payoff is real. Nothing is staged to match a script.</span></li>
+  </ol>
+</section>
+
+<section aria-labelledby="open" id="open">
+  <div class="eyebrow">Still open</div>
+  <h2>What is not built, and why</h2>
+  <div class="open">
+    <div><h3>Your exam pick</h3><p>If episode 001 uses an online test that grades itself, we never get the key, so <code>rda score</code> can't help. Recording the vendor's score is a small addition. I'll build it once you pick, if needed.</p></div>
+    <div><h3>AI exam generation</h3><p>The protocol is written: generate from the official outline, require a source per question, check the answers blind three times. It needs an API key and its own design pass. Episode 001 uses a real exam.</p></div>
+    <div><h3>On-screen cards</h3><p>Timer, pass line, score, and tally cards for Remotion. They will read episode.json. Built in the editor repo when there is footage.</p></div>
+    <div><h3>Four options only</h3><p>Questions are A to D. If your exam has five options, tell me and I'll widen it.</p></div>
+  </div>
+</section>
+
+<section aria-labelledby="start">
+  <div class="eyebrow">Next</div>
+  <h2 id="start">How to start</h2>
+  <p>Bring me an idea or an exam you're considering. I'll park it and we go from there. From the _RDA folder:</p>
+<pre class="term"><span class="p">$ python tools/rda.py idea "your idea"</span>
+<span class="p">$ python tools/rda.py new &lt;slug&gt;</span>
+<span class="p">$ python tools/rda.py status</span></pre>
+</section>
+
+<footer>
+  <span>Draft PR: <a href="https://github.com/ctavolazzi/_RDA/pull/1">github.com/ctavolazzi/_RDA/pull/1</a></span>
+  <span>Stdlib Python · no API keys · Windows and macOS</span>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function select(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.tabIndex = i === 0 ? 0 : -1;
+    t.addEventListener('click', function () { select(t); });
+    t.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      var n = tabs[(i + d + tabs.length) % tabs.length];
+      select(n); n.focus(); e.preventDefault();
+    });
+  });
+})();
+</script>

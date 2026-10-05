@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cut Editor</title>
+<style>
+  :root {
+    --bg: #16181d; --panel: #1f2229; --panel2: #262a33; --text: #d8dce4; --dim: #8a92a0;
+    --keep: #2e9e5b; --cut-retake: #d64545; --cut-false_start: #e08a3a; --cut-repeat: #c96b2e;
+    --cut-manual: #a259d9; --accent: #5b8dd6; --sel: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font: 13px/1.45 "Segoe UI", system-ui, sans-serif;
+         height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  button { background: var(--panel2); color: var(--text); border: 1px solid #3a4050; border-radius: 5px;
+           padding: 5px 12px; cursor: pointer; font: inherit; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+  select, input[type=range] { background: var(--panel2); color: var(--text); border: 1px solid #3a4050; border-radius: 5px; padding: 4px; }
+
+  header { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--panel);
+           border-bottom: 1px solid #000; flex-wrap: wrap; }
+  header .title { font-weight: 600; margin-right: 6px; }
+  header .grow { flex: 1; }
+  #status { color: var(--dim); max-width: 340px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #status.ok { color: #6fce8f; } #status.err { color: #e37c7c; }
+
+  #main { flex: 1; display: flex; min-height: 0; }
+  #left { flex: 1.5; display: flex; flex-direction: column; min-width: 0; background: #000; }
+  video { width: 100%; height: 100%; min-height: 0; object-fit: contain; background: #000; }
+  #right { flex: 1; max-width: 460px; display: flex; flex-direction: column; border-left: 1px solid #000; min-height: 0; }
+  .panel { background: var(--panel); padding: 10px 12px; overflow-y: auto; }
+  #inspector { flex: 0 0 auto; max-height: 45%; border-bottom: 1px solid #000; }
+  #flagsPanel { flex: 1; min-height: 0; }
+  .panel h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); margin-bottom: 8px; }
+  .flag { padding: 7px 8px; border-radius: 6px; background: var(--panel2); margin-bottom: 6px; }
+  .flag b { color: #e0b657; }
+  .flag button { padding: 1px 8px; font-size: 12px; margin-top: 4px; }
+  .insp-text { background: var(--panel2); border-radius: 6px; padding: 8px; margin: 6px 0; font-size: 13px; }
+  .insp-note { color: #e0b657; font-size: 12px; margin-bottom: 6px; }
+  .insp-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+  .insp-row .lbl { color: var(--dim); width: 38px; }
+  .insp-row button { padding: 2px 8px; font-size: 12px; }
+  .kbd { color: var(--dim); font-size: 11px; margin-top: 8px; }
+  .kbd b { color: var(--text); font-weight: 600; }
+
+  #tlwrap { flex: 0 0 210px; background: var(--panel); border-top: 1px solid #000; display: flex; flex-direction: column; }
+  #tlbar { display: flex; gap: 12px; align-items: center; padding: 4px 12px; color: var(--dim); }
+  #timeline { flex: 1; overflow-x: scroll; overflow-y: hidden; position: relative; }
+  #tl-inner { position: relative; height: 100%; }
+  #wave { position: absolute; top: 38px; height: 96px; width: 100%; opacity: .55; pointer-events: none; }
+  .ev { position: absolute; top: 38px; height: 96px; border-radius: 3px; cursor: pointer; }
+  .ev.keep { background: color-mix(in srgb, var(--keep) 32%, transparent); border: 1px solid var(--keep); }
+  .ev.cut { border-width: 1px; border-style: solid; }
+  .ev.selected { outline: 2px solid var(--sel); z-index: 5; }
+  .ev .edge { position: absolute; top: 0; width: 7px; height: 100%; cursor: ew-resize; }
+  .ev .edge.l { left: -3px; } .ev .edge.r { right: -3px; }
+  .clipmark { position: absolute; top: 0; bottom: 0; border-left: 1px dashed #566; pointer-events: none; }
+  .cliplabel { position: absolute; top: 20px; font-size: 11px; color: var(--dim); pointer-events: none; }
+  .flagmark { position: absolute; top: 2px; font-size: 12px; cursor: pointer; color: #e0b657; z-index: 6; }
+  .fluffband { position: absolute; top: 38px; height: 22px; border: 1px dashed #d0a84e;
+               background: color-mix(in srgb, #d0a84e 16%, transparent); border-radius: 3px; cursor: pointer; z-index: 6; }
+  .fluffband.applied { border-style: solid; border-color: var(--cut-manual);
+               background: color-mix(in srgb, var(--cut-manual) 22%, transparent); }
+  .fluffmark { position: absolute; top: 16px; font-size: 12px; cursor: pointer; z-index: 7; }
+  #playhead { position: absolute; top: 0; bottom: 0; width: 1px; background: #fff; z-index: 8; pointer-events: none; }
+  .selmark { position: absolute; top: 30px; bottom: 60px; width: 2px; background: #6fd6ce; z-index: 7; pointer-events: none; }
+  .ruler { position: absolute; top: 136px; height: 30px; width: 100%; }
+  .tick { position: absolute; top: 0; height: 6px; border-left: 1px solid #4a5160; }
+  .tick.major { height: 10px; border-color: #6a7284; }
+  .ticklabel { position: absolute; top: 12px; font-size: 10px; color: var(--dim); transform: translateX(-50%); }
+</style>
+</head>
+<body>
+<header>
+  <span class="title">✂ Cut Editor</span>
+  <span>
+    <button id="modeBtn" title="Toggle edited / raw playback (E)">Mode: Edited</button>
+    <select id="styleSel" title="Pause style for edited playback + renders">
+      <option value="tight">tight</option><option value="natural">natural</option>
+    </select>
+  </span>
+  <span id="timeinfo" style="min-width:230px"></span>
+  <span id="editlen" style="color:var(--dim)"></span>
+  <span class="grow"></span>
+  <span id="status"></span>
+  <button id="saveBtn" disabled>💾 Save</button>
+  <button id="renderBtn" class="primary">🎬 Render preview</button>
+</header>
+
+<div id="main">
+  <div id="left"><video id="vid" src="/media/proxy.mp4"></video></div>
+  <div id="right">
+    <div id="inspector" class="panel"><h3>Segment</h3><div id="inspBody">Click a block on the timeline.</div>
+      <div class="kbd"><b>Space</b> play · <b>E</b> mode · <b>←/→</b> ±2s · <b>Shift+←/→</b> ±10s · <b>,/.</b> ±1 frame ·
+      <b>I/O</b> mark in/out · <b>C</b> cut marked range · <b>+/−</b> zoom</div>
+    </div>
+    <div id="flagsPanel" class="panel"><h3>Flagged judgment calls</h3><div id="flagsBody"></div></div>
+  </div>
+</div>
+
+<div id="tlwrap">
+  <div id="tlbar">
+    <span>zoom <input id="zoom" type="range" min="4" max="40" value="7" style="width:120px"></span>
+    <span style="color:var(--dim)">green = keep · <span style="color:var(--cut-retake)">retake</span> ·
+      <span style="color:var(--cut-false_start)">false start</span> ·
+      <span style="color:var(--cut-repeat)">repeat</span> ·
+      <span style="color:var(--cut-manual)">manual</span> · ▲ flag · <span style="color:#d0a84e">💡 fluff (suggest-only)</span>
+      &nbsp;— <span style="color:var(--dim)">live playback is approximate; rendered preview is exact</span></span>
+  </div>
+  <div id="timeline"><div id="tl-inner">
+    <img id="wave" src="/media/waveform.png" draggable="false">
+    <div class="ruler" id="ruler"></div>
+    <div id="playhead"></div>
+  </div></div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const vid = $("vid"), tl = $("timeline"), inner = $("tl-inner");
+
+let DATA = null, MANIFEST = null, OFFSETS = {}, TOTAL = 0;
+let events = [];            // {id, clip, s, e, kind, cat, text, note} local times
+let selected = null, dirty = false, changes = [];
+let pps = 7;                // pixels per second
+let mode = "edited";
+let plan = [];              // global [start,end] playback segments
+let selIn = null, selOut = null;
+let evSeq = 0;
+
+const CATCOLOR = { retake: "var(--cut-retake)", false_start: "var(--cut-false_start)",
+                   repeat: "var(--cut-repeat)", manual: "var(--cut-manual)" };
+
+const g2 = s => `${String(Math.floor(s/60)).padStart(2,"0")}:${(s%60).toFixed(1).padStart(4,"0")}`;
+const toGlobal = (clip, t) => OFFSETS[clip] + t;
+function fromGlobal(t) {
+  let p = MANIFEST.parts[0];
+  for (const q of MANIFEST.parts) if (t >= q.offset) p = q;
+  return { clip: p.id, t: t - p.offset };
+}
+
+async function init() {
+  const r = await fetch("/api/data"); const j = await r.json();
+  DATA = j.cuts; MANIFEST = j.manifest; TOTAL = MANIFEST.total;
+  for (const p of MANIFEST.parts) OFFSETS[p.id] = p.offset;
+  events = [];
+  for (const c of DATA.clips) {
+    for (const k of c.keeps) events.push({ id: ++evSeq, clip: c.id, s: k.s, e: k.e, kind: "keep", cat: "", text: k.text, note: k.note || "" });
+    for (const x of c.cuts)  events.push({ id: ++evSeq, clip: c.id, s: x.s, e: x.e, kind: "cut", cat: x.cat, text: x.text, note: x.note || "" });
+  }
+  sortEvents();
+  renderFlags(); rebuild();
+  $("styleSel").value = "tight";
+}
+const sortEvents = () => events.sort((a,b) => toGlobal(a.clip,a.s) - toGlobal(b.clip,b.s));
+
+/* ---------- playback plan (APPROXIMATION of render_cuts.py) ----------
+   The editor has no per-word timestamps or audio, so live playback can't show
+   internal-pause tightening or snap-to-audio soft tails — those appear only in
+   the rendered preview. This approximates keep-level joins with the new params. */
+function computeGaps(clip) {  // kept for save(): writes each keep's gap metadata
+  const keeps = events.filter(v => v.clip === clip.id && v.kind === "keep").sort((a,b) => a.s - b.s);
+  const cuts  = events.filter(v => v.clip === clip.id && v.kind === "cut").sort((a,b) => a.s - b.s);
+  return keeps.map((k, i) => {
+    const nxt = keeps[i+1];
+    if (!nxt) return { k, d: Math.max(clip.duration - k.e, 0), t: "end" };
+    const hasCut = cuts.some(c => c.e > k.e && c.s < nxt.s);
+    return { k, d: nxt.s - k.e, t: hasCut ? "cut" : "silence", nxt, cuts };
+  });
+}
+function buildSegments(clip, style) {
+  const gone = (clip.fluff_suggestions || []).filter(f => f.status === "auto_applied");
+  const keeps = events.filter(v => v.clip === clip.id && v.kind === "keep"
+      && !gone.some(f => v.s >= f.s - 0.05 && v.e <= f.e + 0.05)).sort((a,b) => a.s - b.s);
+  if (!keeps.length) return [];
+  const head = style.head, segs = [];
+  let open = keeps[0].s - Math.min(0.25, head*2);
+  for (let i = 0; i < keeps.length; i++) {
+    const k = keeps[i], nxt = keeps[i+1];
+    const gap = nxt ? nxt.s - k.e : (clip.duration - k.e);
+    const soft = !nxt || gap >= style.soft_gap;
+    let tail = soft ? Math.min(style.soft_max_tail, style.min_tail + 0.12) : style.min_tail;
+    if (nxt) tail = Math.min(tail, Math.max(gap - head - 0.06, style.min_tail * 0.5));
+    segs.push([open, k.e + tail]);
+    if (nxt) open = nxt.s - head;
+  }
+  return segs;
+}
+function rebuildPlan() {
+  const style = DATA.styles[$("styleSel").value];
+  plan = [];
+  for (const c of DATA.clips) for (const [s,e] of buildSegments(c, style)) plan.push([toGlobal(c.id,s), toGlobal(c.id,e)]);
+  plan.sort((a,b) => a[0]-b[0]);
+  const len = plan.reduce((a,[s,e]) => a+e-s, 0);
+  $("editlen").textContent = `edited ≈ ${Math.floor(len/60)}:${String(Math.round(len%60)).padStart(2,"0")}`;
+}
+
+/* ---------- timeline rendering ---------- */
+function rebuild() { rebuildPlan(); renderTimeline(); }
+function renderTimeline() {
+  inner.style.width = (TOTAL * pps) + "px";
+  inner.querySelectorAll(".ev,.clipmark,.cliplabel,.flagmark,.tick,.ticklabel,.selmark").forEach(n => n.remove());
+  const ruler = $("ruler");
+  const step = pps >= 14 ? 5 : (pps >= 7 ? 10 : 30);
+  for (let t = 0; t <= TOTAL; t += step) {
+    const d = document.createElement("div");
+    d.className = "tick" + (t % 60 === 0 ? " major" : ""); d.style.left = (t*pps)+"px"; ruler.appendChild(d);
+    if (t % 60 === 0) { const l = document.createElement("div"); l.className = "ticklabel";
+      l.style.left = (t*pps)+"px"; l.textContent = `${t/60}:00`; ruler.appendChild(l); }
+  }
+  for (const p of MANIFEST.parts) {
+    const m = document.createElement("div"); m.className = "clipmark"; m.style.left = (p.offset*pps)+"px"; inner.appendChild(m);
+    const l = document.createElement("div"); l.className = "cliplabel"; l.style.left = (p.offset*pps+4)+"px";
+    l.textContent = "clip " + p.id; inner.appendChild(l);
+  }
+  for (const ev of events) {
+    const d = document.createElement("div");
+    d.className = `ev ${ev.kind}` + (selected === ev ? " selected" : "");
+    d.style.left = (toGlobal(ev.clip, ev.s) * pps) + "px";
+    d.style.width = Math.max((ev.e - ev.s) * pps, 3) + "px";
+    if (ev.kind === "cut") {
+      const col = CATCOLOR[ev.cat] || "var(--cut-retake)";
+      d.style.background = `color-mix(in srgb, ${col} 38%, transparent)`; d.style.borderColor = col;
+    }
+    d.title = `${ev.kind.toUpperCase()} ${ev.cat} ${g2(ev.s)}–${g2(ev.e)}\n${ev.text}`;
+    d.dataset.id = ev.id;
+    const el = document.createElement("div"); el.className = "edge l";
+    const er = document.createElement("div"); er.className = "edge r";
+    d.append(el, er);
+    inner.appendChild(d);
+  }
+  for (const c of DATA.clips) for (const f of (c.fluff_suggestions || [])) {
+    const gs = toGlobal(c.id, f.s);
+    const band = document.createElement("div");
+    band.className = "fluffband" + (f.status === "auto_applied" ? " applied" : "");
+    band.style.left = (gs*pps) + "px"; band.style.width = Math.max((f.e - f.s)*pps, 4) + "px";
+    band.title = (f.status === "auto_applied" ? "FLUFF AUTO-REMOVED: " : "FLUFF SUGGESTION: ") + f.text;
+    band.onclick = ev => { ev.stopPropagation(); seek(gs); showFluff(c.id, f); };
+    inner.appendChild(band);
+    const mk = document.createElement("div"); mk.className = "fluffmark";
+    mk.style.left = (gs*pps-4) + "px"; mk.textContent = "💡";
+    mk.onclick = ev => { ev.stopPropagation(); seek(gs); showFluff(c.id, f); };
+    inner.appendChild(mk);
+  }
+  for (const f of (DATA.flags || [])) {
+    const m = /(\d+):(\d+)/.exec(f.at); if (!m) continue;
+    const t = toGlobal(f.clip, (+m[1])*60 + (+m[2]));
+    const d = document.createElement("div"); d.className = "flagmark"; d.style.left = (t*pps-5)+"px";
+    d.textContent = "▲" + f.id; d.title = f.issue;
+    d.onclick = ev => { ev.stopPropagation(); seek(t); showFlag(f); };
+    inner.appendChild(d);
+  }
+  drawSelMarks();
+  updatePlayhead();
+}
+function drawSelMarks() {
+  inner.querySelectorAll(".selmark").forEach(n => n.remove());
+  for (const v of [selIn, selOut]) if (v !== null) {
+    const d = document.createElement("div"); d.className = "selmark"; d.style.left = (v*pps)+"px"; inner.appendChild(d);
+  }
+}
+
+/* ---------- inspector ---------- */
+function showEvent(ev) {
+  selected = ev;
+  const col = ev.kind === "keep" ? "var(--keep)" : (CATCOLOR[ev.cat] || "var(--cut-retake)");
+  $("inspBody").innerHTML = `
+    <div><b style="color:${col}">${ev.kind.toUpperCase()}${ev.cat ? " · " + ev.cat : ""}</b>
+      &nbsp; clip ${ev.clip} &nbsp; <span id="evTimes">${g2(ev.s)} – ${g2(ev.e)}</span> (${(ev.e-ev.s).toFixed(2)}s)</div>
+    ${ev.note ? `<div class="insp-note">${ev.note}</div>` : ""}
+    <div class="insp-text">${ev.text}</div>
+    <div class="insp-row">
+      <button id="bPlay">▶ play this</button>
+      <button id="bToggle">${ev.kind === "keep" ? "❌ cut this" : "✅ restore"}</button>
+    </div>
+    <div class="insp-row"><span class="lbl">start</span>
+      <button data-n="s,-0.05">−50ms</button><button data-n="s,0.05">+50ms</button>
+      <span class="lbl" style="margin-left:10px">end</span>
+      <button data-n="e,-0.05">−50ms</button><button data-n="e,0.05">+50ms</button>
+    </div>`;
+  $("bPlay").onclick = () => { seek(Math.max(toGlobal(ev.clip, ev.s) - 1, 0)); vid.play(); };
+  $("bToggle").onclick = () => toggleEvent(ev);
+  document.querySelectorAll("[data-n]").forEach(b => b.onclick = () => {
+    const [f, dv] = b.dataset.n.split(","); nudge(ev, f, parseFloat(dv));
+  });
+  renderTimeline();
+}
+function showFlag(f) {
+  $("inspBody").innerHTML = `<div><b style="color:#e0b657">FLAG ${f.id}</b> · clip ${f.clip} @ ${f.at}</div>
+    <div class="insp-text">${f.issue}</div><div class="insp-note">default: ${f.default}</div>
+    <div class="kbd">Use the timeline blocks around this point to change the decision (restore a red block / cut a green one).</div>`;
+}
+function showFluff(clip, f) {
+  $("inspBody").innerHTML = `<div><b style="color:#d0a84e">💡 FLUFF SUGGESTION</b> · clip ${clip} · ${g2(f.s)}–${g2(f.e)}
+    &nbsp;<span style="color:var(--dim)">${f.crit||""}</span></div>
+    <div class="insp-text">${f.text}</div><div class="insp-note">${f.note||""}</div>
+    <div class="kbd">Suggest-only — nothing is removed automatically. To accept, select the block(s) this
+    covers and cut them (I/O then C, or ❌ cut this). To reject, ignore it.</div>`;
+}
+function renderFlags() {
+  $("flagsBody").innerHTML = (DATA.flags || []).map(f => `
+    <div class="flag"><b>▲${f.id}</b> clip ${f.clip} @ ${f.at}<br>${f.issue}<br>
+    <button data-f="${f.id}">jump to it</button></div>`).join("");
+  document.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
+    const f = DATA.flags.find(x => x.id == b.dataset.f);
+    const m = /(\d+):(\d+)/.exec(f.at);
+    if (m) seek(toGlobal(f.clip, (+m[1])*60 + (+m[2])));
+    showFlag(f);
+  });
+}
+
+/* ---------- edits ---------- */
+function markDirty(msg) { dirty = true; changes.push(msg); $("saveBtn").disabled = false; setStatus(msg); rebuild(); }
+function toggleEvent(ev) {
+  if (ev.kind === "keep") { ev.kind = "cut"; ev.cat = "manual"; markDirty(`cut keep ${ev.clip} ${ev.s.toFixed(2)}-${ev.e.toFixed(2)} "${ev.text.slice(0,50)}"`); }
+  else { ev.kind = "keep"; markDirty(`restored ${ev.cat} cut ${ev.clip} ${ev.s.toFixed(2)}-${ev.e.toFixed(2)}`); ev.cat = ""; }
+  showEvent(ev);
+}
+function neighbors(ev) {
+  const same = events.filter(v => v.clip === ev.clip).sort((a,b) => a.s - b.s);
+  const i = same.indexOf(ev);
+  return [same[i-1], same[i+1]];
+}
+function nudge(ev, field, dv) {
+  const [prev, next] = neighbors(ev);
+  if (field === "s") ev.s = Math.min(Math.max(ev.s + dv, prev ? prev.e : 0), ev.e - 0.05);
+  else ev.e = Math.max(Math.min(ev.e + dv, next ? next.s : ev.e + dv), ev.s + 0.05);
+  markDirty(`adjusted ${ev.kind} ${ev.clip} -> ${ev.s.toFixed(2)}-${ev.e.toFixed(2)}`);
+  showEvent(ev);
+}
+function cutSelection() {
+  if (selIn === null || selOut === null) return setStatus("set I and O first", "err");
+  const [a, b] = [Math.min(selIn, selOut), Math.max(selIn, selOut)];
+  const la = fromGlobal(a), lb = fromGlobal(b);
+  if (la.clip !== lb.clip) return setStatus("selection crosses clips — not supported", "err");
+  const host = events.find(v => v.kind === "keep" && v.clip === la.clip && v.s <= la.t + 0.01 && v.e >= lb.t - 0.01);
+  if (!host) return setStatus("selection must be inside one green keep block", "err");
+  const mkKeep = (s, e) => ({ id: ++evSeq, clip: host.clip, s, e, kind: "keep", cat: "", text: host.text, note: "" });
+  const parts = [];
+  if (la.t - host.s > 0.08) parts.push(mkKeep(host.s, la.t));
+  parts.push({ id: ++evSeq, clip: host.clip, s: Math.max(la.t, host.s), e: Math.min(lb.t, host.e), kind: "cut", cat: "manual", text: host.text, note: "user cut" });
+  if (host.e - lb.t > 0.08) parts.push(mkKeep(lb.t, host.e));
+  events.splice(events.indexOf(host), 1, ...parts);
+  sortEvents();
+  selIn = selOut = null;
+  markDirty(`added manual cut ${host.clip} ${la.t.toFixed(2)}-${lb.t.toFixed(2)}`);
+}
+
+/* ---------- save / render ---------- */
+function setStatus(msg, cls) { const s = $("status"); s.textContent = msg; s.className = cls || ""; }
+async function save() {
+  const out = JSON.parse(JSON.stringify(DATA));
+  for (const clip of out.clips) {
+    const rows = computeGaps(clip);
+    clip.keeps = rows.map(({ k, d, t }) => {
+      const o = { s: +k.s.toFixed(3), e: +k.e.toFixed(3), text: k.text, gap: { d: +d.toFixed(2), t } };
+      if (k.note) o.note = k.note; return o;
+    });
+    clip.cuts = events.filter(v => v.clip === clip.id && v.kind === "cut").sort((x,y) => x.s - y.s)
+      .map(c => { const o = { s: +c.s.toFixed(3), e: +c.e.toFixed(3), cat: c.cat || "manual", text: c.text };
+                  if (c.note) o.note = c.note; return o; });
+  }
+  const r = await fetch("/api/save", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ cuts: out, changes }) });
+  const j = await r.json();
+  if (j.saved) { dirty = false; changes = []; $("saveBtn").disabled = true; DATA = out; setStatus("saved ✓ (" + j.backup + ")", "ok"); }
+  else setStatus("save failed: " + (j.error || "?"), "err");
+}
+async function render() {
+  if (dirty) await save();
+  const style = $("styleSel").value;
+  const r = await fetch("/api/render", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ style }) });
+  if (!r.ok) { setStatus("render busy", "err"); return; }
+  $("renderBtn").disabled = true;
+  const poll = setInterval(async () => {
+    const s = await (await fetch("/api/render/status")).json();
+    const tail = s.log.trim().split("\n").pop() || "";
+    if (s.running) setStatus("rendering… " + tail);
+    else {
+      clearInterval(poll); $("renderBtn").disabled = false;
+      setStatus(s.ok ? `render done ✓ output/preview-${style}.mp4` : "render FAILED — see server console", s.ok ? "ok" : "err");
+    }
+  }, 1500);
+}
+
+/* ---------- playback ---------- */
+function seek(t) { vid.currentTime = Math.max(0, Math.min(t, TOTAL - 0.05)); updatePlayhead(); }
+function updatePlayhead() {
+  const t = vid.currentTime;
+  $("playhead").style.left = (t * pps) + "px";
+  const loc = fromGlobal(t);
+  $("timeinfo").textContent = `${g2(t)} global · clip ${loc.clip} ${g2(loc.t)}`;
+  if (!vid.paused) {
+    const x = t * pps - tl.scrollLeft;
+    if (x > tl.clientWidth * 0.85 || x < 0) tl.scrollLeft = t * pps - tl.clientWidth * 0.15;
+  }
+}
+setInterval(() => {
+  updatePlayhead();
+  if (mode !== "edited" || vid.paused || !plan.length) return;
+  const t = vid.currentTime;
+  const inSeg = plan.some(([s,e]) => t >= s - 0.02 && t < e);
+  if (!inSeg) {
+    const nxt = plan.find(([s]) => s > t);
+    if (nxt) vid.currentTime = nxt[0] + 0.01; else vid.pause();
+  }
+}, 60);
+
+/* ---------- interactions ---------- */
+let drag = null;
+inner.addEventListener("mousedown", e => {
+  const evEl = e.target.closest(".ev");
+  if (e.target.classList.contains("edge") && evEl) {
+    drag = { ev: events.find(v => v.id == evEl.dataset.id), side: e.target.classList.contains("l") ? "s" : "e", moved: false };
+    e.preventDefault(); return;
+  }
+  if (evEl) { showEvent(events.find(v => v.id == evEl.dataset.id)); return; }
+  const rect = inner.getBoundingClientRect();
+  seek((e.clientX - rect.left) / pps);
+});
+window.addEventListener("mousemove", e => {
+  if (!drag) return;
+  const rect = inner.getBoundingClientRect();
+  const t = fromGlobal((e.clientX - rect.left) / pps);
+  if (t.clip !== drag.ev.clip) return;
+  const [prev, next] = neighbors(drag.ev);
+  if (drag.side === "s") drag.ev.s = Math.min(Math.max(t.t, prev ? prev.e : 0), drag.ev.e - 0.05);
+  else drag.ev.e = Math.max(Math.min(t.t, next ? next.s : t.t), drag.ev.s + 0.05);
+  drag.moved = true; renderTimeline();
+});
+window.addEventListener("mouseup", () => {
+  if (drag && drag.moved) { markDirty(`dragged ${drag.ev.kind} ${drag.ev.clip} -> ${drag.ev.s.toFixed(2)}-${drag.ev.e.toFixed(2)}`); showEvent(drag.ev); }
+  drag = null;
+});
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  const k = e.key;
+  if (k === " ") { e.preventDefault(); vid.paused ? vid.play() : vid.pause(); }
+  else if (k === "e" || k === "E") $("modeBtn").click();
+  else if (k === "ArrowLeft") seek(vid.currentTime - (e.shiftKey ? 10 : 2));
+  else if (k === "ArrowRight") seek(vid.currentTime + (e.shiftKey ? 10 : 2));
+  else if (k === ",") seek(vid.currentTime - 1/59.94);
+  else if (k === ".") seek(vid.currentTime + 1/59.94);
+  else if (k === "i" || k === "I") { selIn = vid.currentTime; drawSelMarks(); setStatus(`in @ ${g2(selIn)}`); }
+  else if (k === "o" || k === "O") { selOut = vid.currentTime; drawSelMarks(); setStatus(`out @ ${g2(selOut)}`); }
+  else if (k === "c" || k === "C") cutSelection();
+  else if (k === "+" || k === "=") $("zoom").value = pps = Math.min(pps + 3, 40), rebuildZoom();
+  else if (k === "-") $("zoom").value = pps = Math.max(pps - 3, 4), rebuildZoom();
+});
+function rebuildZoom() {
+  const center = vid.currentTime;
+  renderTimeline();
+  tl.scrollLeft = center * pps - tl.clientWidth / 2;
+}
+$("zoom").oninput = e => { pps = +e.target.value; rebuildZoom(); };
+$("modeBtn").onclick = () => { mode = mode === "edited" ? "raw" : "edited"; $("modeBtn").textContent = "Mode: " + (mode === "edited" ? "Edited" : "Raw"); };
+$("styleSel").onchange = rebuildPlan;
+$("saveBtn").onclick = save;
+$("renderBtn").onclick = render;
+window.addEventListener("beforeunload", e => { if (dirty) e.preventDefault(); });
+vid.addEventListener("loadedmetadata", () => { if (Math.abs(vid.duration - TOTAL) > 2) setStatus("proxy/manifest length mismatch — rebuild proxy", "err"); });
+
+init();
+</script>
+</body>
+</html>

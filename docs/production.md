@@ -10,10 +10,10 @@
 | Visuals | Debrief slides and diagrams for B4 | Built as Remotion shots over the cut, not as a static deck |
 | Exam | Frozen `exam.json`, hash, verification log | See [exam-sourcing.md](exam-sourcing.md) |
 
-## Mapping to claude-youtube-editor
+## The production pipeline
 
-The production pipeline lives in [claude-youtube-editor](https://github.com/ctavolazzi/claude-youtube-editor).
-Its order is: cut, visuals, voice, SFX, packaging, upload.
+The pipeline lives in this repo (vendored from claude-youtube-editor on 2026-10-05; see
+[vendored.md](vendored.md)). Its order is: cut, visuals, voice, SFX, packaging, master, upload.
 
 | Episode need | Pipeline step |
 |---|---|
@@ -23,35 +23,39 @@ Its order is: cut, visuals, voice, SFX, packaging, upload.
 | Noisy desktop or room audio | `/clean-audio` |
 | Score sting, reward, punishment, transitions | `/suggest-sfx` |
 | Title and three thumbnail bets | `/packaging` |
+| Loudness to -16 LUFS / -1.5 dBTP before upload | `tools/master_audio.py` |
 | Upload as a private draft | `tools/yt_upload.py` |
 | Track the row in the content tracker | `tools/notion_sync.py` |
 
 The pipeline's conventions apply to anything shown on screen. In particular, on-screen text avoids
 em dashes, and raw footage and master cuts never go to git.
 
-## Who owns which file
+## Where each file lives
 
-One owner per artifact, so nothing drifts between the two repos.
+Everything is in this repo. Pre-production (the exam and the challenge) lives under `episodes/`;
+production (footage-driven work) lives under `videos/` once the episode is handed off. Each artifact
+has one location, so nothing drifts.
 
 | Artifact | Owner | Location |
 |---|---|---|
-| Series docs, format, risk register, backlog | `_RDA` | `docs/` |
-| Episode template | `_RDA` | `episodes/_template/` |
-| Exam, hash, verification log, exam card, result record | `_RDA` | `episodes/NNN-slug/exam/` and `result.json` |
-| Shot list and debrief outline | `_RDA` | `episodes/NNN-slug/` |
-| Script (once the episode is in production) | `claude-youtube-editor` | `videos/rda-NNN/script/script.md` |
-| `notion.json`, cuts, transcripts, timeline, SFX plan, packaging | `claude-youtube-editor` | `videos/rda-NNN/` |
+| Series docs, format, risk register, backlog | series | `docs/` |
+| Episode template | series | `episodes/_template/` |
+| Exam, hash, verification log, exam card, result record | pre-production | `episodes/NNN-slug/exam/` and `result.json` |
+| Shot list and debrief outline | pre-production | `episodes/NNN-slug/` |
+| Script (once the episode is in production) | production | `videos/rda-NNN/script/script.md` |
+| `notion.json`, cuts, transcripts, timeline, SFX plan, packaging | production | `videos/rda-NNN/` |
+| Shots and per-episode media | production | `remotion/src/shots/rda-NNN/`, `media/projects/rda-NNN/` |
 | Raw footage, master cuts, rendered output | local only, git-ignored | never committed |
 
 ### The handoff
 
-An episode moves from `_RDA` to the pipeline when the test has been taken and the result is recorded.
+An episode moves from pre-production to production when the test has been taken and the result is recorded.
 
 1. `python tools/rda.py exam check` passes and `python tools/rda.py status` shows the episode scored.
-2. `python tools/rda.py handoff <path to claude-youtube-editor>` creates `videos/rda-NNN/` there,
-   copies in `script/script.md` and `notion.json` (never overwriting), exports `work/episode.json`
-   for the cards, and writes the pipeline path back into `result.json`.
-3. From then on the script is edited in the pipeline repo only. Re-run
+2. `python tools/rda.py handoff` creates `videos/rda-NNN/`, copies in `script/script.md` and
+   `notion.json` (never overwriting), exports `work/episode.json` for the cards, and writes the path
+   back into `result.json`. (A path argument still hands off to a separate pipeline checkout.)
+3. From then on the script is edited in `videos/rda-NNN/` only. Re-run
    `python tools/notion_sync.py videos/rda-NNN --apply --resync` after script changes.
 
 ## Recording order
@@ -75,7 +79,7 @@ These are planning numbers to adjust after the first episode, not measurements.
 | Study window and test | The fixed constraint for the episode (example: 6 hours) |
 | Payoff b-roll | One short session after the result |
 | Talking head | One sitting |
-| Pipeline (cut, visuals, SFX, packaging) | Per `claude-youtube-editor` workflow |
+| Pipeline (cut, visuals, SFX, packaging, master) | Per the skills in `.claude/skills/` |
 
 Record the real durations in `result.json` after episode 001 and replace this table with measured
 numbers.

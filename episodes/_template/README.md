@@ -13,7 +13,7 @@ episode number. From then on `python tools/rda.py status` says what is next. The
    `result.json`; you set `payoff.filmed` after the b-roll.
 5. **`debrief.md`**: outline the B4 synthesis from what the exam actually tested.
 6. **`script/script.md`**: write the beats once the result and the debrief are known.
-7. **`rda handoff <path to claude-youtube-editor>`** per [docs/production.md](../../docs/production.md).
+7. **`rda handoff`** per [docs/production.md](../../docs/production.md): production then happens in `videos/rda-NNN/`.
 
 ## Files
 

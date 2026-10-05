@@ -12,7 +12,7 @@ Stdlib only. Run from the repo root:
   python tools/rda.py clock start 360                 # live countdown for the screen capture
   python tools/rda.py clock stop                      # record when the test finished
   python tools/rda.py score                           # enter answers, get the score, write result.json
-  python tools/rda.py handoff ../claude-youtube-editor   # scaffold videos/rda-NNN/ and export episode.json
+  python tools/rda.py handoff                         # scaffold videos/rda-NNN/ here and export episode.json
   python tools/rda.py log "filmed the cookie b-roll"  # dated receipt in the episode log
 
 Every command works on the latest numbered episode unless --episode NNN-slug is given.
@@ -414,9 +414,11 @@ def cmd_score(args):
 # ── handoff ───────────────────────────────────────────────────────────────────
 def cmd_handoff(args):
     p = ep_paths(resolve_episode(args.episode, args.root))
-    pipeline = os.path.abspath(args.pipeline)
+    # The production pipeline lives in this repo (vendored from claude-youtube-editor on 2026-10-05),
+    # so the default target is the repo root. A path still works, for a separate pipeline checkout.
+    pipeline = os.path.abspath(args.pipeline or ROOT)
     if not os.path.isdir(os.path.join(pipeline, "videos")):
-        die(f"{pipeline} does not look like the claude-youtube-editor repo (no videos/ folder)")
+        die(f"{pipeline} does not look like a pipeline checkout (no videos/ folder)")
     r = load_json(p["result"])
     if r.get("score", {}).get("correct") is None:
         die("no score in result.json yet. The handoff happens after the test.")
@@ -448,7 +450,8 @@ def cmd_handoff(args):
     for rel in copied:
         print(f"copied  videos/{project}/{rel}")
     print(f"wrote   videos/{project}/work/episode.json  (score, pass line, timings, topic tally for the cards)")
-    print(f"\nnext, in {os.path.basename(pipeline)}: drop the footage in videos/{project}/ and run /clean-cut")
+    where = "" if pipeline == os.path.abspath(ROOT) else f", in {os.path.basename(pipeline)}"
+    print(f"\nnext{where}: drop the footage in videos/{project}/ and run /clean-cut")
 
 
 # ── status ────────────────────────────────────────────────────────────────────
@@ -496,9 +499,9 @@ def status_lines(p):
     mark(not has_todo(p["script"]), "script written (no TODO left)",
          "write script/script.md from the result and the debrief")
     mark(bool(r.get("pipeline_project")), "handed off" + (f" to {r['pipeline_project']}" if r.get("pipeline_project") else ""),
-         "python tools/rda.py handoff <path to claude-youtube-editor>")
+         "python tools/rda.py handoff")
     if nxt is None:
-        nxt = ("in the pipeline repo: /clean-cut, /make-tsx, /suggest-sfx, /packaging, then tools/yt_upload.py. "
+        nxt = ("produce it: /clean-cut, /make-tsx, /suggest-sfx, /packaging, tools/master_audio.py, then tools/yt_upload.py. "
                "Before publishing: set the paid promotion toggle in YouTube Studio by hand (the upload plan has no field for it).")
     return lines, nxt
 
@@ -557,8 +560,8 @@ def build_parser():
     s.add_argument("--interactive", action="store_true", help="type answers even if answers.json exists")
     s.set_defaults(fn=cmd_score)
 
-    s = sub.add_parser("handoff", help="scaffold videos/rda-NNN/ in the pipeline repo and export episode.json", parents=[ep])
-    s.add_argument("pipeline", help="path to the claude-youtube-editor checkout"); s.set_defaults(fn=cmd_handoff)
+    s = sub.add_parser("handoff", help="scaffold videos/rda-NNN/ and export episode.json for the cards", parents=[ep])
+    s.add_argument("pipeline", nargs="?", help="pipeline checkout to hand off to (default: this repo)"); s.set_defaults(fn=cmd_handoff)
     return ap
 
 

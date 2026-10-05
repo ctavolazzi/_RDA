@@ -1,0 +1,11 @@
+{
+  "prompt": "Casual realistic photograph of a home office corner, NO people in the frame. The SAME ROOM as the reference photo: the same grey-blue wall, the same tall green dracaena plant on the left, the same white wall-mounted air-conditioning unit high on the wall. Below the AC, against the wall: a plain WHITE desk with a 24-inch monitor showing a dark code editor with subtle orange text, a plain keyboard, a mouse, a phone lying face down, a glass of water, a small notebook with a pen, a charging cable on the desk. An ordinary office chair. Soft natural daylight from the side, slightly uneven, mild real shadows. Tidy but lived-in, nothing styled or staged. Realistic everyday photography like a smartphone shot. No text overlays, no watermarks, no logos, no people.",
+  "model": "gemini-3-pro-image",
+  "aspect_ratio": "16:9",
+  "image_size": "2K",
+  "seed": null,
+  "refs": [
+    "media\\library\\faces\\WIN_20250922_15_39_45_Pro.jpg"
+  ],
+  "created": "2026-08-13T20:47:02"
+}
