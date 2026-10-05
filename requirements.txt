@@ -1,0 +1,22 @@
+# Python deps for the video-editor pipeline tools (Python 3.10+).
+# Install into a venv at the repo root:
+#     python -m venv venv
+#     venv/Scripts/python -m pip install -r requirements.txt      # Windows
+#     ./venv/bin/pip install -r requirements.txt                  # macOS/Linux
+# Then run tools as `python tools/<tool>.py ...` with that venv active.
+#
+# Also required on PATH (not pip): ffmpeg + ffprobe, and Node.js (for the Remotion render step).
+
+requests                  # transcribe.py
+Pillow                    # gen_thumbnail.py (image handling)
+google-genai              # gen_thumbnail.py (Gemini / Nano Banana Pro)
+
+# YouTube stats + upload (tools/yt_stats.py, tools/yt_upload.py) — OAuth via .youtube/ token files:
+google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+
+# Optional — only for tools/capture_web.py (auto-capturing public web pages to clone as beats):
+#   pip install playwright && playwright install chromium
+# playwright

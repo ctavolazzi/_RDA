@@ -1,0 +1,33 @@
+{
+  "episode": "NNN-slug",
+  "exam": {
+    "origin": null,
+    "sha256": null,
+    "frozen_at": null
+  },
+  "challenge": {
+    "time_limit_minutes": null,
+    "pass_line": { "correct": null, "of": null },
+    "started_at": null,
+    "test_finished_at": null
+  },
+  "score": {
+    "correct": null,
+    "of": null,
+    "scorer_output_captured": false
+  },
+  "outcome": null,
+  "payoff": {
+    "description": null,
+    "filmed": false
+  },
+  "actual_durations_minutes": {
+    "exam_sourcing_and_verification": null,
+    "study_and_test": null,
+    "payoff_broll": null,
+    "talking_head": null,
+    "pipeline": null
+  },
+  "pipeline_project": null,
+  "notes": null
+}
