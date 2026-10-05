@@ -22,7 +22,8 @@ The pipeline lives in this repo (vendored from claude-youtube-editor on 2026-10-
 | Test capture shown as proof | A real recording slot in `timeline.json`. The `/make-tsx` skill reserves real recordings for genuine proof, which is exactly this case |
 | Noisy desktop or room audio | `/clean-audio` |
 | Score sting, reward, punishment, transitions | `/suggest-sfx` |
-| Title and three thumbnail bets | `/packaging` |
+| Thumbnail, required for every video | `/thumbnail`, or a Remotion still in the RDA look; saved to `videos/rda-NNN/packaging/` |
+| Title, description, and more thumbnail bets | `/packaging` |
 | Loudness to -16 LUFS / -1.5 dBTP before upload | `tools/master_audio.py` |
 | Upload as a private draft | `tools/yt_upload.py` |
 | Track the row in the content tracker | `tools/notion_sync.py` |
