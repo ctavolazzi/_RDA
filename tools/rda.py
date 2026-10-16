@@ -9,9 +9,12 @@ Stdlib only. Run from the repo root:
   python tools/rda.py status                          # where things stand and the next step
   python tools/rda.py exam freeze                     # validate, hash, seal the key, write the card
   python tools/rda.py exam check                      # prove on camera the exam did not change
+  python tools/rda.py exam external --title "FCC Technician" --pass-line 26/35 --scorer "VE team"
+                                                      # a real exam someone else grades: declare the pass line first
   python tools/rda.py clock start 360                 # live countdown for the screen capture
   python tools/rda.py clock stop                      # record when the test finished
   python tools/rda.py score                           # enter answers, get the score, write result.json
+  python tools/rda.py score --external 31/35 --evidence exam/score-report.jpg   # record an external grader's score
   python tools/rda.py handoff                         # scaffold videos/rda-NNN/ here and export episode.json
   python tools/rda.py log "filmed the cookie b-roll"  # dated receipt in the episode log
 
@@ -269,11 +272,56 @@ def check_frozen(p):
     """Returns (ok, message)."""
     if not os.path.exists(p["frozen"]):
         return False, "not frozen"
+    fz = load_json(p["frozen"])
+    if fz.get("mode") == "external":
+        pl = fz["pass_line"]
+        return True, (f"EXTERNAL  graded by {fz['scorer']}, pass line {pl['correct']} of {pl['of']} "
+                      f"declared {fz['declared_at']}")
     if not os.path.exists(p["exam"]):
         return False, "exam.json is missing"
     want = load_json(p["frozen"])["sha256"]
     have = sha256(p["exam"])
     return (have == want), (f"OK  {have}" if have == want else f"CHANGED  frozen {want}  now {have}")
+
+
+def parse_ratio(text, what):
+    m = re.fullmatch(r"\s*(\d+)\s*/\s*(\d+)\s*", text or "")
+    if not m:
+        die(f"{what} must look like 26/35")
+    a, b = int(m.group(1)), int(m.group(2))
+    if b <= 0 or a > b:
+        die(f"{what} {a}/{b} is not possible")
+    return a, b
+
+
+def cmd_exam_external(args):
+    """A real exam graded by someone else (an exam portal, a testing center, volunteer examiners).
+    There is no exam.json and no key on our side, so the tool records the pass line before the test
+    and refuses to move it, exactly like a frozen exam."""
+    p = ep_paths(resolve_episode(args.episode, args.root))
+    if os.path.exists(p["frozen"]):
+        die(f"already frozen or declared (see {os.path.relpath(p['frozen'], ROOT)}). The pass line does not move.")
+    r = load_json(p["result"]) if os.path.exists(p["result"]) else {}
+    if r.get("challenge", {}).get("started_at"):
+        die("the clock already started. The pass line is set before the test, so this episode cannot declare one now.")
+    correct, of = parse_ratio(args.pass_line, "--pass-line")
+    when = now().isoformat()
+    pl = {"correct": correct, "of": of}
+    save_json(p["frozen"], {"mode": "external", "title": args.title, "scorer": args.scorer, "declared_at": when,
+                            "items": of, "pass_line": pl, "origin": "real", "sha256": None})
+    if os.path.exists(p["result"]):
+        r.setdefault("exam", {}).update({"origin": "real", "mode": "external", "title": args.title,
+                                         "scorer": args.scorer, "frozen_at": when})
+        ch = r.setdefault("challenge", {})
+        ch["pass_line"] = pl
+        if args.time_limit:
+            ch["time_limit_minutes"] = args.time_limit
+        save_json(p["result"], r)
+    append_log(p, f"external exam declared: {args.title}, graded by {args.scorer}, pass line {correct} of {of}")
+    print(f"declared   {args.title}")
+    print(f"pass line  {correct} of {of}  (fixed from now on)")
+    print(f"graded by  {args.scorer}")
+    print("next: commit exam/, then record B1 and B2 before studying")
 
 
 def cmd_exam_check(args):
@@ -367,6 +415,11 @@ def cmd_score(args):
     ok, msg = check_frozen(p)
     if not ok:
         die(f"exam is not frozen and intact ({msg}). Freeze it first.")
+    fz = load_json(p["frozen"])
+    if fz.get("mode") == "external":
+        return score_external(p, fz, args)
+    if args.external:
+        die("--external is only for an exam declared with: rda exam external")
     exam = load_json(p["exam"])
     key = load_json(p["key"])
     if args.answers:
@@ -411,6 +464,39 @@ def cmd_score(args):
         print(f"\n  unanswered: {', '.join(s['unanswered'])}")
 
 
+def score_external(p, fz, args):
+    if not args.external:
+        die("this exam is graded externally. Record the grader's score: rda score --external 31/35 [--evidence photo]")
+    correct, of = parse_ratio(args.external, "--external")
+    pl = fz["pass_line"]
+    if of != pl["of"]:
+        die(f"the score is out of {of}, but the declared exam has {pl['of']} questions")
+    evidence = None
+    if args.evidence:
+        if not os.path.exists(args.evidence):
+            die(f"no file at {args.evidence}")
+        evidence = os.path.relpath(os.path.abspath(args.evidence), p["dir"])
+    outcome = "pass" if correct >= pl["correct"] else "fail"
+    r = load_json(p["result"])
+    r["score"] = {"correct": correct, "of": of, "scorer_output_captured": bool(evidence),
+                  "graded_by": fz["scorer"], "evidence": evidence}
+    r["outcome"] = outcome
+    save_json(p["result"], r)
+    append_log(p, f"external score recorded {correct} of {of}, {outcome.upper()}"
+                  + (f", evidence {evidence}" if evidence else ", no evidence file yet"))
+    # This block is what the camera sees. Keep it plain.
+    print()
+    print("  =====================================")
+    print(f"   {fz['title']}")
+    print(f"   SCORE   {correct} of {of}")
+    print(f"   PASS LINE   {pl['correct']} of {pl['of']}")
+    print(f"   RESULT   {outcome.upper()}")
+    print(f"   GRADED BY   {fz['scorer']}")
+    print("  =====================================")
+    if not evidence:
+        print("\n  add a photo of the official score report: rerun with --evidence <file>")
+
+
 # ── handoff ───────────────────────────────────────────────────────────────────
 def cmd_handoff(args):
     p = ep_paths(resolve_episode(args.episode, args.root))
@@ -436,7 +522,8 @@ def cmd_handoff(args):
     frozen = load_json(p["frozen"]) if os.path.exists(p["frozen"]) else {}
     episode = {
         "episode": p["name"],
-        "exam": {"origin": frozen.get("origin"), "sha256": frozen.get("sha256"), "items": frozen.get("items")},
+        "exam": {"origin": frozen.get("origin"), "sha256": frozen.get("sha256"), "items": frozen.get("items"),
+                 "mode": frozen.get("mode", "frozen"), "title": frozen.get("title"), "scorer": frozen.get("scorer")},
         "challenge": r.get("challenge", {}),
         "score": r.get("score", {}),
         "outcome": r.get("outcome"),
@@ -497,8 +584,10 @@ def status_lines(p):
 
     mark(not has_todo(p["card"]), "exam card filled",
          "fill exam/exam-card.md (exam, source, time limit, pass line, stakes)")
-    mark(os.path.exists(p["exam"]), "exam.json on disk",
-         "write exam/exam.json (a real exam with its key, validated by freeze)")
+    external = os.path.exists(p["frozen"]) and load_json(p["frozen"]).get("mode") == "external"
+    mark(external or os.path.exists(p["exam"]), "exam graded externally (no exam.json needed)" if external else "exam.json on disk",
+         "write exam/exam.json (a real exam with its key, validated by freeze), "
+         "or for an exam someone else grades: rda exam external --title ... --pass-line 26/35 --scorer ...")
     mark(frozen_ok, f"exam frozen and intact ({frozen_msg})",
          "python tools/rda.py exam freeze, then commit exam/")
     ch = r.get("challenge", {})
@@ -572,6 +661,10 @@ def build_parser():
     ex = sub.add_parser("exam", help="freeze or check the exam").add_subparsers(dest="sub", required=True)
     ex.add_parser("freeze", help="validate, hash, seal the key, write the question sheet", parents=[ep]).set_defaults(fn=cmd_exam_freeze)
     ex.add_parser("check", help="recompute the hash", parents=[ep]).set_defaults(fn=cmd_exam_check)
+    s = ex.add_parser("external", help="declare a real exam graded by someone else, and its pass line", parents=[ep])
+    s.add_argument("--title", required=True); s.add_argument("--pass-line", required=True, help="like 26/35")
+    s.add_argument("--scorer", required=True, help="who grades it, e.g. the VE team or the testing center")
+    s.add_argument("--time-limit", type=int, help="study window in minutes"); s.set_defaults(fn=cmd_exam_external)
 
     ck = sub.add_parser("clock", help="the visible study clock").add_subparsers(dest="sub", required=True)
     s = ck.add_parser("start", help="start (or show) the countdown", parents=[ep]); s.add_argument("minutes", nargs="?", type=int)
@@ -582,6 +675,8 @@ def build_parser():
     s = sub.add_parser("score", help="score the answers against the sealed key", parents=[ep])
     s.add_argument("answers", nargs="?", help="answers JSON {id: letter}; omit to type them in")
     s.add_argument("--interactive", action="store_true", help="type answers even if answers.json exists")
+    s.add_argument("--external", help="an external grader's score, like 31/35")
+    s.add_argument("--evidence", help="photo or PDF of the official score report")
     s.set_defaults(fn=cmd_score)
 
     s = sub.add_parser("handoff", help="scaffold videos/rda-NNN/ and export episode.json for the cards", parents=[ep])

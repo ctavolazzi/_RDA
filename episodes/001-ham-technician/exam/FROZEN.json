@@ -1,0 +1,13 @@
+{
+  "mode": "external",
+  "title": "FCC Amateur Radio Technician exam (Element 2)",
+  "scorer": "Volunteer Examiner team at the session",
+  "declared_at": "2026-10-16T15:20:18+00:00",
+  "items": 35,
+  "pass_line": {
+    "correct": 26,
+    "of": 35
+  },
+  "origin": "real",
+  "sha256": null
+}
