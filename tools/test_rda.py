@@ -273,8 +273,47 @@ def main():
         finally:
             rda.ROOT = saved_root
 
+        # external mode: a real exam someone else grades (volunteer examiners, a testing center)
+        code, out = run(base + ["new", "ham technician"])
+        assert code == 0, out
+        e2 = ["--episode", "002-ham-technician"]
+        q = rda.ep_paths(os.path.join(eps, "002-ham-technician"))
+        # CONTROLS: bad ratios and a missing declaration are refused
+        assert run(base + ["exam", "external", "--title", "T", "--pass-line", "36/35", "--scorer", "VE"] + e2)[0] == 1
+        assert run(base + ["exam", "external", "--title", "T", "--pass-line", "half", "--scorer", "VE"] + e2)[0] == 1
+        code, out = run(base + ["score", "--external", "30/35"] + e2)
+        assert code == 1 and "not frozen" in out, out
+        code, out = run(base + ["exam", "external", "--title", "FCC Technician", "--pass-line", "26/35",
+                                "--scorer", "VE team", "--time-limit", "600"] + e2)
+        assert code == 0 and "pass line  26 of 35" in out, out
+        r2 = json.load(open(q["result"]))
+        assert r2["challenge"]["pass_line"] == {"correct": 26, "of": 35} and r2["exam"]["mode"] == "external"
+        # CONTROL: the pass line does not move, and a frozen exam cannot be added on top
+        assert run(base + ["exam", "external", "--title", "T", "--pass-line", "20/35", "--scorer", "VE"] + e2)[0] == 1
+        assert run(base + ["exam", "freeze"] + e2)[0] == 1
+        code, out = run(base + ["status"] + e2)
+        assert "[x] exam graded externally" in out and "EXTERNAL  graded by VE team" in out, out
+        # CONTROLS: scoring needs --external, the right denominator, and a real evidence file
+        assert run(base + ["score"] + e2)[0] == 1
+        assert run(base + ["score", "--external", "30/50"] + e2)[0] == 1
+        assert run(base + ["score", "--external", "30/35", "--evidence", os.path.join(tmp, "nope.jpg")] + e2)[0] == 1
+        photo = os.path.join(q["dir"], "exam", "score-report.jpg")
+        open(photo, "w").close()
+        code, out = run(base + ["score", "--external", "25/35", "--evidence", photo] + e2)
+        assert code == 0 and "RESULT   FAIL" in out and "GRADED BY   VE team" in out, out
+        r2 = json.load(open(q["result"]))
+        assert r2["outcome"] == "fail" and r2["score"]["scorer_output_captured"] and r2["score"]["evidence"] == "exam/score-report.jpg"
+        # --external is refused on a key-scored exam
+        assert run(base + ["score", "--external", "3/4", "--episode", "001-nursing-entrance"])[0] == 1
+        # CONTROL: a pass line cannot be declared once the clock has started
+        run(base + ["new", "late declare"])
+        e3 = ["--episode", "003-late-declare"]
+        run(base + ["clock", "start", "5", "--once", "--tick", "0"] + e3)
+        code, out = run(base + ["exam", "external", "--title", "T", "--pass-line", "20/35", "--scorer", "VE"] + e3)
+        assert code == 1 and "clock already started" in out, out
+
         # no dashes in anything the tool prints or writes
-        for path in (p["log"], p["card"], p["frozen"], ideas):
+        for path in (p["log"], p["card"], p["frozen"], ideas, q["log"], q["frozen"]):
             text = open(path, encoding="utf-8").read()
             assert chr(0x2013) not in text and chr(0x2014) not in text, path
 
