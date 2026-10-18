@@ -43,7 +43,7 @@ episodes/NNN-slug/        pre-production for an episode: exam, key, card, result
 episodes/_template/       copied by `rda new`
 schemas/exam.schema.json  shape of a frozen exam
 docs/style-bible.md       the living style guide: colors, type, motion, sound, thumbnails. Read before making visuals
-docs/                     format, exam sourcing, production, risks, backlog, ideas, decisions, history
+docs/                     format, exam sourcing, production, risks, backlog, ideas, decisions, history, strategy
 HANDOFF.txt               paste-ready prompt to resume this work in a new chat
 .claude/skills/           the pipeline skills (/clean-cut, /make-tsx, /suggest-sfx, /packaging, ...)
 LICENSES/                 the MIT notice for the vendored pipeline

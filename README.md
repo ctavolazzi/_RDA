@@ -1,5 +1,7 @@
 # RDA: Rapid Domain Acquisition Challenge Series
 
+**Strategy (October 2026):** [docs/STRATEGY.md](docs/STRATEGY.md) sets out who this is for, the offer and pricing, the 90-day plan and the open decisions.
+
 A repeatable video format for rapid learning, exam-taking, and domain synthesis.
 
 The host is not an expert. Each episode shows authentic first-time exposure to a domain, a fixed
