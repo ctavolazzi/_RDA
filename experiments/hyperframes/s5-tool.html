@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <!-- S5 "The tool" from the RDA explainer, ported 1:1 from remotion/src/shots/rda-explainer/_scenes/S5Tool.tsx.
+         Same tokens (lib/rda.tsx), same frame timings at 30 fps, same easing curves, local fonts and GSAP.
+         Not rendered from here: experiments/hyperframes/bakeoff.mjs copies it into a project folder with its
+         assets (fonts, SFX, GSAP) and renders it next to the Remotion original. -->
+    <script src="assets/js/gsap.min.js"></script>
+    <script src="assets/js/CustomEase.min.js"></script>
+    <style>
+      @font-face { font-family: "RDA Display"; src: url("assets/fonts/BricolageGrotesque-var.woff2") format("woff2"); font-weight: 200 800; }
+      @font-face { font-family: "RDA Body"; src: url("assets/fonts/SourceSans3-var.woff2") format("woff2"); font-weight: 200 900; }
+      @font-face { font-family: "RDA Mono"; src: url("assets/fonts/IBMPlexMono-400.woff2") format("woff2"); font-weight: 400; }
+      @font-face { font-family: "RDA Mono"; src: url("assets/fonts/IBMPlexMono-600.woff2") format("woff2"); font-weight: 600; }
+
+      :root {
+        --paper: #f6f7f3; --sheet: #ffffff; --ink: #1c2320; --muted: #5a655f; --rule: #d9ded8;
+        --form: #1d6b58; --form-soft: #e3efe9; --pass: #1d7a43;
+        --term-bg: #18201c; --term-fg: #d7e4dc; --term-dim: #8ba096;
+        --display: "RDA Display", system-ui, sans-serif;
+        --body: "RDA Body", system-ui, sans-serif;
+        --mono: "RDA Mono", ui-monospace, monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); }
+      #root { position: relative; width: 1920px; height: 1080px; background: var(--paper); }
+      .fill { position: absolute; inset: 0; }
+
+      /* PaperChrome: page 5 of 7 in the full explainer */
+      .chrome {
+        position: absolute; top: 54px; left: 110px; right: 110px; display: flex; justify-content: space-between;
+        font: 600 20px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+        padding-bottom: 16px; border-bottom: 2px solid var(--ink);
+      }
+
+      .eyebrow { font: 600 26px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--form); }
+
+      /* Terminal */
+      .term {
+        position: absolute; top: 170px; left: 110px; width: 980px; background: var(--term-bg); border-radius: 14px;
+        box-shadow: 0 18px 48px rgba(20, 30, 25, 0.22); overflow: hidden;
+      }
+      .term-bar { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #2a352f; }
+      .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
+      .term-title { margin-left: 10px; font: 400 20px/1 var(--mono); color: var(--term-dim); }
+      .term-body { padding: 22px 26px; font: 400 27px/1.55 var(--mono); color: var(--term-fg); }
+      .ln { white-space: pre; min-height: 1.55em; }
+      .ln.dim { color: var(--term-dim); }
+      .ln.head { font-weight: 600; }
+      .mark { font-weight: 600; }
+      .mark.done { color: #5fcf8c; }
+      .mark.open { color: var(--term-dim); }
+      .ln.next {
+        color: #5fcf8c; font-weight: 600; background: rgba(95, 207, 140, 0); border-radius: 6px;
+        margin: 0 -10px; padding: 0 10px;
+      }
+
+      .side { position: absolute; top: 260px; left: 1170px; width: 640px; display: flex; flex-direction: column; gap: 26px; }
+      .side h1 { font: 600 88px/1.08 var(--mono); letter-spacing: -0.02em; color: var(--ink); }
+      .side .lede { font: 400 44px/1.3 var(--body); color: var(--ink); }
+
+      /* Part B: the score card */
+      #partB { display: flex; align-items: center; justify-content: center; }
+      .col { display: flex; flex-direction: column; gap: 22px; width: 1100px; margin-top: 40px; }
+      .card {
+        position: relative; background: var(--sheet); border: 2px solid var(--rule); border-radius: 14px;
+        padding: 40px 52px; display: flex; flex-direction: column; gap: 26px; box-shadow: 0 18px 48px rgba(20, 30, 25, 0.1);
+      }
+      .sample { font: 600 22px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+      .exam { font: 800 50px/1.1 var(--display); color: var(--ink); }
+      .score-row { display: flex; align-items: baseline; gap: 40px; }
+      .score { font: 800 150px/1 var(--display); color: var(--ink); letter-spacing: -0.03em; }
+      .line { font: 600 36px/1.2 var(--mono); color: var(--muted); }
+      .tally { display: flex; flex-direction: column; gap: 16px; }
+      .row { display: grid; grid-template-columns: 200px 1fr 90px; align-items: center; gap: 22px; }
+      .topic { font: 600 32px/1 var(--body); color: var(--ink); }
+      .track { height: 22px; background: var(--form-soft); border-radius: 11px; overflow: hidden; }
+      .bar { height: 100%; width: 0%; background: var(--form); border-radius: 11px; }
+      .got { font: 600 30px/1 var(--mono); color: var(--ink); text-align: right; }
+      .stamp {
+        position: absolute; top: 34px; right: 52px; display: inline-block;
+        font: 800 92px/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--pass);
+        border: 7.67px solid var(--pass); border-radius: 10px; padding: 18.4px 31.28px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+      <div class="chrome"><span>RDA Challenge · Episode kit</span><span>Page 5 / 7</span></div>
+
+      <div id="sceneIn" class="fill">
+        <div id="sceneOut" class="fill">
+          <!-- Part A: rda status -->
+          <div id="partA" class="fill">
+            <div class="term" id="term">
+              <div class="term-bar">
+                <span class="dot" style="background: #e06c5a"></span><span class="dot" style="background: #e2b04a"></span><span class="dot" style="background: #5fcf8c"></span>
+                <span class="term-title">python tools/rda.py status</span>
+              </div>
+              <div class="term-body">
+                <div class="ln dim" id="cmd"></div>
+                <div class="ln head" id="l0">001-nursing-entrance</div>
+                <div class="ln" id="l1">  <span class="mark done">[x]</span> exam card filled</div>
+                <div class="ln" id="l2">  <span class="mark done">[x]</span> exam frozen and intact</div>
+                <div class="ln" id="l3">  <span class="mark done">[x]</span> clock started</div>
+                <div class="ln" id="l4">  <span class="mark done">[x]</span> test finished</div>
+                <div class="ln" id="l5">  <span class="mark done">[x]</span> scored: 8 of 10, PASS</div>
+                <div class="ln" id="l6">  <span class="mark open">[ ]</span> payoff filmed</div>
+                <div class="ln" id="l7">  <span class="mark open">[ ]</span> script written</div>
+                <div class="ln"> </div>
+                <div class="ln next" id="l9">next: film the payoff b-roll</div>
+              </div>
+            </div>
+            <div class="side">
+              <p class="eyebrow" id="a-eyebrow">Start every session with</p>
+              <h1 id="a-head">rda status</h1>
+              <p class="lede" id="a-body">It reads what is on disk and names the next step, in whatever order you work.</p>
+            </div>
+          </div>
+
+          <!-- Part B: rda score -->
+          <div id="partB" class="fill">
+            <div class="col">
+              <p class="eyebrow" id="b-eyebrow">Then, on camera: rda score</p>
+              <div class="card" id="card">
+                <span class="sample">Sample exam from the dry run</span>
+                <span class="exam">Nursing Entrance Practice</span>
+                <div class="score-row" id="score-row">
+                  <span class="score">8 of 10</span><span class="line">pass line 7 of 10</span>
+                </div>
+                <div class="tally">
+                  <div class="row" id="t0"><span class="topic">Math</span><div class="track"><div class="bar" id="b0"></div></div><span class="got">5/5</span></div>
+                  <div class="row" id="t1"><span class="topic">Reading</span><div class="track"><div class="bar" id="b1"></div></div><span class="got">3/5</span></div>
+                </div>
+                <div class="stamp" id="stamp">Pass</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sound: the same cues the explainer places on S5, plus the music bed at its 36s offset -->
+      <audio id="bed" data-start="0" data-duration="12" data-media-start="36" data-volume="0.8" src="assets/audio/docu-pluck.mp3"></audio>
+      <audio id="c1" data-start="1.7333" data-duration="2" data-volume="0.2" src="assets/audio/ui-click-soft.mp3"></audio>
+      <audio id="c2" data-start="2.1333" data-duration="2" data-volume="0.2" src="assets/audio/ui-click-soft.mp3"></audio>
+      <audio id="c3" data-start="2.5333" data-duration="2" data-volume="0.2" src="assets/audio/ui-click-soft.mp3"></audio>
+      <audio id="c4" data-start="2.9333" data-duration="2" data-volume="0.2" src="assets/audio/ui-click-soft.mp3"></audio>
+      <audio id="c5" data-start="3.3333" data-duration="2" data-volume="0.2" src="assets/audio/ui-click-soft.mp3"></audio>
+      <audio id="wh" data-start="6.2" data-duration="2" data-volume="0.4" src="assets/audio/whoosh-soft.mp3"></audio>
+      <audio id="st" data-start="9.6667" data-duration="2" data-volume="0.55" src="assets/audio/stamp-hit.mp3"></audio>
+      <audio id="ch" data-start="9.8" data-duration="2" data-volume="0.4" src="assets/audio/chime-reward.mp3"></audio>
+    </div>
+
+    <script>
+      gsap.registerPlugin(CustomEase);
+      // EASE.out from lib/rda.tsx
+      CustomEase.create("rdaOut", "0.22,0.72,0.28,1");
+      const fr = (n) => n / 30; // Remotion frames at 30 fps, in seconds
+      const tl = gsap.timeline({ paused: true });
+
+      // fade + rise, as rise(frame, at, dist, dur) in lib/rda.tsx
+      const rise = (sel, at, dist = 24, dur = 14) =>
+        tl.fromTo(sel, { opacity: 0, y: dist }, { opacity: 1, y: 0, duration: fr(dur), ease: "rdaOut" }, fr(at));
+      const fade = (sel, at, dur, from, to) =>
+        tl.fromTo(sel, { opacity: from }, { opacity: to, duration: fr(dur), ease: "none" }, fr(at));
+
+      // Scene wrapper: in over 8 frames, out over the last 8
+      fade("#sceneIn", 0, 8, 0, 1);
+      fade("#sceneOut", 352, 8, 1, 0);
+
+      // Part A
+      rise("#term", 4);
+      // typed('$ rda status', 10, 30). Not an onUpdate counter: the renderer seeks with
+      // suppressEvents, which skips callbacks. One span per character, each shown by tl.set at the
+      // frame where Remotion's Math.round(interpolate(...)) first reaches it.
+      const cmd = "$ rda status";
+      const cmdEl = document.getElementById("cmd");
+      cmd.split("").forEach((ch, k) => {
+        const s = document.createElement("span");
+        s.textContent = ch;
+        s.style.visibility = "hidden";
+        cmdEl.appendChild(s);
+        tl.set(s, { visibility: "visible" }, fr(10 + Math.ceil(((k + 0.5) * 20) / cmd.length)));
+      });
+      [0, 1, 2, 3, 4, 5, 6, 7, 9].forEach((i) => fade(`#l${i}`, 40 + i * 12, 6, 0, 1));
+      tl.fromTo("#l9", { backgroundColor: "rgba(95, 207, 140, 0)" }, { backgroundColor: "rgba(95, 207, 140, 0.16)", duration: fr(10), ease: "none" }, fr(150));
+      rise("#a-eyebrow", 20);
+      rise("#a-head", 26);
+      rise("#a-body", 46);
+      fade("#partA", 184, 8, 1, 0);
+
+      // Part B
+      fade("#partB", 192, 8, 0, 1);
+      rise("#b-eyebrow", 196);
+      rise("#card", 200, 30);
+      rise("#score-row", 214);
+      [[0, 5, 5], [1, 3, 5]].forEach(([i, got, of]) => {
+        const at = 192 + 50 + i * 12;
+        fade(`#t${i}`, at, 6, 0, 1);
+        tl.fromTo(`#b${i}`, { width: "0%" }, { width: `${(got / of) * 100}%`, duration: fr(24), ease: "rdaOut" }, fr(at));
+      });
+      tl.fromTo("#stamp", { opacity: 0, scale: 1.6, rotation: -4 }, { opacity: 1, scale: 1, rotation: -4, duration: fr(9), ease: "rdaOut" }, fr(290));
+
+      tl.to({}, { duration: 0 }, 12); // timeline length = composition length
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

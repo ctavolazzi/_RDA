@@ -14,6 +14,8 @@ Ideas arrive at random and out of order. The tool is built for that: it reads wh
 says where things stand.
 
 - When the user shares an idea, park it first: `python tools/rda.py idea "..."`. Then talk about it.
+- To make any video (script, plan, design, render, measure, thumbnail, show), follow the `script-to-render` skill in
+  `ctavolazzi/_workbench` (`.claude/skills/script-to-render/`), and add a case file there when the video is done (D18).
 - When something happens off camera (footage shot, exam sourced, prop bought), log it:
   `python tools/rda.py log "..."`, so the record matches reality.
 - At the end of a working session, add or extend an entry in `docs/history/` (what we did, why, what
@@ -32,6 +34,8 @@ says where things stand.
 tools/rda.py              the episode tool (idea, new, status, log, exam freeze|check, clock, score, handoff)
 tools/test_rda.py         its checks, with planted-bad-input controls. Run after touching rda.py
 tools/master_audio.py     last step before upload: loudness to -16 LUFS / -1.5 dBTP, video copied
+tools/narrate.py          a free local narrator (Kokoro, no key): script.md's Voice: lines to clips + _vo.json (D20)
+remotion/src/lib/news.tsx the news kit: price tags, headline cutouts, source tags, red pen, diagrams, bars (D21)
 remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal). Use it for every RDA shot
 tools/*.py, *.mjs         the production pipeline (vendored, see docs/vendored.md)
 remotion/                 the Remotion project. Shots in remotion/src/shots/<group>/; registry is GENERATED
@@ -44,6 +48,7 @@ episodes/_template/       copied by `rda new`
 schemas/exam.schema.json  shape of a frozen exam
 docs/style-bible.md       the living style guide: colors, type, motion, sound, thumbnails. Read before making visuals
 docs/                     format, exam sourcing, production, risks, backlog, ideas, decisions, history
+experiments/              measured trials that did not become the pipeline (hyperframes/: HTML renderer bake-off, D17)
 HANDOFF.txt               paste-ready prompt to resume this work in a new chat
 .claude/skills/           the pipeline skills (/clean-cut, /make-tsx, /suggest-sfx, /packaging, ...)
 LICENSES/                 the MIT notice for the vendored pipeline
@@ -115,10 +120,19 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   Behind the cloud proxy, headless Chrome rejects the proxy's certificate, so any bundle that includes the
   example shots fails. Use `node scripts/render-one.mjs <group> <Id>`, which bundles one shot folder. Never
   disable TLS verification to get around it. On the user's own machine this is not an issue.
-- **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace` +
-  `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
-- **No voice means the music carries the audio.** Library clips sit near -20 LUFS; a bed at 0.2 gave a
-  -32 LUFS export. Always finish with `tools/master_audio.py`.
+- **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace`.
+  The render hold is `useRdaFonts()`, called by `PaperChrome`, `Scene` and every thumbnail; a new composition that uses
+  none of the kit's components calls it itself. Never take a `delayRender` at module level: the bundle has two copies of
+  Remotion's delay-render (`remotion/no-react` comes in with `@remotion/google-fonts`), the second resets the holds, and
+  an orphaned hold kills any render longer than about two minutes at 118 s (2026-10-18, `docs/humanoid-2490-video.md`).
+- **No voice means the music carries the audio,** unless the effects should lead (D19). Library clips sit near -20 LUFS; a
+  bed at 0.2 gave a -32 LUFS export. Always finish with `tools/master_audio.py`; for effects over quiet music use
+  `--static --lufs -19`. The default mode quietly goes dynamic (it says so now) and lifts a quiet bed. With a voice,
+  the default mode kept the balance (D20): use it.
+- **No voice key does not mean no voice.** `./venv/bin/python tools/narrate.py videos/<p>` speaks the script's `Voice:`
+  lines with Kokoro on the CPU (first run downloads 353 MB from the kokoro-onnx GitHub release; Hugging Face is blocked
+  in the cloud container). The clips are git-ignored; run it before rendering a narrated video on a fresh clone.
+  After adding a voice, re-read every on-screen claim: "the words on screen carry it" stopped being true.
 - **A pipe hides exit codes.** `cmd | tail` reports tail's exit status. Capture to a log file, then check `$?`.
 - **The Write tool turns unicode escapes into literal characters.** A backslash-u escape for the en dash
   (code point 2013) is written out as the dash itself. In code that must not contain dashes, use
@@ -127,5 +141,5 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
 ## Not built yet
 
 See `docs/history/2026-10-05.md`, "Open items". In short: pick episode 001's exam (it decides whether an
-external-scorer mode is needed), adopt the RDA look as the brand, narration for the explainer, LLM exam
+external-scorer mode is needed), adopt the RDA look as the brand, narration for the explainer (`narrate.py` makes it keyless now), LLM exam
 generation with blind verification, and episode cards that read `work/episode.json`.

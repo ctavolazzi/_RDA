@@ -44,7 +44,7 @@ OPEN ITEMS, ROUGHLY IN ORDER
 1. Pick episode 001's exam. If it is an online test that grades itself, add an "external scorer"
    mode to rda score (record the vendor's score; we never hold the key).
 2. Run /brand-setup to make the RDA look the repo brand (use docs/style-bible.md as the input).
-3. Narration for the explainer (ElevenLabs via tools/gen_vo.mjs, or my own voice), then lower the bed.
+3. Narration for the explainer (my own voice, ElevenLabs via tools/gen_vo.mjs, or free and keyless via tools/narrate.py, D20), then lower the bed.
    The explainer's scene 6 still shows two repos; update it before public use.
 4. Episode cards (timer, pass line, score, tally) that read videos/rda-NNN/work/episode.json.
 5. Later: LLM exam generation with blind answer-key verification (protocol in docs/exam-sourcing.md).
