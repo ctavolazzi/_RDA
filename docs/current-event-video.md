@@ -3,7 +3,8 @@
 Written 2026-10-18 for CT: "Carefully consider how to make an actually genuinely engaging video about a current event.
 Complete with overlays, fair use footage, cutouts, transitions, interview clips, and more."
 
-This is a plan, not a finished video. It is in four parts: what makes this kind of video work, a worked example on a
+This is a plan, not a finished video. Its first run, a graphics-only cut of the worked example, is
+`docs/humanoid-2490-video.md` (D21). It is in four parts: what makes this kind of video work, a worked example on a
 real story from this week, the toolkit and rights rules, and where and how it actually gets made (this cloud session
 cannot fetch any footage; measured below). Facts about the news are from search results on 2026-10-18 and are marked
 "verify on script day": the article pages themselves could not be opened from here.

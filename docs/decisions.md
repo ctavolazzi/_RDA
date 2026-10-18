@@ -6,6 +6,22 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D21 · Current-event videos: sourced numbers, drawn diagrams, and a graphics cut made first (2026-10-18)
+
+**Decided:** a news video follows `docs/current-event-video.md`. Every on-screen number carries a `SourceTag` and
+needs two outlets (or is marked as single-sourced in the script's claims table); when sources disagree, the video
+shows both. Products and people we hold no image rights to are drawn as diagrams, to scale where size matters, and
+labeled as diagrams. The first cut is built in the cloud from graphics, a scratch voice and library music; borrowed
+footage, CT on camera and interviews go in marked slots and are added on CT's machine, never faked.
+**Why:** CT asked for "an actually genuinely engaging video about a current event", then "Give it a shot". Every
+footage host is denied in this container (measured), so the honest cut is graphics-first; and the story got better by
+showing a disagreement (three shipment counts, two China shares) instead of picking one number.
+**Considered:** AI-generated footage of the product (it would show a robot that is not the product; never); waiting
+for footage access before building anything (the script, timing, overlays and sound do not depend on it); a single
+"best" shipment number (each firm's method differs; picking one hides the story).
+**Revisit when:** footage hosts are allowed here (then fetch with a rights log, `tools/fetch_footage.py`, still to be
+built), or CT's first upload shows how the graphics-only cut performs against the full version.
+
 ### D20 · A free local narrator: Kokoro, through tools/narrate.py (2026-10-18)
 
 **Decided:** when a video needs a voice and there is no ElevenLabs key (or CT asks for a free one), narrate it with

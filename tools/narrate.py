@@ -3,10 +3,12 @@
     python tools/narrate.py videos/script-to-render
     python tools/narrate.py videos/script-to-render --voice am_michael --speed 1.05
 
-Reads every `Voice:` line in videos/<p>/script/script.md (at most one per `### S<n>` scene heading),
-speaks it, and writes:
+Reads every `Voice:` line in videos/<p>/script/script.md under a `### S<n>` scene heading, speaks it,
+and writes:
 
-    media/projects/<p>/vo/S<n>.wav       the clips (git-ignored, rebuilt by this tool)
+    media/projects/<p>/vo/S<n>.wav       the clips (git-ignored, rebuilt by this tool); a scene's second
+                                         and later lines are S<n>.2, S<n>.3, ..., so a composition can
+                                         start each sentence on its own frame
     remotion/src/shots/<p>/_vo.json      what the composition reads: the text, the voice, and each
                                          clip's measured length in frames (committed)
 
@@ -67,21 +69,20 @@ def model_dir():
 
 
 def read_lines(script):
-    """Return {scene: text} for every `Voice:` line, in script order."""
-    lines, scene = {}, None
+    """Return {id: text} for every `Voice:` line, in script order: S3, then S3.2, S3.3 for more lines."""
+    lines, scene, count = {}, None, 0
     for n, raw in enumerate(script.read_text(encoding="utf-8").splitlines(), 1):
         m = SCENE.match(raw)
         if m:
-            scene = m.group(1)
+            scene, count = m.group(1), 0
             continue
         m = VOICE.match(raw)
         if not m:
             continue
         if scene is None:
             sys.exit(f"error: {script}:{n}: a Voice: line before any ### S<n> heading")
-        if scene in lines:
-            sys.exit(f"error: {script}:{n}: a second Voice: line in {scene}; one per scene")
-        lines[scene] = m.group(1).strip().strip('"')
+        count += 1
+        lines[scene if count == 1 else f"{scene}.{count}"] = m.group(1).strip().strip('"')
     return lines
 
 

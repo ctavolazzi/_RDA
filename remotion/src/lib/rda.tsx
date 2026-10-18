@@ -67,23 +67,51 @@ const FONT_FILES: Array<[string, string, string]> = [
   ['RDA Mono', 'IBMPlexMono-600.woff2', '600'],
 ];
 
-if (typeof document !== 'undefined' && typeof FontFace !== 'undefined') {
-  // Generous timeout: with many render tabs starting at once, the default 30s can expire
-  // before every tab has loaded the fonts. Failing loudly beats rendering in fallback fonts.
-  const handle = delayRender('rda-explainer fonts', { timeoutInMilliseconds: 120000 });
-  Promise.all(
-    FONT_FILES.map(([family, file, weight]) => {
-      const face = new FontFace(family, `url('${FONT(file)}') format('woff2')`, { weight });
-      // FontFaceSet.add exists at runtime; this repo's TS lib does not declare it
-      return face.load().then((loaded) => (document.fonts as unknown as { add: (f: FontFace) => void }).add(loaded));
-    }),
-  )
-    .then(() => continueRender(handle))
-    .catch((err) => {
-      console.error('rda-explainer font load failed', err);
-      continueRender(handle);
-    });
-}
+// The font files start loading as soon as this module runs, but the hold on rendering
+// (delayRender) is taken by useRdaFonts() on the first render of a kit component, never at
+// module level. Why (2026-10-18): the bundle carries two copies of Remotion's delay-render
+// module (`remotion` and `remotion/no-react`, the latter pulled in by @remotion/google-fonts),
+// and the second one to load resets the list of holds. A hold taken at module level before
+// that was orphaned: it never blocked a frame, and its timer fired at 118 s, killing any render
+// longer than about two minutes. By the first render every module has loaded, so nothing can
+// reset the hold after that.
+const canLoadFonts = typeof document !== 'undefined' && typeof FontFace !== 'undefined';
+let fontsReady = false;
+let fontsLoading: Promise<void> | null = null;
+let fontHold: number | null = null;
+const loadFonts = () => {
+  if (!fontsLoading) {
+    fontsLoading = Promise.all(
+      FONT_FILES.map(([family, file, weight]) => {
+        const face = new FontFace(family, `url('${FONT(file)}') format('woff2')`, { weight });
+        // FontFaceSet.add exists at runtime; this repo's TS lib does not declare it
+        return face.load().then((loaded) => (document.fonts as unknown as { add: (f: FontFace) => void }).add(loaded));
+      }),
+    )
+      .then(() => {
+        fontsReady = true;
+      })
+      .catch((err) => {
+        console.error('rda font load failed', err);
+        fontsReady = true;
+      });
+  }
+  return fontsLoading;
+};
+if (canLoadFonts) loadFonts();
+
+/**
+ * Hold rendering until the RDA fonts have loaded. PaperChrome and Scene call it, so every RDA
+ * video is covered; a composition that uses none of the kit's components (a thumbnail) calls it
+ * itself. Once per page; a no-op after the fonts are in. The timeout is generous because many
+ * render tabs start at once; failing loudly beats rendering in fallback fonts.
+ */
+export const useRdaFonts = () => {
+  if (!canLoadFonts || fontsReady || fontHold !== null) return;
+  const hold = delayRender('rda fonts', { timeoutInMilliseconds: 120000 });
+  fontHold = hold;
+  loadFonts().then(() => continueRender(hold));
+};
 
 // =============================================================================
 // MOTION
@@ -113,6 +141,7 @@ export const typed = (frame: number, text: string, a: number, b: number) =>
 
 /** Scene wrapper: fades its content in at the start and out at the end. */
 export const Scene: React.FC<{ dur: number; children: React.ReactNode }> = ({ dur, children }) => {
+  useRdaFonts();
   const frame = useCurrentFrame();
   const opacity = iio(frame, [0, 8, dur - 8, dur], [0, 1, 1, 0]);
   return <AbsoluteFill style={{ opacity }}>{children}</AbsoluteFill>;
@@ -229,7 +258,9 @@ export const PaperChrome: React.FC<{ page: number; of: number; label?: string }>
   page,
   of,
   label = 'RDA Challenge · Episode kit',
-}) => (
+}) => {
+  useRdaFonts();
+  return (
   <AbsoluteFill style={{ pointerEvents: 'none' }}>
     <div
       style={{
@@ -253,4 +284,5 @@ export const PaperChrome: React.FC<{ page: number; of: number; label?: string }>
       </span>
     </div>
   </AbsoluteFill>
-);
+  );
+};

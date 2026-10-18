@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { C, F, T } from '../../lib/rda';
+import { C, F, T, useRdaFonts } from '../../lib/rda';
 
 // =============================================================================
 // COMPOSITION CONFIG · thumbnail for the HyperFrames vs Remotion comparison clip
@@ -45,7 +45,9 @@ const Card: React.FC<{ label: string; top: number; left: number; tilt: number }>
   </div>
 );
 
-const BakeoffThumb: React.FC = () => (
+const BakeoffThumb: React.FC = () => {
+  useRdaFonts();
+  return (
   <AbsoluteFill style={{ background: T.night, overflow: 'hidden' }}>
     <AbsoluteFill style={{ background: 'radial-gradient(circle at 30% 50%, rgba(62, 224, 138, 0.18), transparent 55%)' }} />
     <Card label="HYPERFRAMES" top={90} left={70} tilt={-5} />
@@ -54,6 +56,7 @@ const BakeoffThumb: React.FC = () => (
       SAME<span style={{ color: T.flare }}>?</span>
     </span>
   </AbsoluteFill>
-);
+  );
+};
 
 export default BakeoffThumb;

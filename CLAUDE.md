@@ -35,6 +35,7 @@ tools/rda.py              the episode tool (idea, new, status, log, exam freeze|
 tools/test_rda.py         its checks, with planted-bad-input controls. Run after touching rda.py
 tools/master_audio.py     last step before upload: loudness to -16 LUFS / -1.5 dBTP, video copied
 tools/narrate.py          a free local narrator (Kokoro, no key): script.md's Voice: lines to clips + _vo.json (D20)
+remotion/src/lib/news.tsx the news kit: price tags, headline cutouts, source tags, red pen, diagrams, bars (D21)
 remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal). Use it for every RDA shot
 tools/*.py, *.mjs         the production pipeline (vendored, see docs/vendored.md)
 remotion/                 the Remotion project. Shots in remotion/src/shots/<group>/; registry is GENERATED
@@ -119,8 +120,11 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   Behind the cloud proxy, headless Chrome rejects the proxy's certificate, so any bundle that includes the
   example shots fails. Use `node scripts/render-one.mjs <group> <Id>`, which bundles one shot folder. Never
   disable TLS verification to get around it. On the user's own machine this is not an issue.
-- **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace` +
-  `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
+- **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace`.
+  The render hold is `useRdaFonts()`, called by `PaperChrome`, `Scene` and every thumbnail; a new composition that uses
+  none of the kit's components calls it itself. Never take a `delayRender` at module level: the bundle has two copies of
+  Remotion's delay-render (`remotion/no-react` comes in with `@remotion/google-fonts`), the second resets the holds, and
+  an orphaned hold kills any render longer than about two minutes at 118 s (2026-10-18, `docs/humanoid-2490-video.md`).
 - **No voice means the music carries the audio,** unless the effects should lead (D19). Library clips sit near -20 LUFS; a
   bed at 0.2 gave a -32 LUFS export. Always finish with `tools/master_audio.py`; for effects over quiet music use
   `--static --lufs -19`. The default mode quietly goes dynamic (it says so now) and lifts a quiet bed. With a voice,

@@ -1,6 +1,6 @@
 # RDA style bible
 
-**Version 0.4 · 2026-10-18 · a living guide, not a lock.**
+**Version 0.5 · 2026-10-18 · a living guide, not a lock.**
 
 This is how RDA videos and thumbnails should look, sound and read, so each episode feels like part of
 one series. It is expected to change as the user and the YouTube audience react. When something here
@@ -168,6 +168,22 @@ mix 2), effects run at twice these, capped at 1.0, over a bed at 0.3.
   without a key: Kokoro `af_heart` via `tools/narrate.py` (D20); say in the description that it is synthetic.
 - One stamp per verdict. Do not stack risers.
 
+## 7b. News pieces (current-event videos)
+
+From the first news video (`docs/humanoid-2490-video.md`), in `remotion/src/lib/news.tsx`, all on the paper look:
+
+- **Cutouts are paper:** a white edge, a soft two-layer shadow (`CUTOUT_SHADOW`), a tilt of 1 to 3 degrees, torn ends
+  on headline strips. Things slap in with a little overshoot (`useSlap`), never bounce around.
+- **Receipts:** every number on screen has a `SourceTag` (mono, "SOURCE" in form green, outlet and month). Qualifiers
+  stay with the number ("about", "over", "nearly"), set small before it.
+- **Diagrams, not borrowed images:** `RobotFigure` and `PersonFigure` are generic drawings, labeled "Diagram" on
+  screen; to scale (with a `Ruler`) whenever size is the point.
+- **The red pen still grades:** circles on a price, underlines on the words that matter, a strike, a question mark
+  between two numbers that disagree, NOT YET. Nothing else is red.
+- **Chapters:** a full-frame form-green `ChapterSlide` that slides across, at most one or two per video.
+- **Motion that means something:** the diagram waves, falls and gets up when the voice says so; a slow `Drift` keeps
+  long layouts alive; no random zooms.
+
 ## 8. Thumbnails
 
 **Every video ships with a thumbnail.** No exceptions: episodes, explainers, shorts that get one. A video
@@ -206,6 +222,7 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-18 | user | "Carefully consider how to make an actually genuinely engaging video about a current event", then "Give it a shot" | section 7b, news pieces: paper cutouts, source tags on every number, labeled diagrams, red pen for disagreement, chapter slide | 0.5 |
 | 2026-10-18 | user | "I want a narrator por favor", then "a free one" | a voice rule in section 7: the narrator leads, effects at table levels, bed dips under each line, measured targets, no effect on a first word; Kokoro via `narrate.py` (D20) | 0.4 |
 | 2026-10-18 | user | "Now your task is to add sound and quiet background music to the video" | effects forward (x2) over a 0.3 bed; foley rows added to the sound table (typing, shutter, pencil, page flip, scene whoosh, one riser); -19 LUFS static master for effects-led mixes (D19) | 0.3 |
 | 2026-10-18 | session | First non-episode video in the look ("how this video was made") needed a process tracker and a way to show its own numbers | step rail, receipt card and scene bar motifs; MEASURED as a stamp verdict; `PaperChrome` takes a `label` | 0.2 |
@@ -214,6 +231,7 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 ## Changelog
 
+- **0.5 (2026-10-18):** section 7b, news pieces, from the first current-event video (D21).
 - **0.4 (2026-10-18):** sound: a voice rule (narrator leads, effects at table levels, the bed dips under each line,
   measured targets), from the narrated mix of the "how this video was made" video (D20).
 - **0.3 (2026-10-18):** sound: six foley rows, a quiet-bed level for effects-led mixes with no voice, and the

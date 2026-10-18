@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { C, F, T } from '../../lib/rda';
+import { C, F, T, useRdaFonts } from '../../lib/rda';
 
 // =============================================================================
 // COMPOSITION CONFIG · thumbnail B ("13 STEPS", made in the video's own run) for "how this video
@@ -51,7 +51,9 @@ const Sheet: React.FC = () => (
   </div>
 );
 
-const ScriptToRenderThumb: React.FC = () => (
+const ScriptToRenderThumb: React.FC = () => {
+  useRdaFonts();
+  return (
   <AbsoluteFill style={{ background: T.night, overflow: 'hidden' }}>
     <AbsoluteFill style={{ background: 'radial-gradient(circle at 70% 40%, rgba(62, 224, 138, 0.20), transparent 55%)' }} />
 
@@ -70,6 +72,7 @@ const ScriptToRenderThumb: React.FC = () => (
       ))}
     </div>
   </AbsoluteFill>
-);
+  );
+};
 
 export default ScriptToRenderThumb;
