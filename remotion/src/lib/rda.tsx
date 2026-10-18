@@ -225,7 +225,11 @@ export const Terminal: React.FC<{ title?: string; width: number; children: React
 );
 
 /** Thin top strip, like the header of an exam paper. `page` is the real scene index. */
-export const PaperChrome: React.FC<{ page: number; of: number }> = ({ page, of }) => (
+export const PaperChrome: React.FC<{ page: number; of: number; label?: string }> = ({
+  page,
+  of,
+  label = 'RDA Challenge · Episode kit',
+}) => (
   <AbsoluteFill style={{ pointerEvents: 'none' }}>
     <div
       style={{
@@ -243,7 +247,7 @@ export const PaperChrome: React.FC<{ page: number; of: number }> = ({ page, of }
         borderBottom: `2px solid ${C.ink}`,
       }}
     >
-      <span>RDA Challenge · Episode kit</span>
+      <span>{label}</span>
       <span>
         Page {page} / {of}
       </span>

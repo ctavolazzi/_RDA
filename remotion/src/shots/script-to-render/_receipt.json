@@ -1,0 +1,11 @@
+{
+  "note": "Measured on this video's first full render (remotion/out/ScriptToRender-r1.mp4), 2026-10-18. Commands: docs/script-to-render-video.md.",
+  "measuredOn": "2026-10-18",
+  "exitCode": 0,
+  "frames": 1800,
+  "seconds": 60.0,
+  "lufsRendered": -21.8,
+  "lufsMastered": -15.9,
+  "truePeakMastered": -1.9,
+  "renderSeconds": 64.2
+}

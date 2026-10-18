@@ -14,6 +14,8 @@ Ideas arrive at random and out of order. The tool is built for that: it reads wh
 says where things stand.
 
 - When the user shares an idea, park it first: `python tools/rda.py idea "..."`. Then talk about it.
+- To make any video (script, plan, design, render, measure, thumbnail, show), follow the `script-to-render` skill in
+  `ctavolazzi/_workbench` (`.claude/skills/script-to-render/`), and add a case file there when the video is done (D18).
 - When something happens off camera (footage shot, exam sourced, prop bought), log it:
   `python tools/rda.py log "..."`, so the record matches reality.
 - At the end of a working session, add or extend an entry in `docs/history/` (what we did, why, what

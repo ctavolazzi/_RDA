@@ -1,6 +1,6 @@
 # RDA style bible
 
-**Version 0.1 · 2026-10-05 · a living guide, not a lock.**
+**Version 0.2 · 2026-10-18 · a living guide, not a lock.**
 
 This is how RDA videos and thumbnails should look, sound and read, so each episode feels like part of
 one series. It is expected to change as the user and the YouTube audience react. When something here
@@ -103,7 +103,7 @@ readable without narration: hold each line at least as long as it takes to read 
 ## 4. Layout
 
 - **Margins:** 110 px left and right at 1920x1080. Content starts below the header strip.
-- **The header strip** (`PaperChrome`): `RDA CHALLENGE · EPISODE KIT` left, `PAGE n / N` right, ruled
+- **The header strip** (`PaperChrome`): `RDA CHALLENGE · EPISODE KIT` left (or the video's own `label`), `PAGE n / N` right, ruled
   in `ink`. The page number is real (the scene index), not decoration.
 - **Hierarchy:** eyebrow, headline, then the one visual. Three levels at most.
 - **Cards** get a 2 px `rule` border and a 12 to 14 px radius; one card per idea.
@@ -116,10 +116,13 @@ readable without narration: hold each line at least as long as it takes to read 
 |---|---|---|
 | Answer bubble, filling | a rule, a step, a choice made | `Bubble` |
 | Red-pen circle or underline | the key word, the graded answer | SVG path, `pen` |
-| Grading stamp | a verdict: PASS, FAIL, FROZEN | `Stamp` |
+| Grading stamp | a verdict: PASS, FAIL, FROZEN, MEASURED | `Stamp` |
 | Terminal window or pill | the tool doing something real | `Terminal` |
 | Hash text, typed out | proof that the exam is frozen | mono, `form` |
 | Five-phase bar, to scale | the format itself | from the explainer's S2 |
+| Step rail, a row of numbered bubbles filling | where we are in a process (one bubble per step) | `Bubble` row in `script-to-render/ScriptToRender.tsx` |
+| Receipt card, label and value rows | numbers measured on the video itself, with the tool that measured each | S7 of `script-to-render` |
+| Scene bar, to scale with start frames | a video's own plan | S4 of `script-to-render` |
 
 Use the same motif for the same meaning every time. New motifs get added here before they are reused.
 
@@ -185,11 +188,14 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-18 | session | First non-episode video in the look ("how this video was made") needed a process tracker and a way to show its own numbers | step rail, receipt card and scene bar motifs; MEASURED as a stamp verdict; `PaperChrome` takes a `label` | 0.2 |
 | 2026-10-05 | user | Every video must ship with a thumbnail | made a rule in section 8, CLAUDE.md and `rda status` | 0.1 |
 | 2026-10-05 | session | First version, distilled from the RDA Episode Kit page, the explainer and thumbnail A | created | 0.1 |
 
 ## Changelog
 
+- **0.2 (2026-10-18):** three motifs from the script-to-render video (step rail, receipt card, scene bar), MEASURED
+  as a stamp verdict, and a configurable header label for videos that are not episodes.
 - **0.1 (2026-10-05):** first version. Video and thumbnail palettes with measured contrast, type, layout,
   motifs, motion, sound, thumbnail and copy rules. Kit moved to `remotion/src/lib/rda.tsx` so every
   video shares one source.

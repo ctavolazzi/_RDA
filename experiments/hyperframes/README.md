@@ -18,6 +18,7 @@ measurements instead of the project's README, scene S5 of the RDA explainer (the
 | `s5-tool.html` | S5 ported 1:1 from `remotion/src/shots/rda-explainer/_scenes/S5Tool.tsx`: same tokens, timings, easing curves, fonts, SFX cues and music bed |
 | `stamp-overlay.html` | the Pass stamp on a transparent page, to test alpha output |
 | `bakeoff.mjs` | builds both HyperFrames projects, renders S5 both ways and the stamp as `.mov`, compares, writes `summary.json` |
+| `thumb-A.jpg` | thumbnail for the side-by-side comparison clip, made after the fact (CT's rule covers every video); source `remotion/src/shots/experiments/BakeoffThumb.tsx` |
 
 Rerun from the repo root (needs `npm ci` in `remotion/`, ffmpeg, node 22+, network for npx):
 

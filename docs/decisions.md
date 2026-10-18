@@ -6,6 +6,20 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D18 · Videos are made with the script-to-render skill; self-measured numbers use two renders (2026-10-18)
+
+**Decided:** a video made here follows `_workbench/.claude/skills/script-to-render/` (brief, script, plan, design,
+build, stills, render, measure, thumbnail, package, record, show), and each run adds a case file to the skill. When a
+video shows numbers about itself, they are measured on a first render, written to a data file, and shown in a second
+render that is checked frame by frame to differ only where the numbers are.
+**Why:** CT asked for the workflow to be a skill that improves over time, then for a video that explains its own
+making. The first run (`docs/script-to-render-video.md`) caught three layout defects in stills, a thumbnail fix, and an
+on-screen claim the code did not yet honor.
+**Considered:** typing measured numbers by hand after the fact (nothing would prove they belong to the file shown);
+showing the explainer's old numbers instead (true, but not this video's).
+**Revisit when:** a video's numbers depend on something a second render changes (render time is the only one so far,
+and it is labeled as render 1's).
+
 ### D17 · Keep Remotion; HyperFrames stays an experiment (2026-10-18)
 
 **Decided:** Remotion remains the engine for RDA shots and thumbnails. HyperFrames is not adopted.
