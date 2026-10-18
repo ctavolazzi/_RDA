@@ -1,6 +1,6 @@
 # RDA style bible
 
-**Version 0.3 · 2026-10-18 · a living guide, not a lock.**
+**Version 0.4 · 2026-10-18 · a living guide, not a lock.**
 
 This is how RDA videos and thumbnails should look, sound and read, so each episode feels like part of
 one series. It is expected to change as the user and the YouTube audience react. When something here
@@ -160,6 +160,12 @@ mix 2), effects run at twice these, capped at 1.0, over a bed at 0.3.
 - **Loudness:** exports end at -16 LUFS integrated, -1.5 dBTP, via `tools/master_audio.py`. Exception (D19): a mix of
   effects over quiet music with no voice masters with `--static --lufs -19`, because reaching -16 would mean lifting
   the music back up or crushing the effects.
+- **Voice:** the narrator leads. In a text-led video it says the gist of each scene, never every line on screen, and
+  starts on the scene's headline (or its first line). Effects run at the table's levels under it, never x2; the bed
+  sits about 0.3 between lines and dips to about a third of that under each line (a 6-frame dip, a 12-frame return).
+  Measured targets while it speaks: voice about 18 dB (RMS) over the bed and about 10 dB over the effects, with the
+  loudest effect moments under the voice's peaks. No effect on the same frame as a line's first word. Free voice
+  without a key: Kokoro `af_heart` via `tools/narrate.py` (D20); say in the description that it is synthetic.
 - One stamp per verdict. Do not stack risers.
 
 ## 8. Thumbnails
@@ -200,6 +206,7 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-18 | user | "I want a narrator por favor", then "a free one" | a voice rule in section 7: the narrator leads, effects at table levels, bed dips under each line, measured targets, no effect on a first word; Kokoro via `narrate.py` (D20) | 0.4 |
 | 2026-10-18 | user | "Now your task is to add sound and quiet background music to the video" | effects forward (x2) over a 0.3 bed; foley rows added to the sound table (typing, shutter, pencil, page flip, scene whoosh, one riser); -19 LUFS static master for effects-led mixes (D19) | 0.3 |
 | 2026-10-18 | session | First non-episode video in the look ("how this video was made") needed a process tracker and a way to show its own numbers | step rail, receipt card and scene bar motifs; MEASURED as a stamp verdict; `PaperChrome` takes a `label` | 0.2 |
 | 2026-10-05 | user | Every video must ship with a thumbnail | made a rule in section 8, CLAUDE.md and `rda status` | 0.1 |
@@ -207,6 +214,8 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 ## Changelog
 
+- **0.4 (2026-10-18):** sound: a voice rule (narrator leads, effects at table levels, the bed dips under each line,
+  measured targets), from the narrated mix of the "how this video was made" video (D20).
 - **0.3 (2026-10-18):** sound: six foley rows, a quiet-bed level for effects-led mixes with no voice, and the
   -19 LUFS static mastering exception (D19).
 - **0.2 (2026-10-18):** three motifs from the script-to-render video (step rail, receipt card, scene bar), MEASURED

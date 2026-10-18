@@ -6,6 +6,24 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D20 · A free local narrator: Kokoro, through tools/narrate.py (2026-10-18)
+
+**Decided:** when a video needs a voice and there is no ElevenLabs key (or CT asks for a free one), narrate it with
+`./venv/bin/python tools/narrate.py videos/<p>`: Kokoro v1.0 (`kokoro-onnx`, CPU, voice `af_heart`), reading the `Voice:`
+lines of the video's `script/script.md`. Each scene exports the frame its line starts on; `_vo.json` holds the measured
+lengths; the composition refuses a line that runs past its scene. The bed dips under each line, effects go back to their
+table levels, and the master is `master_audio.py` at its defaults (-16 LUFS), as D19 planned for a voiced video.
+**Why:** CT: "I want a narrator por favor", then "a free one". Kokoro's weights and voices are Apache 2.0 (monetizable),
+it needs no account or key, runs in this container in about a second per line, and gave byte-identical clips on a second
+run with a fresh model download, so the clips need not be committed. Measured mix: voice 18.1 dB over the bed and 10.6 dB
+over the effects while it speaks.
+**Considered:** ElevenLabs via `tools/gen_vo.mjs` (needs a paid key); `hyperframes tts` (the same Kokoro, but through
+another engine's CLI; D17 keeps Remotion, so the Python package is used directly); Piper (its voices download from
+Hugging Face, blocked here); espeak-ng alone (free but robotic); CT's own voice (better, and his call; nothing here
+blocks it: record per-scene clips with the same names and lengths go into `_vo.json` the same way).
+**Revisit when:** CT records his own narration, adds an ElevenLabs key and wants a different voice, or a viewer reaction
+says the synthetic voice hurts. Also open: the RDA explainer (D9) can now be narrated the same way.
+
 ### D19 · Effects-led mixes with no voice master statically to -19 LUFS (2026-10-18)
 
 **Decided:** when a video has no voice and the effects should lead over quiet music, master it with
@@ -19,7 +37,9 @@ under mix 1) with -2.0 dBTP.
 **Considered:** -16 static (crushes the effects); -16 dynamic (the music comes back up); -18 (contrast 12.6 dB, more
 limiting); narration to carry the loudness (CT declined the question; his words named sound and music).
 **Revisit when:** the video gets a voice (then -16 and the music under the voice), or YouTube playback shows -19 reads
-too quiet next to other videos (then bring the bed up a little and master at -18).
+too quiet next to other videos (then bring the bed up a little and master at -18). The first happened the same day for
+this video (mix 3, D20): default `loudnorm` to -16 kept the voiced mix's balance, so the -19 static rule stays for
+effects-led mixes with no voice only.
 
 ### D18 · Videos are made with the script-to-render skill; self-measured numbers use two renders (2026-10-18)
 

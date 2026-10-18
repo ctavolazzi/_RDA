@@ -9,7 +9,7 @@ import { C, F, P, iio, rise, Scene, Eyebrow, Headline, Bubble } from '../../../l
 // the width it was checked at. Under it, the working title from packaging.md.
 // =============================================================================
 export const S8_DUR = 180;
-export const S8_CUES = { in: 0, rail: [10, 18], thumb: 20, small: 80, title: 112 };
+export const S8_CUES = { in: 0, rail: [10, 18], vo: 12, thumb: 20, small: 80, title: 112 };
 
 const THUMB = P('script-to-render', 'thumb-A.jpg');
 export const WORKING_TITLE = 'How an AI Agent Made This Video, From Script to Render';

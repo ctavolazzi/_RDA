@@ -9,7 +9,7 @@ import { C, F, EASE, iio, rise, Scene, Eyebrow } from '../../../lib/rda';
 // S1_CUES.rail (drawn by the composition).
 // =============================================================================
 export const S1_DUR = 150;
-export const S1_CUES = { lines: [10, 34, 58], underline: 84, rail: 100 };
+export const S1_CUES = { lines: [10, 34, 58], underline: 84, rail: 100, vo: 10 };
 
 const LINES = ['Claude Code made this video.', 'Here is every step.'];
 const UNDERLINE = 'M 0 10 C 90 2, 190 16, 286 6';

@@ -8,7 +8,7 @@ import { C, F, rise, Scene, Eyebrow, Headline } from '../../../lib/rda';
 // skill ends with the video itself.
 // =============================================================================
 export const S9_DUR = 150;
-export const S9_CUES = { in: 0, rail: [10, 18], quote: 26 };
+export const S9_CUES = { in: 0, rail: [10, 18], vo: 12, quote: 26 };
 
 export const S9Show: React.FC = () => {
   const f = useCurrentFrame();

@@ -7,7 +7,7 @@ import { C, F, iio, rise, Scene, Eyebrow, Headline } from '../../../lib/rda';
 // own script file, exactly as written in videos/script-to-render/script/script.md.
 // =============================================================================
 export const S3_DUR = 180;
-export const S3_CUES = { in: 0, rail: [10], card: 20, lines: [34, 44, 54, 64, 74] };
+export const S3_CUES = { in: 0, rail: [10], vo: 12, card: 20, lines: [34, 44, 54, 64, 74] };
 
 const PATH = 'videos/script-to-render/script/script.md';
 const LINES: Array<{ text: string; head?: boolean }> = [

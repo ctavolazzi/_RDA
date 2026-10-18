@@ -1,0 +1,70 @@
+{
+  "note": "Written by tools/narrate.py from videos/script-to-render/script/script.md. Do not edit; change the script and run it again.",
+  "engine": "kokoro-onnx 0.6.1, kokoro-v1.0.onnx",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "fps": 30,
+  "sampleRate": 24000,
+  "lines": {
+    "S1": {
+      "text": "Claude Code made this video. Here's every step, with receipts.",
+      "file": "vo/S1.wav",
+      "samples": 82944,
+      "frames": 104
+    },
+    "S2": {
+      "text": "First, check what you have. There's no voice key here, so this voice is a free one that runs locally.",
+      "file": "vo/S2.wav",
+      "samples": 137728,
+      "frames": 173
+    },
+    "S3": {
+      "text": "Write the words before any code. Even this line was written there first.",
+      "file": "vo/S3.wav",
+      "samples": 95744,
+      "frames": 120
+    },
+    "S4": {
+      "text": "Plan it to the frame. Every sound, this voice included, starts on a frame a scene exports.",
+      "file": "vo/S4.wav",
+      "samples": 126976,
+      "frames": 159
+    },
+    "S5": {
+      "text": "Build from one shared kit, one file per scene.",
+      "file": "vo/S5.wav",
+      "samples": 65536,
+      "frames": 82
+    },
+    "S6": {
+      "text": "Before the full render, read a still of every scene. That's where layout bugs show up.",
+      "file": "vo/S6.wav",
+      "samples": 111104,
+      "frames": 139
+    },
+    "S7": {
+      "text": "Render, then measure. These numbers come from this video's own first render.",
+      "file": "vo/S7.wav",
+      "samples": 104448,
+      "frames": 131
+    },
+    "S8": {
+      "text": "Every video ships with a thumbnail, checked at phone size.",
+      "file": "vo/S8.wav",
+      "samples": 75264,
+      "frames": 95
+    },
+    "S9": {
+      "text": "Write it all down. Then show the video, not just a report.",
+      "file": "vo/S9.wav",
+      "samples": 80384,
+      "frames": 101
+    },
+    "S10": {
+      "text": "Every run makes the next one better.",
+      "file": "vo/S10.wav",
+      "samples": 47104,
+      "frames": 59
+    }
+  }
+}

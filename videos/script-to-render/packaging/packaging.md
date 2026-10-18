@@ -1,6 +1,6 @@
 # Packaging: how this video was made (script-to-render)
 
-Draft, 2026-10-18. Not uploaded. A 60 s behind-the-scenes piece: an AI agent (Claude Code) makes a video as code and
+Draft, 2026-10-18. Not uploaded. Narrated since mix 3 (a free synthetic voice, Kokoro; D20). A 60 s behind-the-scenes piece: an AI agent (Claude Code) makes a video as code and
 shows each step with its own evidence. Built by hand following `/thumbnail` and `/packaging` rules (no Gemini key and
 no face kit in the session); run `/packaging` for the full three-bet treatment once there is click-through data.
 
@@ -57,4 +57,10 @@ design, the stills it read (and the bug they caught), the render, the measuremen
 Every number on screen was measured on the video's own first render. Nothing is a mock-up.
 
 The workflow is a skill I keep improving after every video. Tell me what you'd want an AI agent to make next.
+
+Narration: a synthetic voice (Kokoro, free and open source), generated on the same machine that rendered the video.
 ```
+
+The narration line stays in the description: the voice is synthetic, and the video's whole point is showing how it
+was made. (YouTube's altered-content label is for realistic people, places or events; a narrator voice that
+impersonates no one does not need it, but saying so costs nothing.)

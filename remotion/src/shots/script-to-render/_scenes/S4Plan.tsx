@@ -16,7 +16,7 @@ import { S10_DUR } from './S10Outro';
 // the durations the scene files export, so the bar cannot disagree with the cut.
 // =============================================================================
 export const S4_DUR = 210;
-export const S4_CUES = { in: 0, rail: [10], sweep: [92, 128], segments: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => 24 + i * 6) };
+export const S4_CUES = { in: 0, rail: [10], vo: 12, sweep: [92, 128], segments: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => 24 + i * 6) };
 
 const DURS = [S1_DUR, S2_DUR, S3_DUR, S4_DUR, S5_DUR, S6_DUR, S7_DUR, S8_DUR, S9_DUR, S10_DUR];
 const TOTAL = DURS.reduce((a, b) => a + b, 0);

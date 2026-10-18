@@ -1,6 +1,7 @@
 import React from 'react';
-import { AbsoluteFill, Audio, Sequence, useCurrentFrame } from 'remotion';
-import { C, MUSIC, SFX, iio, Bubble, PaperChrome } from '../../lib/rda';
+import { AbsoluteFill, Audio, Sequence, getInputProps, useCurrentFrame } from 'remotion';
+import { C, MUSIC, P, SFX, iio, Bubble, PaperChrome } from '../../lib/rda';
+import vo from './_vo.json';
 import { S1Open, S1_DUR, S1_CUES } from './_scenes/S1Open';
 import { S2Brief, S2_DUR, S2_CUES } from './_scenes/S2Brief';
 import { S3Script, S3_DUR, S3_CUES } from './_scenes/S3Script';
@@ -15,7 +16,9 @@ import { S10Outro, S10_DUR, S10_CUES } from './_scenes/S10Outro';
 // =============================================================================
 // COMPOSITION CONFIG · how this video was made, by the script-to-render skill
 // (_workbench/.claude/skills/script-to-render), on its first full run, 2026-10-18.
-// Text-led: no voice key in the session. Script: videos/script-to-render/script/script.md.
+// No voice key in the session, so the narrator is Kokoro, free and local (mix 3).
+// Script: videos/script-to-render/script/script.md (its Voice: lines are the narration).
+// Voice: python tools/narrate.py videos/script-to-render (from the repo root, in the venv)
 // Render: cd remotion && node scripts/render-one.mjs script-to-render ScriptToRender
 // =============================================================================
 export const compositionConfig = {
@@ -86,16 +89,39 @@ const StepRail: React.FC = () => {
 };
 
 // =============================================================================
-// SOUND · every cue is a frame a scene exports, the rail's included, so a
-// retimed scene carries its sound with it. Version 2 (2026-10-18, CT: "add sound
-// and quiet background music"): the bed sits low (0.3, about 8.5 dB under the
-// first mix) and the effects come forward, with foley that matches what is on
-// screen: typing under typed commands, a shutter per still, pencil on red-pen
+// VOICE · mix 3 (2026-10-18, CT: "I want a narrator por favor", "a free one").
+// Each scene exports the frame its line starts on (SN_CUES.vo); _vo.json holds
+// each clip's measured length, written by tools/narrate.py from the script's
+// Voice: lines. A clip that would run past its scene stops the render here.
+// =============================================================================
+const VO_AT = [S1_CUES.vo, S2_CUES.vo, S3_CUES.vo, S4_CUES.vo, S5_CUES.vo, S6_CUES.vo, S7_CUES.vo, S8_CUES.vo, S9_CUES.vo, S10_CUES.vo];
+const LINES = vo.lines as Record<string, { file: string; frames: number }>;
+const VOICE = SCENES.flatMap((scene, i) => {
+  const line = LINES[`S${i + 1}`];
+  if (!line) return [];
+  const over = VO_AT[i] + line.frames - scene.dur;
+  if (over > 0) {
+    throw new Error(`Voice line S${i + 1} runs ${over} frames past its scene. Shorten it in script.md (or lengthen the scene), then run tools/narrate.py.`);
+  }
+  return [{ f: at(i, VO_AT[i]), dur: line.frames, src: P('script-to-render', line.file) }];
+});
+
+// =============================================================================
+// SOUND · every cue is a frame a scene exports, the rail's and the voice's
+// included, so a retimed scene carries its sound with it. Version 2 (2026-10-18,
+// CT: "add sound and quiet background music") brought foley that matches what is
+// on screen: typing under typed commands, a shutter per still, pencil on red-pen
 // marks, a page flip for the script sheet, a whoosh at each scene change.
-// `dur` cuts a clip to the action it covers (frames); the default is 60.
+// Version 3 adds the voice: the bed dips to DUCK of itself while a line plays,
+// and the effects sit under the voice. `dur` cuts a clip to the action it covers
+// (frames); the default is 60. Render with inputProps { mute: ['bed', 'fx',
+// 'voice'] } (any of them) to measure one layer alone.
 // =============================================================================
 const BED = 0.3;
-const FX = 2; // one gain on every effect, tuned by measurement after mastering
+const DUCK = 0.35; // the bed's share of itself under the voice (measured: voice about 18 dB over the bed)
+const FX = 1; // one gain on every effect; 2 in mix 2 with no voice, back to 1 so the voice leads
+const duck = (f: number) =>
+  VOICE.reduce((m, v) => Math.min(m, iio(f, [v.f - 6, v.f, v.f + v.dur, v.f + v.dur + 12], [1, DUCK, DUCK, 1])), 1);
 const SCENE_IN = [S2_CUES.in, S3_CUES.in, S4_CUES.in, S5_CUES.in, S6_CUES.in, S7_CUES.in, S8_CUES.in, S9_CUES.in, S10_CUES.in];
 const span = (r: number[]) => r[1] - r[0];
 const CUES: Array<{ f: number; id: string; vol: number; dur?: number }> = [
@@ -131,6 +157,7 @@ const CUES: Array<{ f: number; id: string; vol: number; dur?: number }> = [
 const ScriptToRender: React.FC = () => {
   const frame = useCurrentFrame();
   const scene = STARTS.reduce((cur, s, i) => (frame >= s ? i : cur), 0);
+  const { mute = [] } = getInputProps() as { mute?: string[] };
 
   return (
     <AbsoluteFill style={{ backgroundColor: C.paper }}>
@@ -146,13 +173,22 @@ const ScriptToRender: React.FC = () => {
 
       <StepRail />
 
-      {/* Quiet background music under the effects (BED), then master to -16 LUFS / -1.5 dBTP. */}
-      <Audio src={MUSIC('docu-pluck')} volume={(f) => iio(f, [0, 20, TOTAL - 60, TOTAL], [0, BED, BED, 0])} />
-      {CUES.map((cue, i) => (
-        <Sequence key={`sfx-${i}`} from={cue.f} durationInFrames={cue.dur ?? 60}>
-          <Audio src={SFX(cue.id)} volume={Math.min(1, cue.vol * FX)} />
-        </Sequence>
-      ))}
+      {/* Quiet music (BED), lower still under the voice; master to -16 LUFS / -1.5 dBTP (D19, voiced). */}
+      {!mute.includes('bed') && (
+        <Audio src={MUSIC('docu-pluck')} volume={(f) => iio(f, [0, 20, TOTAL - 60, TOTAL], [0, BED, BED, 0]) * duck(f)} />
+      )}
+      {!mute.includes('fx') &&
+        CUES.map((cue, i) => (
+          <Sequence key={`sfx-${i}`} from={cue.f} durationInFrames={cue.dur ?? 60}>
+            <Audio src={SFX(cue.id)} volume={Math.min(1, cue.vol * FX)} />
+          </Sequence>
+        ))}
+      {!mute.includes('voice') &&
+        VOICE.map((v, i) => (
+          <Sequence key={`vo-${i}`} from={v.f} durationInFrames={v.dur}>
+            <Audio src={v.src} />
+          </Sequence>
+        ))}
     </AbsoluteFill>
   );
 };

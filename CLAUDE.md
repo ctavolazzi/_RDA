@@ -34,6 +34,7 @@ says where things stand.
 tools/rda.py              the episode tool (idea, new, status, log, exam freeze|check, clock, score, handoff)
 tools/test_rda.py         its checks, with planted-bad-input controls. Run after touching rda.py
 tools/master_audio.py     last step before upload: loudness to -16 LUFS / -1.5 dBTP, video copied
+tools/narrate.py          a free local narrator (Kokoro, no key): script.md's Voice: lines to clips + _vo.json (D20)
 remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal). Use it for every RDA shot
 tools/*.py, *.mjs         the production pipeline (vendored, see docs/vendored.md)
 remotion/                 the Remotion project. Shots in remotion/src/shots/<group>/; registry is GENERATED
@@ -122,7 +123,12 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
 - **No voice means the music carries the audio,** unless the effects should lead (D19). Library clips sit near -20 LUFS; a
   bed at 0.2 gave a -32 LUFS export. Always finish with `tools/master_audio.py`; for effects over quiet music use
-  `--static --lufs -19`. The default mode quietly goes dynamic (it says so now) and lifts a quiet bed.
+  `--static --lufs -19`. The default mode quietly goes dynamic (it says so now) and lifts a quiet bed. With a voice,
+  the default mode kept the balance (D20): use it.
+- **No voice key does not mean no voice.** `./venv/bin/python tools/narrate.py videos/<p>` speaks the script's `Voice:`
+  lines with Kokoro on the CPU (first run downloads 353 MB from the kokoro-onnx GitHub release; Hugging Face is blocked
+  in the cloud container). The clips are git-ignored; run it before rendering a narrated video on a fresh clone.
+  After adding a voice, re-read every on-screen claim: "the words on screen carry it" stopped being true.
 - **A pipe hides exit codes.** `cmd | tail` reports tail's exit status. Capture to a log file, then check `$?`.
 - **The Write tool turns unicode escapes into literal characters.** A backslash-u escape for the en dash
   (code point 2013) is written out as the dash itself. In code that must not contain dashes, use
@@ -131,5 +137,5 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
 ## Not built yet
 
 See `docs/history/2026-10-05.md`, "Open items". In short: pick episode 001's exam (it decides whether an
-external-scorer mode is needed), adopt the RDA look as the brand, narration for the explainer, LLM exam
+external-scorer mode is needed), adopt the RDA look as the brand, narration for the explainer (`narrate.py` makes it keyless now), LLM exam
 generation with blind verification, and episode cards that read `work/episode.json`.
