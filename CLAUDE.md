@@ -44,6 +44,7 @@ episodes/_template/       copied by `rda new`
 schemas/exam.schema.json  shape of a frozen exam
 docs/style-bible.md       the living style guide: colors, type, motion, sound, thumbnails. Read before making visuals
 docs/                     format, exam sourcing, production, risks, backlog, ideas, decisions, history
+experiments/              measured trials that did not become the pipeline (hyperframes/: HTML renderer bake-off, D17)
 HANDOFF.txt               paste-ready prompt to resume this work in a new chat
 .claude/skills/           the pipeline skills (/clean-cut, /make-tsx, /suggest-sfx, /packaging, ...)
 LICENSES/                 the MIT notice for the vendored pipeline

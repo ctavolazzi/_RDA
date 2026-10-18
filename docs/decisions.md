@@ -6,6 +6,19 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D17 · Keep Remotion; HyperFrames stays an experiment (2026-10-18)
+
+**Decided:** Remotion remains the engine for RDA shots and thumbnails. HyperFrames is not adopted.
+**Why:** a measured bake-off (`experiments/hyperframes/`) showed HyperFrames can match an RDA shot almost
+exactly (SSIM 0.994 over 360 frames, same loudness, similar render time, alpha `.mov` that `bake.py`
+accepts). Same output means switching buys nothing and costs a port of the RDA kit, the explainer, and
+three skills. Remotion's free license covers a company of up to 3 employees.
+**Considered:** a full migration (HTML shots, Apache 2.0, no bundle step); running both engines per shot
+(possible, since `bake.py` only reads files, but two kits drift).
+**Revisit when:** the business making the videos passes 3 employees (Remotion would need a company license);
+a keyless local voice is wanted for narration (`hyperframes tts`, Kokoro, untested); or HyperFrames reaches
+1.0 with something Remotion lacks that an episode actually needs.
+
 ### D16 · Every video ships with a thumbnail (2026-10-05)
 
 **Decided:** making a video includes making its thumbnail. `rda status` has a "thumbnail made" item and
