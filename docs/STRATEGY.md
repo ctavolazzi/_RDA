@@ -165,7 +165,7 @@ RDA has no channel yet, which makes this the cheapest moment to separate it. Tod
 2. Track RDA only in the \_RDA repo, on RDA-named branches.
 3. Move the shared video pipeline to its own tools repo, and move PR #4 out of \_RDA.
 4. Apply the RDA tokens as the brand, and keep the RDA look for RDA videos only.
-5. Choose topics with the rubric in docs/backlog.md, not by another business’s needs.
+5. Choose topics with the rubric in docs/backlog.md, not by another business’s needs. When a credential also pays (an FAA Part 107 certificate makes paid drone work legal), say so on camera as part of the stakes.
 6. Cross-promote once, with one disclosed launch post.
 
 ## Decisions for the owner
