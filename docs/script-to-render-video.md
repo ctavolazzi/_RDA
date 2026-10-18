@@ -23,13 +23,13 @@ The master lands at `remotion/out/ScriptToRender-master.mp4` (git-ignored). The 
 
 ```
 videos/script-to-render/script/script.md        brief and script, written before any code
-videos/script-to-render/packaging/               thumb-A.jpg, packaging.md
+videos/script-to-render/packaging/               thumb-A.jpg (face, from Canva), thumb-B.jpg (13 STEPS), packaging.md
 remotion/src/shots/script-to-render/
   ScriptToRender.tsx       composition: scene timeline, header strip, step rail, bed, cue sheet
   ScriptToRenderThumb.tsx  thumbnail A (1280x720)
   _receipt.json            S7's numbers, measured on render 1
   _scenes/S1Open.tsx ... S10Outro.tsx   one scene per file; each exports its duration and every cue frame
-media/projects/script-to-render/                 stills of S1 to S5 (for S6), the S7 defect crop, a copy of thumb-A
+media/projects/script-to-render/                 stills of S1 to S5 (for S6), the S7 defect crop, a copy of the 13 STEPS thumbnail
 ```
 
 | Scene | Frames | What it says |
@@ -103,4 +103,5 @@ on all 1800 decoded frames and on the audio.
 | Master | -15.9 LUFS integrated, -1.9 dBTP (`master_audio.py` targets -16 / -1.5) |
 | Render time (render 1, wall clock, 4 vCPU cloud container) | 64.2 s |
 | Master file | 5.4 MB |
-| Thumbnail A | 1280x720, 73 KB |
+| Thumbnail A (face, Canva, made after the video) | 1280x720 |
+| Thumbnail B (13 STEPS, shown in S8) | 1280x720, 73 KB |

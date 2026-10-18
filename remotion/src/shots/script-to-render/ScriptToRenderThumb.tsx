@@ -3,7 +3,8 @@ import { AbsoluteFill } from 'remotion';
 import { C, F, T } from '../../lib/rda';
 
 // =============================================================================
-// COMPOSITION CONFIG · thumbnail A for "how this video was made" (1280x720, one frame).
+// COMPOSITION CONFIG · thumbnail B ("13 STEPS", made in the video's own run) for "how this video
+// was made" (1280x720, one frame). Thumbnail A, the face version, was made in Canva afterwards.
 // Render: cd remotion && node scripts/render-one.mjs script-to-render ScriptToRenderThumb --still 0 --scale=1
 // Rules (docs/style-bible.md 8): night ground, one signal hook ("13 STEPS", not in the
 // title), a paper prop (the script), bottom-right clear for the timestamp, nothing the

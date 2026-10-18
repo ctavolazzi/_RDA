@@ -3,8 +3,9 @@ import { AbsoluteFill, Img, useCurrentFrame } from 'remotion';
 import { C, F, P, iio, rise, Scene, Eyebrow, Headline, Bubble } from '../../../lib/rda';
 
 // =============================================================================
-// S8 · Steps 9 and 10, thumbnail and package (6s). This video's own thumbnail
-// (videos/script-to-render/packaging/thumb-A.jpg), large, then at a true 320 px,
+// S8 · Steps 9 and 10, thumbnail and package (6s). The thumbnail made in this video's
+// own run ("13 STEPS", now packaging/thumb-B.jpg; its copy here keeps the name
+// thumb-A.jpg so the render is unchanged), large, then at a true 320 px,
 // the width it was checked at. Under it, the working title from packaging.md.
 // =============================================================================
 export const S8_DUR = 180;
