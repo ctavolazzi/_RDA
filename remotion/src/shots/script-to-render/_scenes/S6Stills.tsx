@@ -10,7 +10,7 @@ import { C, F, P, EASE, iio, rise, Scene, Eyebrow, Headline, Bubble } from '../.
 // sat 11 px under the receipt card, inside its shadow. Fixed by moving it down.
 // =============================================================================
 export const S6_DUR = 210;
-export const S6_CUES = { rail: [10], tiles: [0, 1, 2, 3, 4].map((i) => 24 + i * 12), defect: 90, pen: 106 };
+export const S6_CUES = { in: 0, rail: [10], tiles: [0, 1, 2, 3, 4].map((i) => 24 + i * 12), defect: 90, pen: 106 };
 
 const W = 320;
 const H = 180;

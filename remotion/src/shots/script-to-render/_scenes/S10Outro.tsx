@@ -7,7 +7,7 @@ import { C, F, rise, Scene } from '../../../lib/rda';
 // stays on from the composition.
 // =============================================================================
 export const S10_DUR = 90;
-export const S10_CUES = { hit: 8 };
+export const S10_CUES = { in: 0, hit: 8 };
 
 export const S10Outro: React.FC = () => {
   const f = useCurrentFrame();

@@ -120,8 +120,9 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   disable TLS verification to get around it. On the user's own machine this is not an issue.
 - **Fonts for RDA shots are local files** in `media/library/fonts/rda/`, loaded by `remotion/src/lib/rda.tsx` with `FontFace` +
   `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
-- **No voice means the music carries the audio.** Library clips sit near -20 LUFS; a bed at 0.2 gave a
-  -32 LUFS export. Always finish with `tools/master_audio.py`.
+- **No voice means the music carries the audio,** unless the effects should lead (D19). Library clips sit near -20 LUFS; a
+  bed at 0.2 gave a -32 LUFS export. Always finish with `tools/master_audio.py`; for effects over quiet music use
+  `--static --lufs -19`. The default mode quietly goes dynamic (it says so now) and lifts a quiet bed.
 - **A pipe hides exit codes.** `cmd | tail` reports tail's exit status. Capture to a log file, then check `$?`.
 - **The Write tool turns unicode escapes into literal characters.** A backslash-u escape for the en dash
   (code point 2013) is written out as the dash itself. In code that must not contain dashes, use

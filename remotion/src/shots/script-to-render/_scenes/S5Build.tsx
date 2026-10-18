@@ -8,7 +8,7 @@ import { C, F, iio, rise, typed, Scene, Eyebrow, Headline, Terminal } from '../.
 // listing of this video's _scenes/ folder (COLUMNS=44 ls, run 2026-10-18).
 // =============================================================================
 export const S5_DUR = 180;
-export const S5_CUES = { rail: [10, 18], swatches: 20, listing: 70 };
+export const S5_CUES = { in: 0, rail: [10, 18], swatches: 20, type: [50, 66], listing: 70 };
 
 const SWATCHES: Array<[string, string]> = [
   ['paper', C.paper],
@@ -49,7 +49,7 @@ export const S5Build: React.FC = () => {
         </div>
 
         <Terminal width={790} title="remotion/src/shots/script-to-render" style={{ position: 'absolute', top: 350, left: 1020, ...rise(f, 30) }}>
-          <div style={{ color: C.termDim }}>{typed(f, CMD, 50, 66) || ' '}</div>
+          <div style={{ color: C.termDim }}>{typed(f, CMD, S5_CUES.type[0], S5_CUES.type[1]) || ' '}</div>
           <div style={{ opacity: iio(f, [S5_CUES.listing, S5_CUES.listing + 6], [0, 1]) }}>{LISTING}</div>
         </Terminal>
       </AbsoluteFill>

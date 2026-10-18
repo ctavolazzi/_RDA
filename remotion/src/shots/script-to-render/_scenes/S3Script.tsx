@@ -7,7 +7,7 @@ import { C, F, iio, rise, Scene, Eyebrow, Headline } from '../../../lib/rda';
 // own script file, exactly as written in videos/script-to-render/script/script.md.
 // =============================================================================
 export const S3_DUR = 180;
-export const S3_CUES = { rail: [10], card: 20 };
+export const S3_CUES = { in: 0, rail: [10], card: 20, lines: [34, 44, 54, 64, 74] };
 
 const PATH = 'videos/script-to-render/script/script.md';
 const LINES: Array<{ text: string; head?: boolean }> = [
@@ -53,7 +53,7 @@ export const S3Script: React.FC = () => {
                 font: `${line.head ? 600 : 400} 32px/1.6 ${F.mono}`,
                 color: line.head ? C.form : C.ink,
                 whiteSpace: 'pre',
-                opacity: iio(f, [34 + i * 10, 40 + i * 10], [0, 1]),
+                opacity: iio(f, [S3_CUES.lines[i], S3_CUES.lines[i] + 6], [0, 1]),
               }}
             >
               {line.text}

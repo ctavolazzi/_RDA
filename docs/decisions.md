@@ -6,6 +6,21 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D19 · Effects-led mixes with no voice master statically to -19 LUFS (2026-10-18)
+
+**Decided:** when a video has no voice and the effects should lead over quiet music, master it with
+`python tools/master_audio.py <video> --static --lufs -19` (one fixed gain, a 16 kHz roll-off, a limiter 2 dB under the
+-1.5 dBTP ceiling). Voiced and bed-led mixes keep the default -16 LUFS.
+**Why:** CT asked for "sound and quiet background music". Effects are short and peaky, so a mix with quiet music has a
+large peak-to-loudness ratio. Default `loudnorm` then falls back to dynamic mode on its own, lifting the music until the
+effects were only a few dB above it (contrast 19.6 dB before mastering, 11.9 after). A static master to -16 needed
+about 10 dB of limiting and rang to +6.5 dBTP in the AAC encode. At -19 the balance holds (13.3 dB contrast, music 5 dB
+under mix 1) with -2.0 dBTP.
+**Considered:** -16 static (crushes the effects); -16 dynamic (the music comes back up); -18 (contrast 12.6 dB, more
+limiting); narration to carry the loudness (CT declined the question; his words named sound and music).
+**Revisit when:** the video gets a voice (then -16 and the music under the voice), or YouTube playback shows -19 reads
+too quiet next to other videos (then bring the bed up a little and master at -18).
+
 ### D18 · Videos are made with the script-to-render skill; self-measured numbers use two renders (2026-10-18)
 
 **Decided:** a video made here follows `_workbench/.claude/skills/script-to-render/` (brief, script, plan, design,

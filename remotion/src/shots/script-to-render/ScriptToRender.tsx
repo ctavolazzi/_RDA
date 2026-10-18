@@ -87,28 +87,45 @@ const StepRail: React.FC = () => {
 
 // =============================================================================
 // SOUND · every cue is a frame a scene exports, the rail's included, so a
-// retimed scene carries its sound with it. Levels from docs/style-bible.md 7.
+// retimed scene carries its sound with it. Version 2 (2026-10-18, CT: "add sound
+// and quiet background music"): the bed sits low (0.3, about 8.5 dB under the
+// first mix) and the effects come forward, with foley that matches what is on
+// screen: typing under typed commands, a shutter per still, pencil on red-pen
+// marks, a page flip for the script sheet, a whoosh at each scene change.
+// `dur` cuts a clip to the action it covers (frames); the default is 60.
 // =============================================================================
-const CUES: Array<{ f: number; id: string; vol: number }> = [
-  { f: at(0, S1_CUES.underline), id: 'ui-click-soft', vol: 0.3 },
-  { f: RAIL_IN, id: 'pop-reveal', vol: 0.24 },
-  ...FILL_AT.map((f) => ({ f, id: 'ui-click-soft', vol: 0.2 })),
-  { f: at(1, S2_CUES.out1), id: 'ui-click-soft', vol: 0.25 },
-  { f: at(1, S2_CUES.out2), id: 'ui-click-soft', vol: 0.25 },
-  { f: at(1, S2_CUES.chips), id: 'pop-reveal', vol: 0.24 },
-  { f: at(2, S3_CUES.card), id: 'pop-reveal', vol: 0.26 },
-  ...S4_CUES.segments.map((f) => ({ f: at(3, f), id: 'ui-click-soft', vol: 0.15 })),
-  { f: at(4, S5_CUES.swatches), id: 'pop-reveal', vol: 0.24 },
-  { f: at(4, S5_CUES.listing), id: 'ui-click-soft', vol: 0.25 },
-  ...S6_CUES.tiles.map((f) => ({ f: at(5, f), id: 'pop-reveal', vol: 0.22 })),
-  { f: at(5, S6_CUES.defect), id: 'pop-reveal', vol: 0.24 },
-  { f: at(5, S6_CUES.pen), id: 'ui-click-soft', vol: 0.3 },
-  ...S7_CUES.rows.map((f) => ({ f: at(6, f), id: 'ui-click-soft', vol: 0.22 })),
-  { f: at(6, S7_CUES.stamp), id: 'stamp-hit', vol: 0.55 },
-  { f: at(7, S8_CUES.thumb), id: 'pop-reveal', vol: 0.28 },
-  { f: at(7, S8_CUES.small), id: 'whoosh-soft', vol: 0.4 },
-  { f: at(8, S9_CUES.quote), id: 'pop-reveal', vol: 0.28 },
-  { f: at(9, S10_CUES.hit), id: 'impact-soft', vol: 0.4 },
+const BED = 0.3;
+const FX = 2; // one gain on every effect, tuned by measurement after mastering
+const SCENE_IN = [S2_CUES.in, S3_CUES.in, S4_CUES.in, S5_CUES.in, S6_CUES.in, S7_CUES.in, S8_CUES.in, S9_CUES.in, S10_CUES.in];
+const span = (r: number[]) => r[1] - r[0];
+const CUES: Array<{ f: number; id: string; vol: number; dur?: number }> = [
+  ...SCENE_IN.map((f, i) => ({ f: at(i + 1, f), id: 'whoosh-soft', vol: 0.35 })),
+  ...S1_CUES.lines.map((f) => ({ f: at(0, f), id: 'pop-reveal', vol: 0.3 })),
+  { f: at(0, S1_CUES.underline), id: 'pencil-scribble', vol: 0.55, dur: 22 },
+  { f: RAIL_IN, id: 'pop-reveal', vol: 0.35 },
+  ...FILL_AT.map((f) => ({ f, id: 'ui-click-soft', vol: 0.22 })),
+  { f: at(1, S2_CUES.type1[0]), id: 'keys-typing-soft', vol: 0.38, dur: span(S2_CUES.type1) },
+  { f: at(1, S2_CUES.out1), id: 'ui-click-soft', vol: 0.3 },
+  { f: at(1, S2_CUES.type2[0]), id: 'keys-typing-soft', vol: 0.38, dur: span(S2_CUES.type2) },
+  { f: at(1, S2_CUES.out2), id: 'ui-click-soft', vol: 0.3 },
+  { f: at(1, S2_CUES.chips), id: 'pop-reveal', vol: 0.45 },
+  { f: at(2, S3_CUES.card), id: 'page-flip', vol: 0.6 },
+  ...S3_CUES.lines.map((f) => ({ f: at(2, f), id: 'ui-click-soft', vol: 0.16 })),
+  ...S4_CUES.segments.map((f) => ({ f: at(3, f), id: 'ui-click-soft', vol: 0.18 })),
+  { f: at(3, S4_CUES.sweep[0]), id: 'riser-soft', vol: 0.3, dur: span(S4_CUES.sweep) + 6 },
+  { f: at(4, S5_CUES.swatches), id: 'pop-reveal', vol: 0.45 },
+  { f: at(4, S5_CUES.type[0]), id: 'keys-typing-soft', vol: 0.38, dur: span(S5_CUES.type) },
+  { f: at(4, S5_CUES.listing), id: 'ui-click-soft', vol: 0.3 },
+  ...S6_CUES.tiles.map((f) => ({ f: at(5, f), id: 'camera-shutter', vol: 0.45 })),
+  { f: at(5, S6_CUES.defect), id: 'pop-reveal', vol: 0.45 },
+  { f: at(5, S6_CUES.pen), id: 'pencil-scribble', vol: 0.55, dur: 22 },
+  ...S7_CUES.rows.map((f) => ({ f: at(6, f), id: 'ui-click-soft', vol: 0.26 })),
+  { f: at(6, S7_CUES.stamp), id: 'stamp-hit', vol: 0.7 },
+  { f: at(7, S8_CUES.thumb), id: 'pop-reveal', vol: 0.45 },
+  { f: at(7, S8_CUES.small), id: 'whoosh-soft', vol: 0.45 },
+  { f: at(7, S8_CUES.title), id: 'ui-click-soft', vol: 0.26 },
+  { f: at(8, S9_CUES.quote), id: 'pop-reveal', vol: 0.45 },
+  { f: at(9, S10_CUES.hit), id: 'impact-soft', vol: 0.55 },
 ];
 
 const ScriptToRender: React.FC = () => {
@@ -129,11 +146,11 @@ const ScriptToRender: React.FC = () => {
 
       <StepRail />
 
-      {/* No voice, so the bed carries the audio: 0.8 as in the explainer, then master to -16 LUFS / -1.5 dBTP. */}
-      <Audio src={MUSIC('docu-pluck')} volume={(f) => iio(f, [0, 20, TOTAL - 60, TOTAL], [0, 0.8, 0.8, 0])} />
+      {/* Quiet background music under the effects (BED), then master to -16 LUFS / -1.5 dBTP. */}
+      <Audio src={MUSIC('docu-pluck')} volume={(f) => iio(f, [0, 20, TOTAL - 60, TOTAL], [0, BED, BED, 0])} />
       {CUES.map((cue, i) => (
-        <Sequence key={`sfx-${i}`} from={cue.f} durationInFrames={60}>
-          <Audio src={SFX(cue.id)} volume={cue.vol} />
+        <Sequence key={`sfx-${i}`} from={cue.f} durationInFrames={cue.dur ?? 60}>
+          <Audio src={SFX(cue.id)} volume={Math.min(1, cue.vol * FX)} />
         </Sequence>
       ))}
     </AbsoluteFill>

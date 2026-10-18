@@ -10,7 +10,7 @@ import receipt from '../_receipt.json';
 // else (checked frame by frame outside this scene).
 // =============================================================================
 export const S7_DUR = 240;
-export const S7_CUES = { rail: [10, 18], rows: [0, 1, 2, 3, 4, 5, 6].map((i) => 40 + i * 14), stamp: 150 };
+export const S7_CUES = { in: 0, rail: [10, 18], rows: [0, 1, 2, 3, 4, 5, 6].map((i) => 40 + i * 14), stamp: 150 };
 
 const v = (x: number | null, fmt: (n: number) => string) => (x === null ? 'pending' : fmt(x));
 const ROWS: Array<[string, string]> = [

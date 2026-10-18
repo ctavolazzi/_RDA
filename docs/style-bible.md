@@ -1,6 +1,6 @@
 # RDA style bible
 
-**Version 0.2 · 2026-10-18 · a living guide, not a lock.**
+**Version 0.3 · 2026-10-18 · a living guide, not a lock.**
 
 This is how RDA videos and thumbnails should look, sound and read, so each episode feels like part of
 one series. It is expected to change as the user and the YouTube audience react. When something here
@@ -144,10 +144,22 @@ Use the same motif for the same meaning every time. New motifs get added here be
 | PASS | `chime-reward` right after the stamp | about 0.4 |
 | A handoff or scene sweep | `whoosh-soft` | about 0.45 |
 | The closing line | `impact-soft` | about 0.4 |
+| A scene change | `whoosh-soft` | about 0.35 |
+| A command being typed, cut to the typing | `keys-typing-soft` | about 0.4 |
+| A still or screenshot appears | `camera-shutter` | about 0.45 |
+| A red-pen mark being drawn | `pencil-scribble`, cut to the stroke | about 0.55 |
+| A paper sheet or script appears | `page-flip` | about 0.6 |
+| A sweep or count building to a number (one per video) | `riser-soft`, cut to the sweep | about 0.3 |
 
-- **Music bed:** `docu-pluck` for explainers (curious, light). At about 0.8 with no voice; drop it well
-  under the voice in talking-head episodes (the pipeline's `mix_music.py` default is -7 dB).
-- **Loudness:** every export ends at -16 LUFS integrated, -1.5 dBTP, via `tools/master_audio.py`.
+Levels above are for a voiced or bed-led mix. With no voice and quiet music (the 2026-10-18 "how this video was made"
+mix 2), effects run at twice these, capped at 1.0, over a bed at 0.3.
+
+- **Music bed:** `docu-pluck` for explainers (curious, light). With no voice, either the bed carries the audio (about
+  0.8) or, when the effects should lead and the music sit quietly underneath, about 0.3. Drop it well under the voice
+  in talking-head episodes (the pipeline's `mix_music.py` default is -7 dB).
+- **Loudness:** exports end at -16 LUFS integrated, -1.5 dBTP, via `tools/master_audio.py`. Exception (D19): a mix of
+  effects over quiet music with no voice masters with `--static --lufs -19`, because reaching -16 would mean lifting
+  the music back up or crushing the effects.
 - One stamp per verdict. Do not stack risers.
 
 ## 8. Thumbnails
@@ -188,12 +200,15 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-18 | user | "Now your task is to add sound and quiet background music to the video" | effects forward (x2) over a 0.3 bed; foley rows added to the sound table (typing, shutter, pencil, page flip, scene whoosh, one riser); -19 LUFS static master for effects-led mixes (D19) | 0.3 |
 | 2026-10-18 | session | First non-episode video in the look ("how this video was made") needed a process tracker and a way to show its own numbers | step rail, receipt card and scene bar motifs; MEASURED as a stamp verdict; `PaperChrome` takes a `label` | 0.2 |
 | 2026-10-05 | user | Every video must ship with a thumbnail | made a rule in section 8, CLAUDE.md and `rda status` | 0.1 |
 | 2026-10-05 | session | First version, distilled from the RDA Episode Kit page, the explainer and thumbnail A | created | 0.1 |
 
 ## Changelog
 
+- **0.3 (2026-10-18):** sound: six foley rows, a quiet-bed level for effects-led mixes with no voice, and the
+  -19 LUFS static mastering exception (D19).
 - **0.2 (2026-10-18):** three motifs from the script-to-render video (step rail, receipt card, scene bar), MEASURED
   as a stamp verdict, and a configurable header label for videos that are not episodes.
 - **0.1 (2026-10-05):** first version. Video and thumbnail palettes with measured contrast, type, layout,

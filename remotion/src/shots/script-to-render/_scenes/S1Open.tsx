@@ -9,7 +9,7 @@ import { C, F, EASE, iio, rise, Scene, Eyebrow } from '../../../lib/rda';
 // S1_CUES.rail (drawn by the composition).
 // =============================================================================
 export const S1_DUR = 150;
-export const S1_CUES = { underline: 84, rail: 100 };
+export const S1_CUES = { lines: [10, 34, 58], underline: 84, rail: 100 };
 
 const LINES = ['Claude Code made this video.', 'Here is every step.'];
 const UNDERLINE = 'M 0 10 C 90 2, 190 16, 286 6';
@@ -25,11 +25,11 @@ export const S1Open: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 26 }}>
           <Eyebrow style={rise(f, 4)}>How this video was made</Eyebrow>
           {LINES.map((text, i) => (
-            <h1 key={text} style={{ ...line, ...rise(f, 10 + i * 24, 30) }}>
+            <h1 key={text} style={{ ...line, ...rise(f, S1_CUES.lines[i], 30) }}>
               {text}
             </h1>
           ))}
-          <h1 style={{ ...line, ...rise(f, 58, 30) }}>
+          <h1 style={{ ...line, ...rise(f, S1_CUES.lines[2], 30) }}>
             With{' '}
             <span style={{ position: 'relative', display: 'inline-block' }}>
               receipts

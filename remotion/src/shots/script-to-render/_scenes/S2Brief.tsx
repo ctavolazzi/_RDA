@@ -8,7 +8,7 @@ import { C, F, iio, rise, typed, Scene, Eyebrow, Headline, Terminal } from '../.
 // video is text-led. Both outputs are the real ones from 2026-10-18.
 // =============================================================================
 export const S2_DUR = 210;
-export const S2_CUES = { rail: [10, 18], out1: 84, out2: 114, chips: 132 };
+export const S2_CUES = { in: 0, rail: [10, 18], type1: [20, 80], out1: 84, type2: [92, 110], out2: 114, chips: 132 };
 
 const CMD1 = '$ rda idea "A video that shows how it was made: …"';
 const CMD2 = '$ ls .env';
@@ -27,9 +27,9 @@ export const S2Brief: React.FC = () => {
         </div>
 
         <Terminal width={1010} title="python tools/rda.py" style={{ position: 'absolute', top: 340, left: 110, ...rise(f, 14) }}>
-          <div style={{ color: C.termDim }}>{typed(f, CMD1, 20, 80) || ' '}</div>
+          <div style={{ color: C.termDim }}>{typed(f, CMD1, S2_CUES.type1[0], S2_CUES.type1[1]) || ' '}</div>
           <div style={show(S2_CUES.out1)}>parked in docs/ideas.md</div>
-          <div style={{ color: C.termDim, marginTop: 14 }}>{typed(f, CMD2, 92, 110) || ' '}</div>
+          <div style={{ color: C.termDim, marginTop: 14 }}>{typed(f, CMD2, S2_CUES.type2[0], S2_CUES.type2[1]) || ' '}</div>
           <div style={{ color: '#e06c5a', ...show(S2_CUES.out2) }}>ls: cannot access '.env': No such file or directory</div>
         </Terminal>
 
