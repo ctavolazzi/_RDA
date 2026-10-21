@@ -119,6 +119,13 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
 - **No voice means the music carries the audio.** Library clips sit near -20 LUFS; a bed at 0.2 gave a
   -32 LUFS export. Always finish with `tools/master_audio.py`.
+- **`rda status` only sees the checked-out branch.** An episode can live on an unmerged draft PR and the tool
+  will say "no episodes yet" (2026-10-21). Run `git fetch origin`, list the open PRs, and read the Johnny
+  Autoseed checkpoint before asking the host what the topic is.
+- **iPhone landscape can be stored upside down.** Holding the phone landscape and flipped 180 degrees gives a
+  1920x1080 file with a rotate-180 flag, not a 1080x1920 file. ffmpeg re-encodes (`-vf scale`) bake it upright
+  and drop the flag; verified 2026-10-21 with libx264, not yet with NVENC or Remotion. Look at one rendered
+  frame on every new phone source.
 - **A pipe hides exit codes.** `cmd | tail` reports tail's exit status. Capture to a log file, then check `$?`.
 - **The Write tool turns unicode escapes into literal characters.** A backslash-u escape for the en dash
   (code point 2013) is written out as the dash itself. In code that must not contain dashes, use
