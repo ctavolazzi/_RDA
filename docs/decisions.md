@@ -6,6 +6,17 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+### D17 · RDA is a format under the channel's thesis (2026-10-19)
+
+**Decided:** the channel has one thesis, "What if you could build the world you want to live in?", and RDA
+is one of its formats: learn a skill the future needs, fast, against a real exam, with real stakes. Pick
+domains that serve the thesis (for example solar, food growing, repair, tools); a domain that does not
+needs a stated reason. The formula and all rules in this repo still govern RDA episodes. The channel plan
+lives in `ctavolazzi/thecoffeejesus`, `series/build-the-world/`.
+**Source:** user, 2026-10-19: "go, fold everything in under the thesis." The domain examples are assumed.
+**Why:** every project on the channel points at the same idea; one thesis makes them doors into one house.
+**Revisit:** when picking episode 001's exam: check it against the thesis.
+
 ### D16 · Every video ships with a thumbnail (2026-10-05)
 
 **Decided:** making a video includes making its thumbnail. `rda status` has a "thumbnail made" item and
