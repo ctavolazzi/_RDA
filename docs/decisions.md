@@ -6,6 +6,41 @@ reason they were reversed is information too. The narrative is in `docs/history/
 
 ---
 
+**About the numbers:** D18 to D21 are claimed by open PR #4, and PR #4 and PR #6 both use D17. D22 and D23
+skip ahead so nothing new collides. Renumber the duplicate D17 when those PRs merge.
+
+### D23 · One channel; RDA is a format, not its own channel (2026-10-21)
+
+**Decided:** everything goes on one channel, where the host lives. RDA stays a format under the thesis
+(D17), with its own rules in this repo. This supersedes the call in the strategy brief on PR #5
+(`docs/STRATEGY.md`, "Launch RDA on its own channel"). What survives from that brief: RDA titles and
+thumbnails name the exam, because exam names are what people search.
+**Source:** user, 2026-10-21, "yes to both, go", answering whether to keep one channel for everything with RDA
+as a format rather than its own channel.
+**Why:** "I can just live there" needs one place to live. A second channel splits one host's time and
+audience before either exists.
+**Revisit:** if RDA episodes measurably pull a different audience that does not watch anything else.
+
+### D22 · The next few steps: the channel's voice and sign-off (2026-10-21)
+
+**Decided:** the brand is the host's "philosophy of the next few steps", under the thesis (D17). The thesis is
+where we are going; the next few steps are how we get there. Made visible in every video by one device:
+1. **The close:** "My next few steps", up to three, specific, said out loud and shown on a card, each with
+   a when ("this week", "before studying").
+2. **The check-in:** the next video opens by checking them: done, not done, what changed. A missed step is
+   said out loud and marked NOT DONE. Use the real result, never the hoped-for one.
+3. **The rule that keeps it honest:** every video shows at least one step actually taken, with proof.
+   Talk with no step is the failure mode.
+
+The card is `StepsCard` in `remotion/src/lib/rda.tsx` (previews: `RdaNextSteps`, `RdaStepsCheckIn` in
+`remotion/src/shots/rda-cards/`; stills in `docs/style/`).
+**Source:** user, 2026-10-21: "why waste time beating around the bush when all we really need to do is talk
+'philosophy of the next few steps' and that's the brand and I can just live there", then "yes to both, go".
+The close, the check-in and the card design are Claude's proposal, accepted in that answer.
+**Why:** it ends the planning loop (the topic of each video is whatever the next steps are), it is honest by
+construction (named steps can be checked), and the check-in gives viewers a reason to come back.
+**Revisit:** the device, if retention data shows the check-in loses people; not the idea.
+
 ### D17 · RDA is a format under the channel's thesis (2026-10-19)
 
 **Decided:** the channel has one thesis, "What if you could build the world you want to live in?", and RDA

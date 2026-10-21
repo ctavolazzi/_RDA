@@ -1,6 +1,6 @@
 # RDA style bible
 
-**Version 0.1 · 2026-10-05 · a living guide, not a lock.**
+**Version 0.2 · 2026-10-21 · a living guide, not a lock.**
 
 This is how RDA videos and thumbnails should look, sound and read, so each episode feels like part of
 one series. It is expected to change as the user and the YouTube audience react. When something here
@@ -123,6 +123,15 @@ readable without narration: hold each line at least as long as it takes to read 
 
 Use the same motif for the same meaning every time. New motifs get added here before they are reused.
 
+**The steps card** (`StepsCard`, D22) is built only from motifs above: a step is an answer bubble, a
+done step fills with `form` and says DONE, a missed step gets the red-pen circle and says NOT DONE (a
+grade, so red is allowed). It closes every video (`mode="next"`) and opens the next (`mode="check"`).
+No page number in its header strip: a standalone card has no real scene index.
+
+![The next few steps card](style/rda-next-steps.png)
+
+![The check-in card](style/rda-steps-check-in.png)
+
 ## 6. Motion
 
 - **Entrances:** fade and rise, about 14 frames at 30 fps, 24 px of travel, ease-out (`EASE.out`).
@@ -185,11 +194,15 @@ Add a row whenever the user, comments, or data change the style. Newest first.
 
 | Date | Source | Observation | Change | Version |
 |---|---|---|---|---|
+| 2026-10-21 | user | The brand is the "philosophy of the next few steps" (D22) | added the steps card to section 5 and the kit | 0.2 |
 | 2026-10-05 | user | Every video must ship with a thumbnail | made a rule in section 8, CLAUDE.md and `rda status` | 0.1 |
 | 2026-10-05 | session | First version, distilled from the RDA Episode Kit page, the explainer and thumbnail A | created | 0.1 |
 
 ## Changelog
 
+- **0.2 (2026-10-21):** the steps card (`StepsCard`), for the next-few-steps close and the check-in
+  (D22). `PaperChrome` takes an optional label and an optional page number. No token changed; the style
+  card renders pixel-identical to before the change.
 - **0.1 (2026-10-05):** first version. Video and thumbnail palettes with measured contrast, type, layout,
   motifs, motion, sound, thumbnail and copy rules. Kit moved to `remotion/src/lib/rda.tsx` so every
   video shares one source.
