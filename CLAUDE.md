@@ -5,6 +5,15 @@ studies a domain from zero inside a fixed window, takes a real exam with pass/fa
 a first-timer's debrief. Everything lives here: the formula, the per-episode state, the `rda` tool,
 and the full video production pipeline (cut, visuals, sound, packaging, upload).
 
+**2026-10-19: a format under the channel's thesis.** The Coffee Jesus channel now has one thesis, "What if
+you could build the world you want to live in?" RDA is the format where the host learns a skill the future
+needs (solar, food, repair, tools and the like) against a real exam. The formula and every rule here still
+govern RDA episodes. The channel plan lives in `ctavolazzi/thecoffeejesus`, `series/build-the-world/`. See D17.
+
+**2026-10-21: one channel, and the next few steps.** Everything goes on one channel; RDA is a format, not its
+own channel (D23). The brand is the host's "philosophy of the next few steps": every video closes with his
+next few steps and the next one opens by checking them (D22). The card is `StepsCard` in the RDA kit.
+
 **New session? Read this file, then run `python tools/rda.py status`, then skim the latest entry in
 `docs/history/`.** That is enough to pick up where the last session stopped.
 
@@ -32,7 +41,7 @@ says where things stand.
 tools/rda.py              the episode tool (idea, new, status, log, exam freeze|check, clock, score, handoff)
 tools/test_rda.py         its checks, with planted-bad-input controls. Run after touching rda.py
 tools/master_audio.py     last step before upload: loudness to -16 LUFS / -1.5 dBTP, video copied
-remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal). Use it for every RDA shot
+remotion/src/lib/rda.tsx  the RDA look as code (colors, fonts, motion, Bubble, Stamp, Terminal, StepsCard). Use it for every RDA shot
 tools/*.py, *.mjs         the production pipeline (vendored, see docs/vendored.md)
 remotion/                 the Remotion project. Shots in remotion/src/shots/<group>/; registry is GENERATED
   scripts/render-one.mjs  render one composition from one shot folder (bundles only that folder)
@@ -63,7 +72,8 @@ LICENSES/                 the MIT notice for the vendored pipeline
 7. **`rda clock start <minutes>`** on the screen capture: the visible clock, with real timestamps.
 8. Take the test. **`rda clock stop`**, then **`rda score`**: the score block it prints is the on-camera result.
 9. **Film the payoff that actually happened.** Set `payoff.filmed` in `result.json`.
-10. **Debrief outline** (`debrief.md`) from what the exam actually tested, then **`script/script.md`**.
+10. **Debrief outline** (`debrief.md`) from what the exam actually tested, then **`script/script.md`**. The script
+    opens with the check-in on last video's steps and closes with **my next few steps** (D22).
 11. **`rda handoff`** scaffolds `videos/rda-NNN/` in this repo with the script, `notion.json`, and
     `work/episode.json` (score, pass line, timings, topic tally for the cards).
 12. **Produce:** `/clean-cut`, `/make-tsx`, `/clean-audio`, `/suggest-sfx`.
@@ -119,6 +129,13 @@ Full arc and viewer contract: `docs/format.md`. Risks: `docs/risks.md`. Producti
   `delayRender` (120s timeout; the 30s default expired in parallel render tabs).
 - **No voice means the music carries the audio.** Library clips sit near -20 LUFS; a bed at 0.2 gave a
   -32 LUFS export. Always finish with `tools/master_audio.py`.
+- **`rda status` only sees the checked-out branch.** An episode can live on an unmerged draft PR and the tool
+  will say "no episodes yet" (2026-10-21). Run `git fetch origin`, list the open PRs, and read the Johnny
+  Autoseed checkpoint before asking the host what the topic is.
+- **iPhone landscape can be stored upside down.** Holding the phone landscape and flipped 180 degrees gives a
+  1920x1080 file with a rotate-180 flag, not a 1080x1920 file. ffmpeg re-encodes (`-vf scale`) bake it upright
+  and drop the flag; verified 2026-10-21 with libx264, not yet with NVENC or Remotion. Look at one rendered
+  frame on every new phone source.
 - **A pipe hides exit codes.** `cmd | tail` reports tail's exit status. Capture to a log file, then check `$?`.
 - **The Write tool turns unicode escapes into literal characters.** A backslash-u escape for the en dash
   (code point 2013) is written out as the dash itself. In code that must not contain dashes, use

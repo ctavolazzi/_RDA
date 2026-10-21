@@ -1,0 +1,39 @@
+{
+  "episode": "001-ham-technician",
+  "exam": {
+    "origin": "real",
+    "sha256": null,
+    "frozen_at": "2026-10-16T15:20:18+00:00",
+    "mode": "external",
+    "title": "FCC Amateur Radio Technician exam (Element 2)",
+    "scorer": "Volunteer Examiner team at the session"
+  },
+  "challenge": {
+    "time_limit_minutes": null,
+    "pass_line": {
+      "correct": 26,
+      "of": 35
+    },
+    "started_at": null,
+    "test_finished_at": null
+  },
+  "score": {
+    "correct": null,
+    "of": null,
+    "scorer_output_captured": false
+  },
+  "outcome": null,
+  "payoff": {
+    "description": null,
+    "filmed": false
+  },
+  "actual_durations_minutes": {
+    "exam_sourcing_and_verification": null,
+    "study_and_test": null,
+    "payoff_broll": null,
+    "talking_head": null,
+    "pipeline": null
+  },
+  "pipeline_project": null,
+  "notes": null
+}

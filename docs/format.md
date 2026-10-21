@@ -27,9 +27,13 @@ video earns, so they are rules, not preferences.
 8. **Sponsor segments are disclosed.** Use YouTube's paid promotion setting and say it out loud in B5.
 9. **The payoff is real.** Reward and punishment happen as promised. Nothing about the outcome is
    staged to match a script.
+10. **The next few steps are checked.** Every episode ends with the host's next few steps, and the next
+    video opens by checking them, misses included (D22).
 
 ## B1. Hook and constraints (0:00 to 0:45)
 
+- From the second video on, open with the check-in: last video's next few steps, done or not done, kept
+  short, on the `RdaStepsCheckIn` card (D22). Then the hook.
 - State the target exam or domain in the first sentence (example: the 2019 Nursing Entrance Exam).
 - State the fixed time constraint (example: 6 hours total to study and complete).
 - State the baseline: zero background beyond basic lived experience.
@@ -82,10 +86,13 @@ Done when each of the three categories has been covered and nothing runs past it
 - Disclose the sponsorship out loud and in the upload settings.
 - Plant the next-episode seed (example: the land surveyor entrance exam) with one concrete detail and
   one reason it is going to be hard.
+- Close with **my next few steps**: up to three, specific, each with a when, on the `RdaNextSteps` card
+  (D22). Say that the next video opens by checking them.
 - Done when the viewer knows what the next domain is and has a reason to subscribe.
 
 ## Variation budget
 
 The arc is fixed. What may change per episode: the domain, the time constraint, the pass line, the
 reward and punishment, the sponsor, and the visual treatment of B4. What may not change: the order of
-the phases, the viewer contract, and the rule that the result is shown before the debrief starts.
+the phases, the viewer contract, the rule that the result is shown before the debrief starts, and the
+next few steps at the close.

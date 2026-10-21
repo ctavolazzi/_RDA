@@ -224,8 +224,15 @@ export const Terminal: React.FC<{ title?: string; width: number; children: React
   </div>
 );
 
-/** Thin top strip, like the header of an exam paper. `page` is the real scene index. */
-export const PaperChrome: React.FC<{ page: number; of: number }> = ({ page, of }) => (
+/**
+ * Thin top strip, like the header of an exam paper. `page` is the real scene index; leave it out on a
+ * standalone card that has none (never show a made-up page number).
+ */
+export const PaperChrome: React.FC<{ page?: number; of?: number; label?: string }> = ({
+  page,
+  of,
+  label = 'RDA Challenge · Episode kit',
+}) => (
   <AbsoluteFill style={{ pointerEvents: 'none' }}>
     <div
       style={{
@@ -243,10 +250,134 @@ export const PaperChrome: React.FC<{ page: number; of: number }> = ({ page, of }
         borderBottom: `2px solid ${C.ink}`,
       }}
     >
-      <span>RDA Challenge · Episode kit</span>
-      <span>
-        Page {page} / {of}
-      </span>
+      <span>{label}</span>
+      {page !== undefined && of !== undefined ? (
+        <span>
+          Page {page} / {of}
+        </span>
+      ) : null}
     </div>
   </AbsoluteFill>
 );
+
+// =============================================================================
+// THE NEXT FEW STEPS (D22): the close of every video, and the check-in that opens the next one
+// =============================================================================
+
+/** `when` is shown exactly as written: 'by Friday', 'this week', 'before studying'. */
+export type Step = { text: string; when?: string; done?: boolean };
+
+const ROW_GAP = 30; // frames between rows: read one at a time (style bible 6)
+
+/** A red-pen ring drawn around a missed step's bubble, starting at `at`. Red means a grade. */
+const PenRing: React.FC<{ at: number; size: number }> = ({ at, size }) => {
+  const frame = useCurrentFrame();
+  const len = 320;
+  return (
+    <svg
+      width={size + 40}
+      height={size + 34}
+      viewBox="0 0 92 80"
+      style={{ position: 'absolute', left: -20, top: -17, overflow: 'visible' }}
+    >
+      <path
+        d="M 46 6 C 78 4, 90 30, 82 52 C 72 76, 22 80, 8 56 C -2 36, 14 8, 52 10"
+        fill="none"
+        stroke={C.pen}
+        strokeWidth={5}
+        strokeLinecap="round"
+        strokeDasharray={len}
+        strokeDashoffset={iio(frame, [at, at + 12], [len, 0], EASE.out)}
+      />
+    </svg>
+  );
+};
+
+/**
+ * The steps card. `mode="next"` closes a video: up to three steps, bubbles empty, each with an optional
+ * `when`. `mode="check"` opens the next video with the same steps graded: a filled bubble and DONE,
+ * or a red-pen ring and NOT DONE. The word always carries the verdict, never color alone (style bible 2.3).
+ * `sample` labels illustrative steps on screen (style bible 2.5). Rows enter from frame `start`.
+ */
+export const StepsCard: React.FC<{
+  mode: 'next' | 'check';
+  steps: Step[];
+  label?: string;
+  sample?: boolean;
+  start?: number;
+}> = ({ mode, steps, label = 'RDA Challenge', sample = false, start = 20 }) => {
+  const frame = useCurrentFrame();
+  const next = mode === 'next';
+  const last = start + (steps.length - 1) * ROW_GAP;
+  return (
+    <AbsoluteFill style={{ background: C.paper }}>
+      <PaperChrome label={`${label} · Next few steps`} />
+      <div style={{ position: 'absolute', top: 150, left: 110, right: 110, display: 'flex', flexDirection: 'column' }}>
+        <div style={rise(frame, 0)}>
+          <Eyebrow>{next ? 'Before the next video' : 'Last video I said'}</Eyebrow>
+          <Headline size={96} style={{ marginTop: 18 }}>
+            {next ? 'My next few steps' : 'Did I do them?'}
+          </Headline>
+        </div>
+        {sample ? (
+          <p style={{ margin: '34px 0 0', font: `600 22px/1 ${F.mono}`, letterSpacing: '0.14em', textTransform: 'uppercase', color: C.muted, ...rise(frame, 6) }}>
+            Sample steps, for illustration
+          </p>
+        ) : null}
+        <div
+          style={{
+            marginTop: sample ? 14 : 48,
+            background: C.sheet,
+            border: `2px solid ${C.rule}`,
+            borderRadius: 14,
+            padding: '8px 44px',
+          }}
+        >
+          {steps.map((s, i) => {
+            const at = start + i * ROW_GAP;
+            const mark = at + 18; // the grade lands after the row is read
+            const fill = !next && s.done ? iio(frame, [mark, mark + 10], [0, 1], EASE.out) : 0;
+            const verdict = next ? s.when ?? '' : s.done ? 'Done' : 'Not done';
+            const vColor = next ? C.muted : s.done ? C.form : C.pen;
+            return (
+              <div
+                key={i}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 36,
+                  minHeight: 132,
+                  borderTop: i === 0 ? 'none' : `2px solid ${C.rule}`,
+                  ...rise(frame, at),
+                }}
+              >
+                <div style={{ position: 'relative' }}>
+                  <Bubble fill={fill} size={64} label={String(i + 1)} />
+                  {!next && !s.done ? <PenRing at={mark} size={64} /> : null}
+                </div>
+                <span style={{ flex: 1, font: `600 50px/1.15 ${F.body}`, color: C.ink }}>{s.text}</span>
+                {verdict ? (
+                  <span
+                    style={{
+                      font: `600 ${next ? 26 : 30}px/1 ${F.mono}`,
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      color: vColor,
+                      whiteSpace: 'nowrap',
+                      opacity: next ? 1 : iio(frame, [mark + 8, mark + 16], [0, 1]),
+                    }}
+                  >
+                    {verdict}
+                  </span>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+        <p style={{ margin: '40px 0 0', font: `400 34px/1.3 ${F.body}`, color: C.muted, ...rise(frame, last + 36) }}>
+          {next ? 'The next video opens by checking these.' : 'Then the next few steps.'}
+        </p>
+      </div>
+    </AbsoluteFill>
+  );
+};
