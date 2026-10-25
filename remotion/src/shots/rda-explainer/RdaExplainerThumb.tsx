@@ -1,6 +1,6 @@
 import React from 'react';
 import { AbsoluteFill } from 'remotion';
-import { C, F, T } from '../../lib/rda';
+import { C, F, T, useRdaFonts } from '../../lib/rda';
 
 // =============================================================================
 // COMPOSITION CONFIG · thumbnail A for the RDA explainer (1280x720, one frame).
@@ -77,7 +77,9 @@ const Sheet: React.FC = () => (
   </div>
 );
 
-const RdaExplainerThumb: React.FC = () => (
+const RdaExplainerThumb: React.FC = () => {
+  useRdaFonts();
+  return (
   <AbsoluteFill style={{ background: T.night, overflow: 'hidden' }}>
     {/* soft form-green glow behind the sheet, for depth */}
     <AbsoluteFill style={{ background: 'radial-gradient(circle at 30% 50%, rgba(62, 224, 138, 0.22), transparent 55%)' }} />
@@ -103,6 +105,7 @@ const RdaExplainerThumb: React.FC = () => (
       </span>
     </div>
   </AbsoluteFill>
-);
+  );
+};
 
 export default RdaExplainerThumb;

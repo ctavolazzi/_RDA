@@ -1,0 +1,11 @@
+{
+  "note": "Measured on the first full render of mix 3, the narrated version (remotion/out/ScriptToRender-v3-r1.mp4), 2026-10-18. Mastered with master_audio.py at its defaults (-16 LUFS, D19's rule for a voiced video). Commands: docs/script-to-render-video.md.",
+  "measuredOn": "2026-10-18",
+  "exitCode": 0,
+  "frames": 1800,
+  "seconds": 60.0,
+  "lufsRendered": -23.0,
+  "lufsMastered": -16.1,
+  "truePeakMastered": -1.5,
+  "renderSeconds": 68.4
+}

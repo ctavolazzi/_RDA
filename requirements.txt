@@ -10,6 +10,7 @@
 requests                  # transcribe.py
 Pillow                    # gen_thumbnail.py (image handling)
 google-genai              # gen_thumbnail.py (Gemini / Nano Banana Pro)
+kokoro-onnx               # narrate.py (free local narrator, Kokoro v1.0; model files download on first run)
 
 # YouTube stats + upload (tools/yt_stats.py, tools/yt_upload.py) — OAuth via .youtube/ token files:
 google-api-python-client

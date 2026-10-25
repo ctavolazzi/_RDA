@@ -1,0 +1,232 @@
+{
+  "note": "Written by tools/narrate.py from videos/humanoid-2490/script/script.md. Do not edit; change the script and run it again.",
+  "engine": "kokoro-onnx 0.6.1, kokoro-v1.0.onnx",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "fps": 30,
+  "sampleRate": 24000,
+  "lines": {
+    "S1": {
+      "text": "A humanoid robot, for under twenty-five hundred dollars.",
+      "file": "vo/S1.wav",
+      "samples": 79872,
+      "frames": 100
+    },
+    "S1.2": {
+      "text": "It launched in mid-October, and every headline led with the price.",
+      "file": "vo/S1.2.wav",
+      "samples": 88064,
+      "frames": 111
+    },
+    "S2": {
+      "text": "There's a catch.",
+      "file": "vo/S2.wav",
+      "samples": 23040,
+      "frames": 29
+    },
+    "S2.2": {
+      "text": "And behind it is a bigger story: the firms that count these robots can't agree on how many there are, or what they're for.",
+      "file": "vo/S2.2.wav",
+      "samples": 169984,
+      "frames": 213
+    },
+    "S3": {
+      "text": "It's called FF Nova, from Faraday Future, the electric car company, and its robotics sister company.",
+      "file": "vo/S3.wav",
+      "samples": 152576,
+      "frames": 191
+    },
+    "S3.2": {
+      "text": "It has twenty joints. It walks, it waves, and it gets back up after being knocked over.",
+      "file": "vo/S3.2.wav",
+      "samples": 120832,
+      "frames": 152
+    },
+    "S3.3": {
+      "text": "It runs ROS 2, a widely used robotics framework.",
+      "file": "vo/S3.3.wav",
+      "samples": 86528,
+      "frames": 109
+    },
+    "S3.4": {
+      "text": "The first hundred units are invitation only, for developers and schools.",
+      "file": "vo/S3.4.wav",
+      "samples": 101376,
+      "frames": 127
+    },
+    "S3.5": {
+      "text": "And a kids' version, Nova Mini, costs two hundred and ninety-nine dollars.",
+      "file": "vo/S3.5.wav",
+      "samples": 99840,
+      "frames": 125
+    },
+    "S4": {
+      "text": "Here's the catch.",
+      "file": "vo/S4.wav",
+      "samples": 25088,
+      "frames": 32
+    },
+    "S4.2": {
+      "text": "It's forty-nine point seven centimeters tall. About knee high.",
+      "file": "vo/S4.2.wav",
+      "samples": 85504,
+      "frames": 107
+    },
+    "S4.3": {
+      "text": "And it weighs two point eight kilos. Less than a gallon of milk.",
+      "file": "vo/S4.3.wav",
+      "samples": 83456,
+      "frames": 105
+    },
+    "S5": {
+      "text": "That doesn't make it a gimmick.",
+      "file": "vo/S5.wav",
+      "samples": 35840,
+      "frames": 45
+    },
+    "S5.2": {
+      "text": "A small robot that can fall over and get back up is a good way to learn robotics.",
+      "file": "vo/S5.2.wav",
+      "samples": 114688,
+      "frames": 144
+    },
+    "S5.3": {
+      "text": "It's priced for classrooms and developers. Not for your kitchen.",
+      "file": "vo/S5.3.wav",
+      "samples": 87040,
+      "frames": 109
+    },
+    "S6": {
+      "text": "Now, the bigger story.",
+      "file": "vo/S6.wav",
+      "samples": 33792,
+      "frames": 43
+    },
+    "S6.2": {
+      "text": "How many humanoid robots shipped in the first half of 2026?",
+      "file": "vo/S6.2.wav",
+      "samples": 100352,
+      "frames": 126
+    },
+    "S6.3": {
+      "text": "Smart Analytics Global says about nineteen thousand.",
+      "file": "vo/S6.3.wav",
+      "samples": 70144,
+      "frames": 88
+    },
+    "S6.4": {
+      "text": "Counterpoint Research says over twenty-two thousand.",
+      "file": "vo/S6.4.wav",
+      "samples": 69632,
+      "frames": 88
+    },
+    "S6.5": {
+      "text": "IDC says nearly twenty-five thousand.",
+      "file": "vo/S6.5.wav",
+      "samples": 60928,
+      "frames": 77
+    },
+    "S6.6": {
+      "text": "Same six months. Almost six thousand robots apart.",
+      "file": "vo/S6.6.wav",
+      "samples": 79872,
+      "frames": 100
+    },
+    "S7": {
+      "text": "They don't agree on what the robots are doing, either.",
+      "file": "vo/S7.wav",
+      "samples": 62976,
+      "frames": 79
+    },
+    "S7.2": {
+      "text": "IDC says sixty-nine percent went to research, education, shows, and government data collection.",
+      "file": "vo/S7.2.wav",
+      "samples": 155648,
+      "frames": 195
+    },
+    "S7.3": {
+      "text": "Smart Analytics Global says over seventy percent went to industrial and commercial work.",
+      "file": "vo/S7.3.wav",
+      "samples": 126464,
+      "frames": 159
+    },
+    "S7.4": {
+      "text": "Two counts. Two different pictures.",
+      "file": "vo/S7.4.wav",
+      "samples": 46592,
+      "frames": 59
+    },
+    "S8": {
+      "text": "Even China's share depends on the question.",
+      "file": "vo/S8.wav",
+      "samples": 59904,
+      "frames": 75
+    },
+    "S8.2": {
+      "text": "About seventy-eight percent were bought in China.",
+      "file": "vo/S8.2.wav",
+      "samples": 61952,
+      "frames": 78
+    },
+    "S8.3": {
+      "text": "Over ninety-five percent were built by Chinese companies.",
+      "file": "vo/S8.3.wav",
+      "samples": 81408,
+      "frames": 102
+    },
+    "S8.4": {
+      "text": "Both can be true.",
+      "file": "vo/S8.4.wav",
+      "samples": 28160,
+      "frames": 36
+    },
+    "S9": {
+      "text": "So, will a humanoid do your chores?",
+      "file": "vo/S9.wav",
+      "samples": 49152,
+      "frames": 62
+    },
+    "S9.2": {
+      "text": "Not the ones you can buy today.",
+      "file": "vo/S9.2.wav",
+      "samples": 39424,
+      "frames": 50
+    },
+    "S9.3": {
+      "text": "The robots already working in homes are narrow: vacuums, lawn mowers, garden robots like FarmBot.",
+      "file": "vo/S9.3.wav",
+      "samples": 157184,
+      "frames": 197
+    },
+    "S9.4": {
+      "text": "Each one does a single job, on a schedule.",
+      "file": "vo/S9.4.wav",
+      "samples": 58368,
+      "frames": 73
+    },
+    "S10": {
+      "text": "What to watch next: whether Nova ships beyond the first hundred.",
+      "file": "vo/S10.wav",
+      "samples": 85504,
+      "frames": 107
+    },
+    "S10.2": {
+      "text": "And the full-year counts. The forecasts run from over fifty thousand to about sixty thousand.",
+      "file": "vo/S10.2.wav",
+      "samples": 131584,
+      "frames": 165
+    },
+    "S11": {
+      "text": "Humanoid robots just got cheap.",
+      "file": "vo/S11.wav",
+      "samples": 45056,
+      "frames": 57
+    },
+    "S11.2": {
+      "text": "Getting useful is the next test.",
+      "file": "vo/S11.2.wav",
+      "samples": 44544,
+      "frames": 56
+    }
+  }
+}
