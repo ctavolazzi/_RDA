@@ -5,6 +5,11 @@ studies a domain from zero inside a fixed window, takes a real exam with pass/fa
 a first-timer's debrief. Everything lives here: the formula, the per-episode state, the `rda` tool,
 and the full video production pipeline (cut, visuals, sound, packaging, upload).
 
+**2026-10-19: a format under the channel's thesis.** The Coffee Jesus channel now has one thesis, "What if
+you could build the world you want to live in?" RDA is the format where the host learns a skill the future
+needs (solar, food, repair, tools and the like) against a real exam. The formula and every rule here still
+govern RDA episodes. The channel plan lives in `ctavolazzi/thecoffeejesus`, `series/build-the-world/`. See D17.
+
 **New session? Read this file, then run `python tools/rda.py status`, then skim the latest entry in
 `docs/history/`.** That is enough to pick up where the last session stopped.
 
