@@ -1,0 +1,6 @@
+# Ideas inbox
+
+Parked as they come. Promote one to docs/backlog.md when it is scored.
+
+- 2026-10-22  Johnny Autoseed direction: offline (local) AI for farmers, plus a weekly devlog documenting the build and tests. Trigger: a Kickstarter for a local-AI device, reported by the host as 16k pledged from 8 backers on a 10k goal (unverified, screenshots not yet received). Open questions: partner or affiliate vs build own, what farmers would actually ask it, support burden, liability. Possible episode: unplug the internet and score the local AI on a 20 question farm exam with the pass line set first. Not yet scored against the backlog rubric.
+- 2026-10-24  Update on offline AI for farmers: the Kickstarter is Companion Intelligence (Host Local AI, Apps, and Agents), now verified from your campaign page screenshots, Oct 2026. $16,414 pledged of $10,000 from 8 backers, 20 days to go at capture, all or nothing, deadline Nov 12 2026. A general purpose local AI computer (up to 192 GB memory) plus Hub Pro software for a computer you already own, tagged Local AI, Privacy First, Open Source. Not farm specific, so no evidence of farmer demand yet. Reward tiers and prices not seen. The founder GitHub claims are unverified. Next: read docs.ci.computer for the license and third party app hosting, then decide partner or build on.
