@@ -13,6 +13,12 @@
 
 ## B1 · Hook and constraints (0:00 to 0:45)
 
+`[ON SCREEN]` If another video on the channel came before this one: the `RdaStepsCheckIn` card with its
+steps, graded (D22).
+
+> TODO: the check-in, if there is a previous video. Done, done, not done, and what changed. Keep it short,
+> and say a miss out loud.
+
 `[ON SCREEN]` Exam title card, then the timer starting. Talking head to camera.
 
 > TODO: the exam, named in the first sentence.
@@ -90,3 +96,8 @@ This is proof, so use the real capture. Placeholder slot in `timeline.json` unti
 > TODO: disclose the sponsorship out loud.
 >
 > TODO: next-episode seed, one concrete detail and one reason it will be hard.
+
+`[ON SCREEN]` The `RdaNextSteps` card with this episode's real steps (D22).
+
+> TODO: my next few steps. Up to three, specific, each with a when. "The next video opens by checking
+> these." Then stop.
